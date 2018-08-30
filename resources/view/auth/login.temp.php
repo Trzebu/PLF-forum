@@ -1,5 +1,5 @@
 @include top/top
 
-Home Forum
+<h2>Login</h2>
 
 @include bot/bot
