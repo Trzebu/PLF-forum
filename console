@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+define("__ROOT__", __DIR__);
+require_once(__ROOT__ . '/config/config.php');
+require_once("libs/functions/auto_load.php");
+require_once("libs/functions/con_log.php");
+use Libs\Console\Console;
+
+$console = new Console();
