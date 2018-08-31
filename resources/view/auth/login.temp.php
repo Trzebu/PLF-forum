@@ -2,4 +2,4 @@
 
 <h2>Login</h2>
 
-@include partials/bot
+@include partials/footer

@@ -2,4 +2,4 @@
 
 Home Forum
 
-@include partials/bot
+@include partials/footer

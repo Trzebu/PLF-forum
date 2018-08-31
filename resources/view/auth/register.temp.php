@@ -2,4 +2,4 @@
 
 
 
-@include partials/bot
+@include partials/footer
