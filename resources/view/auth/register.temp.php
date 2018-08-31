@@ -1,5 +1,5 @@
-@include top/top
+@include partials/top
 
 
 
-@include bot/bot
+@include partials/bot

@@ -1,5 +1,5 @@
-@include top/top
+@include partials/top
 
 <h2>Login</h2>
 
-@include bot/bot
+@include partials/bot
