@@ -1,5 +1,17 @@
+.h-90 {
+    height: 90vh;
+}
+
 .footer {
     background-color: #e3f2fd;
     bottom: 0px;
     position: relative;
+}
+
+.footer > .container {
+    justify-content: center;
+}
+
+.footer > .container > a {
+    margin-left: 5px;
 }

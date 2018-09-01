@@ -1,7 +1,7 @@
         </div>
         <footer class="footer navbar w-100">
             <div class="container">
-                sds
+                {{ date('Y') }} by <a href="https://github.com/Trzebu">Trzebu</a>
             </div>
         </footer>        
     </body>

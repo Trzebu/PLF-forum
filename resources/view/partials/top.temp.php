@@ -12,5 +12,5 @@
     <body class="h-100 w-100">
         @include partials/top_navbar
 
-        <div class="container">
+        <div class="container h-90">
             @include partials/alert
