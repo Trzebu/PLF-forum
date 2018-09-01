@@ -46,7 +46,7 @@ class User {
         return true;
     }
 
-    public function login ($fields, $password = null, $remember = null) {
+    public function login ($fields, $password = null, $remember = null, $or = null) {
         $db = DataBase::instance()->table("users");
         $i = 0;
 

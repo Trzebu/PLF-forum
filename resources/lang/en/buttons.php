@@ -2,5 +2,7 @@
 
 return [
     "change" => "Change",
-    "choose" => "Choose"
+    "choose" => "Choose",
+    "register" => "Register",
+    "login" => "Login",
 ];
