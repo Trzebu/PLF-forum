@@ -132,16 +132,18 @@ class DataBase implements Countable {
         return $this;
     }
 
-    public function where ($argument, $operator, $value) {
-        $operators = ["=", "!=", "<", ">", "<=", ">="];
+    public function where ($argument, $operator, $value = null) {
+        $operators = ["=", "!=", "<", ">", "<=", ">=", "null"];
         try {
             if ($this->_table === null) {
-                die("First you must set table!");
+                Throw new Error("First you must set table!");
             }
             if ($argument && $operator && $value !== false) {
                 if (in_array($operator, $operators)) {
                     $this->_where .= $this->operatorGrammar($argument, $operator);
-                    array_push($this->_values, $value);
+                    if ($value !== null) {
+                        array_push($this->_values, $value);
+                    }
                     return $this;
                 } else {
                     Throw new Error("Uncorrect operator: {$operator}.");
@@ -215,7 +217,9 @@ class DataBase implements Countable {
     public function get ($params = ["*"]) {
         $this->_getValues = $params;
         $this->queryBuilder("SELECT");
-        return $this;
+        $t = $this;
+        $this->reset();
+        return $t;
     }
 
     public function table ($table) {
@@ -238,6 +242,8 @@ class DataBase implements Countable {
     private function operatorGrammar ($argument, $operator) {
         if ($operator == "!=") {
             return $argument . " NOT IN (?)";
+        } else if ($operator == "null") {
+            return $argument . " IS NULL";
         } else {
             return $argument . $operator . "?";
         }

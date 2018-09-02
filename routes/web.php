@@ -14,7 +14,7 @@ use Libs\Route;
 
 
 Route::get("/", [
-    "uses" => "App\Http\Controllers\Home@index",
+    "uses" => "App\Http\Controllers\HomeController@index",
     "as" => "home.index"
 ]);
 
