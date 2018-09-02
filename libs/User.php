@@ -46,7 +46,7 @@ class User {
         return true;
     }
 
-    public function login ($fields, $password = null, $remember = null, $or = null) {
+    public function login ($fields, $password = null, $remember = null) {
         $db = DataBase::instance()->table("users");
         $i = 0;
 
@@ -54,7 +54,7 @@ class User {
             if ($i == 0) {
                 $db->where($key, "=", $value);
             } else {
-                $db->and($key, "=", $value);
+                $db->or($key, "=", $value);
             }
             $i++;
         }

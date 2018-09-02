@@ -22,20 +22,30 @@ Route::get("/", [
 
 Route::get("/login", [
     "uses" => "App\Http\Controllers\AuthController@indexLogin",
-    "as" => "auth.login"
+    "as" => "auth.login",
+    "middleware" => ["guest"]
 ]);
 
 Route::post("/login", [
     "uses" => "App\Http\Controllers\AuthController@postLogin",
-    "as" => "auth.login"
+    "as" => "auth.login",
+    "middleware" => ["guest"]
 ]);
 
 Route::get("/register", [
     "uses" => "App\Http\Controllers\AuthController@indexRegister",
-    "as" => "auth.register"
+    "as" => "auth.register",
+    "middleware" => ["guest"]
 ]);
 
 Route::post("/register", [
     "uses" => "App\Http\Controllers\AuthController@postRegister",
-    "as" => "auth.register"
+    "as" => "auth.register",
+    "middleware" => ["guest"]
+]);
+
+Route::get("/logout", [
+    "uses" => "App\Http\Controllers\AuthController@logout",
+    "as" => "auth.logout",
+    "middleware" => ["auth"]
 ]);

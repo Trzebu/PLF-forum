@@ -21,20 +21,20 @@ final class AuthController extends Controller {
             "password" => ["required", Translate::get("auth.inputs.password")],
             "_token" => "token",
         ])) {
-            $user = new User();
 
-            if (Auth::login(["username" => Request::input("username")], 
+            if (Auth::login(["username" => Request::input("username"), "email" => Request::input("username")], 
                         Request::input("password"), 
-                        Request::input("remember"), 
-                        ["email" => Request::input("username")])) {
+                        Request::input("remember"))) {
                 Session::flash("alert_success", Translate::get("auth.login_success"));
                 $this->redirect("home.index");
+                return;
             } else {
                 Session::flash("alert_error", Translate::get("auth.login_fail"));
-                $this->redirect("auth.login");
             }
+
         }
 
+    $this->redirect("auth.login");
     }
 
     public function indexRegister () {
@@ -57,6 +57,11 @@ final class AuthController extends Controller {
         }
 
         $this->redirect("auth.register");
+    }
+
+    public function logout () {
+        Auth::logout();
+        $this->redirect("home.index");
     }
 
 }

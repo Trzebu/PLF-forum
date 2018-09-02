@@ -22,6 +22,7 @@ class Request {
         if ($name !== null) {
             if (is_array($name)) {
                 Session::set("Request_old_inputs", $name);
+                return;
             }
             if (Session::exists("Request_old_inputs")) {
                 if (isset(Session::get("Request_old_inputs")[$name])) {
