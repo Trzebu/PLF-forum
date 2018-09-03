@@ -1,5 +1,9 @@
 .h-90 {
-    height: 90vh;
+    height: 90%;
+}
+
+.w-10 {
+    width: 10%;
 }
 
 .footer {
@@ -43,4 +47,12 @@
     background-color: #d9d9d9;
     border: 1px solid black;
     border-bottom: none;
+}
+
+.small-grey-text {
+    font-size: 12px;
+    color: #4C5D77;
+    font-style: italic;
+    margin: 0;
+    padding: 0;
 }

@@ -49,3 +49,10 @@ Route::get("/logout", [
     "as" => "auth.logout",
     "middleware" => ["auth"]
 ]);
+
+//Section
+
+Route::get("/section/{sectionId}", [
+    "uses" => "App\Http\Controllers\SectionController@viewCategories",
+    "as" => "section.view_categories"
+]);

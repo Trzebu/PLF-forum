@@ -9,7 +9,15 @@ final class Section extends Model {
 
     public function getSectionCategories ($section_id) {
 
-        return $this->where("parent", "=", $section_id)->get()->count() > 0 ? $this->results() : null;
+        $section_id = !is_numeric($section_id) ? $this->getSection($section_id) ? $this->getSection($section_id)->id : 0 : $section_id;
+
+        return $this->where("parent", "=", $section_id)->or("url_name", "=", $section_id)->get()->count() > 0 ? $this->results() : null;
+
+    }
+
+    public function getSection ($section_id) {
+
+        return $this->where("id", "=", $section_id)->or("url_name", "=", $section_id)->get()->count() > 0 ? $this->first() : null;
 
     }
 
