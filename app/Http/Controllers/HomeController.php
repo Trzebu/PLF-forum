@@ -10,7 +10,7 @@ final class HomeController extends Controller {
 
     public function index () {
         $section = new Section();
-
+    
         $this->view->sections = $section->getSections();
         $this->view->section = $section;
         $this->view->postObj = new Post();

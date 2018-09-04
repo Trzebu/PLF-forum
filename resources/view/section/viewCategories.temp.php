@@ -5,7 +5,7 @@
     <table class="table">
 
         <thead class="w-100">
-            <th style="width: 70%;">
+            <th style="width: 60%; padding-left: 25px">
                 @if ($this->categories !== null):
                     {{ $this->section_details->name }}
                     <p class="small-grey-text">{{ $this->section_details->description }}</p>
@@ -15,20 +15,28 @@
             </th>
             <th class="w-10">Subjects</th>
             <th class="w-10">Posts</th>
-            <th class="w-10">Last post</th>
+            <th style="width: 20%;">Last post</th>
         </thead>
 
         @if ($this->categories !== null):
             @foreach ($this->categories as $category):
 
                 <tr class="w-100">
-                    <td style="width: 70%; padding-left: 25px">
+                    <td style="width: 60%; padding-left: 25px">
                         <a href="{{ route('section.category_posts', ['sectionName' => $this->section_details->url_name, 'categoryId' => $category->url_name]) }}">{{ $category->name }}</a>
                         <p class="small-grey-text">{{ $category->description }}</p>
                     </td>
                     <td class="w-10">{{ $this->postObj->getSubjectsCount($category->id) }}</td>
                     <td class="w-10">{{ $this->postObj->getPostsCount($category->id) }}</td>
-                    <td class="w-10"><a href="">-</a></td>
+                    <td style="width: 20%;">
+                        @if ($this->postObj->getLastSubject($category->id) !== null):
+                            <a href="{{ route('post.slug_index', ['sectionName' => $this->section_details->url_name, 'categoryId' => $category->url_name, 'postId' => $this->postObj->getLastSubject($category->id)->id, 'postSlugUrl' => Libs\Tools\SlugUrl::generate($this->postObj->getLastSubject($category->id)->subject)]) }}">Re: {{ substr($this->postObj->getLastSubject($category->id)->subject, 0, 17) }}...</a>
+                            <p class="small-grey-text">Author: {{ $this->user->username($this->postObj->getLastSubject($category->id)->user_id) }}</p>
+                            <p class="small-grey-text">{{ $this->postObj->dateTimeAlphaMonth($this->postObj->getLastSubject($category->id)->created_at) }}</p>
+                        @else
+                            This category is empty.
+                        @endif
+                    </td>
                 </tr>
                             
             @endforeach

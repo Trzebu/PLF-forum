@@ -30,7 +30,7 @@
                                 <td class="w-10">{{ $this->postObj->getPostsCount($category->id) }}</td>
                                 <td style="width: 20%;">
                                     @if ($this->postObj->getLastSubject($category->id) !== null):
-                                        <a href="">Re: {{ substr($this->postObj->getLastSubject($category->id)->subject, 0, 17) }}...</a>
+                                        <a href="{{ route('post.slug_index', ['sectionName' => $section->url_name, 'categoryId' => $category->url_name, 'postId' => $this->postObj->getLastSubject($category->id)->id, 'postSlugUrl' => Libs\Tools\SlugUrl::generate($this->postObj->getLastSubject($category->id)->subject)]) }}">Re: {{ substr($this->postObj->getLastSubject($category->id)->subject, 0, 17) }}...</a>
                                         <p class="small-grey-text">Author: {{ $this->user->username($this->postObj->getLastSubject($category->id)->user_id) }}</p>
                                         <p class="small-grey-text">{{ $this->postObj->dateTimeAlphaMonth($this->postObj->getLastSubject($category->id)->created_at) }}</p>
                                     @else

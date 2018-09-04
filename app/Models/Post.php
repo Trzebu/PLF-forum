@@ -7,6 +7,14 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function getAnswers ($postId) {
+        return $this->where("parent", "=", $postId)->get()->count() > 0 ? $this->results() : null;
+    }
+
+    public function getSubjectData ($postId, $categoryId) {
+        return $this->where("id", "=", $postId)->and("category", "=", $categoryId)->and("parent", "null")->get()->count() > 0 ? $this->first() : null;
+    }
+
     public function getAnswersCount ($subjectId, $categoryId) {
         return $this->where("parent", "=", $subjectId)->and("category", "=", $categoryId)->numRow();
     }

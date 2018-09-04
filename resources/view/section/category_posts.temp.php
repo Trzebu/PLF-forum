@@ -17,7 +17,7 @@
 
                 <tr class="w-100">
                     <td style="width: 60%; padding-left: 25px">
-                        <a href="">{{ $post->subject }}</a>
+                        <a href="{{ route('post.slug_index', ['sectionName' => $this->section_details->url_name, 'categoryId' => $this->category->url_name, 'postId' => $post->id, 'postSlugUrl' => Libs\Tools\SlugUrl::generate($post->subject)]) }}">{{ $post->subject }}</a>
                         <p class="small-grey-text">{{ substr(strip_tags($post->contents), 0, 80) }}...</p>
                     </td>
                     <td class="w-10">{{ $this->postObj->getAnswersCount($post->id, $this->category->id) }}</td>
@@ -45,6 +45,6 @@
 
 </div>
 
-    {{ $this->posts->paginateRender() }}
+    {{ $this->posts !== null ? $this->posts->paginateRender() : "" }}
 
 @include partials/footer

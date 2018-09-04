@@ -38,6 +38,7 @@ class CreatePermissionsTable extends TableCreator {
 
         $this->increments("id");
         $this->string("name", 100);
+        $this->string("color", 50);
         $this->text("permissions");
 
         /**
@@ -63,16 +64,19 @@ class CreatePermissionsTable extends TableCreator {
         
         DB::instance()->table($this->tableName)->insert([
             "name" => "User",
+            "color" => "black",
             "permissions" => '{"admin":0,"moderator":0}'
         ]);
 
         DB::instance()->table($this->tableName)->insert([
             "name" => "Administrator",
+            "color" => "red",
             "permissions" => '{"admin":1,"moderator":1}'
         ]);
         
         DB::instance()->table($this->tableName)->insert([
             "name" => "Moderator",
+            "color" => "green",
             "permissions" => '{"admin":0,"moderator":1}'
         ]);
 

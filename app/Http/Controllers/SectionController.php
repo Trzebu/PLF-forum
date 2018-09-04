@@ -26,6 +26,7 @@ final class SectionController extends Controller {
             $this->view->categories = $section->getSectionCategories($sectionId);
             $this->view->section_details = $section->getSection($sectionId);
             $this->view->postObj = new Post();
+            $this->view->user = new User();
         }
 
         $this->view->render("section.viewCategories");
@@ -35,6 +36,7 @@ final class SectionController extends Controller {
         $section = new Section();
         $post = new Post();
 
+        $this->view->section_details = $section->getSection($sectionId);
         $this->view->category = $section->getCategory($categoryId);
         $this->view->posts = $post->getPosts($this->view->category->id);
         $this->view->postObj = $post;

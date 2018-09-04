@@ -66,3 +66,15 @@ Route::get("/section/{sectionName}/{categoryId}", [
     "uses" => "App\Http\Controllers\SectionController@viewCategoryPosts",
     "as" => "section.category_posts"
 ]);
+
+//Post
+
+Route::get("/section/{sectionName}/{categoryId}/{postId}/{postSlugUrl}", [
+    "uses" => "App\Http\Controllers\PostController@viewIndex",
+    "as" => "post.slug_index",
+]);
+
+Route::get("/section/{sectionName}/{categoryId}/{postId}", [
+    "uses" => "App\Http\Controllers\PostController@viewIndex",
+    "as" => "post.id_index",
+]);
