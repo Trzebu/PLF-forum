@@ -52,7 +52,17 @@ Route::get("/logout", [
 
 //Section
 
+Route::get("/section", [
+    "uses" => "App\Http\Controllers\SectionController@index",
+    "as" => "section.index"
+]);
+
 Route::get("/section/{sectionId}", [
     "uses" => "App\Http\Controllers\SectionController@viewCategories",
     "as" => "section.view_categories"
+]);
+
+Route::get("/section/{sectionName}/{categoryId}", [
+    "uses" => "App\Http\Controllers\SectionController@viewCategoryPosts",
+    "as" => "section.category_posts"
 ]);

@@ -98,8 +98,12 @@ class DataBase implements Countable {
     }
 
     public function paginate ($limit = 1) {
+        $where = $this->_where;
+        $values = $this->_values;
         $this->allRowCount = $this->get(["COUNT(*) as row_num"])->first()->row_num;
         $this->pageLimit = $limit;
+        $this->_where = $where;
+        $this->_values = $values;
         $page = 0;
         if (Request::urlVar("page") !== null) {
             $page = intval(Request::urlVar("page"));
@@ -109,6 +113,10 @@ class DataBase implements Countable {
         $this->rowsLimit($limit)->position($position);
 
         return $this;
+    }
+
+    public function numRow () {
+        return $this->get(["COUNT(*) as row_num"])->first()->row_num;
     }
 
     public function position ($position) {
@@ -133,7 +141,7 @@ class DataBase implements Countable {
     }
 
     public function where ($argument, $operator, $value = null) {
-        $operators = ["=", "!=", "<", ">", "<=", ">=", "null"];
+        $operators = ["=", "!=", "<", ">", "<=", ">=", "null", "not_null"];
         try {
             if ($this->_table === null) {
                 Throw new Error("First you must set table!");
@@ -227,13 +235,13 @@ class DataBase implements Countable {
         return $this;
     }
 
-    public function or ($argument, $operator, $value) {
+    public function or ($argument, $operator, $value = null) {
         $this->_where .= " OR ";
         $this->where($argument, $operator, $value);
         return $this;
     }
 
-    public function and ($argument, $operator, $value) {
+    public function and ($argument, $operator, $value = null) {
         $this->_where .= " AND ";
         $this->where($argument, $operator, $value);
         return $this;
@@ -244,6 +252,8 @@ class DataBase implements Countable {
             return $argument . " NOT IN (?)";
         } else if ($operator == "null") {
             return $argument . " IS NULL";
+        } else if ($operator == "not_null") {
+            return $argument . " IS NOT NULL";
         } else {
             return $argument . $operator . "?";
         }
@@ -253,6 +263,7 @@ class DataBase implements Countable {
         $this->_where = "";
         $this->_values = [];
         $this->_getValues = [];
+        $this->_atEnd = [];
     }
 
     public function count () {

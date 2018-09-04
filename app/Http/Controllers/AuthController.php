@@ -21,7 +21,6 @@ final class AuthController extends Controller {
             "password" => ["required", Translate::get("auth.inputs.password")],
             "_token" => "token",
         ])) {
-
             if (Auth::login(["username" => Request::input("username"), "email" => Request::input("username")], 
                         Request::input("password"), 
                         Request::input("remember"))) {

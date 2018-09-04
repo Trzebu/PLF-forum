@@ -6,6 +6,12 @@ use Libs\Translate;
 
 class TimeConverter {
 
+    public function dateTimeWithAlphaMonth ($date) {
+        $splited_date = explode ("/", date("j/n/Y/H/i", strtotime($date)));
+        
+        return  "{$splited_date[0]} " . strtolower(Translate::get("time.full_months.{$splited_date[1]}")) . " {$splited_date[2]}, {$splited_date[3]}:{$splited_date[4]}";
+    }
+
     public function diffToHuman ($time) {
         $time = is_string($time) ? strtotime($time) : $time;
         $now = time();

@@ -15,6 +15,10 @@ class Model extends DataBase {
         return TimeConverter::diffToHuman($time);
     }
 
+    public function dateTimeAlphaMonth ($date) {
+        return TimeConverter::dateTimeWithAlphaMonth($date);
+    }
+
     public function paginateRender () {
         require_once(__ROOT__ . "/libs/templates/paginate.php");
     }
