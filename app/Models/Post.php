@@ -7,6 +7,13 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function visitIncrement ($postId) {
+        $visits = $this->where("id", "=", $postId)->get(["visits"])->first()->visits;
+        $this->where("id", "=", $postId)->update([
+            "visits" => $visits + 1
+        ]);
+    }
+
     public function getAnswers ($postId) {
         return $this->where("parent", "=", $postId)->get()->count() > 0 ? $this->results() : null;
     }

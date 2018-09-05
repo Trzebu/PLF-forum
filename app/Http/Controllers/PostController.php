@@ -14,8 +14,11 @@ final class PostController extends Controller {
         $section = new Section();
 
         $this->view->parent_post = $post->getSubjectData($postId, $section->getCategory($categoryId)->id);
-        $this->view->answers = $post->getAnswers($postId);
-        $this->view->user = new User();
+        if ($this->view->parent_post !== null) {
+            $post->visitIncrement($postId);
+            $this->view->answers = $post->getAnswers($postId);
+            $this->view->user = new User();
+        }
 
         $this->view->render("post.viewIndex");
     }

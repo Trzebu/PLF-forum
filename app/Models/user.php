@@ -8,6 +8,10 @@ use Libs\DataBase\DataBase as DB;
 final class User extends Model {
     protected $_table = "users";
 
+    public function getAvatar ($id) {
+        return $this->where("id", "=", $id)->get(["avatar"])->count() > 0 ? route('/') . "/" . $this->first()->avatar : route('/') .  "/public/app/uploaded_images/man.jpg";
+    }
+
     public function permissions ($id) {
         $permissions = $this->where("id", "=", $id)->get(["permissions"])->first()->permissions;
 
@@ -20,7 +24,7 @@ final class User extends Model {
 
     public function username ($id = null) {
         if ($id !== null) {
-            return "<font color='{$this->permissions($id)->color}'>" . $this->where("id", "=", $id)->get(["username"])->first()->username . "</font>";
+            return "<font color='{$this->permissions($id)->color}' title='{$this->permissions($id)->name}'>" . $this->where("id", "=", $id)->get(["username"])->first()->username . "</font>";
         }
         return Auth::data()->nick;
     }

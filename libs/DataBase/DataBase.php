@@ -176,8 +176,9 @@ class DataBase implements Countable {
 
         $sql .= implode(",", $params);
         $sql .= " WHERE " . $this->_where;
-        echo $sql;
-        return $this->query($sql, $update_values);
+        $t = $this->query($sql, $update_values);
+        $this->reset();
+        return $t;
     }
 
     public function insert ($fields) {

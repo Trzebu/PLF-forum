@@ -11,6 +11,9 @@
                 {{ strip_tags($this->parent_post->contents) }}
             </div>
             <div class="col-2">
+                <div class="media">
+                    <img class="media-object mr-3 rounded-circle" src="{{ $this->user->getAvatar($this->parent_post->user_id) }}" alt="{{ strip_tags($this->user->username($this->parent_post->user_id)) }}">
+                </div>
                 <p class="small-grey-text">Nick: {{ $this->user->username($this->parent_post->user_id) }}</p>
                 <p class="small-grey-text">{{ $this->user->permissions($this->parent_post->user_id)->name }}</p>
             </div>
@@ -26,6 +29,9 @@
                         {{ strip_tags($answer->contents) }}
                     </div>
                     <div class="col-2">
+                        <div class="media">
+                            <img class="media-object mr-3 rounded-circle" src="{{ $this->user->getAvatar($answer->user_id) }}" alt="{{ strip_tags($this->user->username($answer->user_id)) }}">
+                        </div>
                         <p class="small-grey-text">Nick: {{ $this->user->username($answer->user_id) }}</p>
                         <p class="small-grey-text">{{ $this->user->permissions($answer->user_id)->name }}</p>
                     </div>
