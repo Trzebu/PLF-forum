@@ -14,6 +14,10 @@ final class Post extends Model {
         ]);
     }
 
+    public function getAnswer ($answerId) {
+        return $this->where("id", "=", $answerId)->get()->count() > 0 ? $this->first() : null;
+    }
+
     public function getAnswers ($postId) {
         return $this->where("parent", "=", $postId)->get()->count() > 0 ? $this->results() : null;
     }
@@ -27,7 +31,7 @@ final class Post extends Model {
     }
 
     public function getLastPost ($subjectId, $categoryId) {
-        return $this->where("parent", "=", $subjectId)->and("category", "=", $categoryId)->rowsLimit(1)->get()->count() > 0 ? $this->first() : null;
+        return $this->where("parent", "=", $subjectId)->and("category", "=", $categoryId)->orderBy(["id"])->rowsLimit(1)->get()->count() > 0 ? $this->first() : null;
     }
 
     public function getLastSubject ($categoryId) {

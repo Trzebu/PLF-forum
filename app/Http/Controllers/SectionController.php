@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Section;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Vote;
 
 final class SectionController extends Controller {
 
@@ -39,6 +40,7 @@ final class SectionController extends Controller {
         $this->view->section_details = $section->getSection($sectionId);
         $this->view->category = $section->getCategory($categoryId);
         $this->view->posts = $post->getPosts($this->view->category->id);
+        $this->view->vote = new Vote();
         $this->view->postObj = $post;
         $this->view->user = new User();
 

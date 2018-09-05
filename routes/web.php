@@ -78,3 +78,16 @@ Route::get("/section/{sectionName}/{categoryId}/{postId}", [
     "uses" => "App\Http\Controllers\PostController@viewIndex",
     "as" => "post.id_index",
 ]);
+
+Route::get("/section/{sectionName}/{categoryId}/{postId}/{answerId}", [
+    "uses" => "App\Http\Controllers\PostController@viewIndex",
+    "as" => "post.to_post_index",
+]);
+
+//Vote
+
+Route::get("/vote/{type}/{sectionId}/{categoryId}/{parentPostId}/{postId}/{token}", [
+    "uses" => "App\Http\Controllers\VoteController@give",
+    "as" => "vote.give",
+    "middleware" => ["auth"]
+]);

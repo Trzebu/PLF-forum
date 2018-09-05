@@ -30,8 +30,8 @@ class Controller {
         return $validation->check();
     }
 
-    protected function redirect ($path) {
-        return Redirect::to($path);
+    protected function redirect ($path, $params = []) {
+        return Redirect::to($path, $params);
     }
 
 }

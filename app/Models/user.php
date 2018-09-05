@@ -9,7 +9,7 @@ final class User extends Model {
     protected $_table = "users";
 
     public function getAvatar ($id) {
-        return $this->where("id", "=", $id)->get(["avatar"])->count() > 0 ? route('/') . "/" . $this->first()->avatar : route('/') .  "/public/app/uploaded_images/man.jpg";
+        return strlen($this->where("id", "=", $id)->get(["avatar"])->first()->avatar) > 0 ? $this->first()->avatar : "/public/app/img/man.jpg";
     }
 
     public function permissions ($id) {

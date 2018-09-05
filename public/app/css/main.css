@@ -56,3 +56,21 @@
     margin: 0;
     padding: 0;
 }
+
+.avatar_thumb {
+    width: 100px;
+    height: 100px;
+}
+
+.avatar_mini_thumb {
+    width: 50px;
+    height: 50px;
+}
+
+.bg-green {
+    background: green;
+}
+
+.bg-red {
+    background: red;
+}

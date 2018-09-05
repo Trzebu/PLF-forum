@@ -20,6 +20,10 @@ class User {
         }
     }
 
+    public function avatar () {
+        return strlen(self::data()->avatar) > 0 ? self::data()->avatar : "/public/app/img/man.jpg";
+    }
+
     public function permissions ($key = null) {
         $groups = DataBase::instance()->table("permissions")->where("id", "=", self::data()->permissions)->get()->first();
 
