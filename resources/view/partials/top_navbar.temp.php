@@ -5,7 +5,7 @@
             <ul class="navbar-nav mr-auto">
                 @if (Auth()->check()):
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('auth.login') }}">Your profile</a>
+                        <a class="nav-link" href="{{ route('auth.login') }}">Your profile ({{ Auth()->data()->username }})</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('auth.login') }}">Options</a>

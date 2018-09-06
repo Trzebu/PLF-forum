@@ -30,6 +30,7 @@ class PermissionsMiddleware {
         
         if (!$has_permission) {
             Redirect::to("home.index");
+            exit();
         }
 
     }

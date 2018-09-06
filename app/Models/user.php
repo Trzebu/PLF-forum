@@ -8,6 +8,30 @@ use Libs\DataBase\DataBase as DB;
 final class User extends Model {
     protected $_table = "users";
 
+    public function calcReputation ($id) {
+        $amount = 0;
+        $posts = DB::instance()->table("posts")->where("user_id", "=", $id)->numRow() > 0 ? DB::instance()->table("posts")->where("user_id", "=", $id)->get(["id"])->results() : null;
+
+        if ($posts !== null) {
+            foreach ($posts as $post) {
+                $votes = DB::instance()->table("votes")->where("post_id", "=", $post->id)->numRow() > 0 ? DB::instance()->table("votes")->where("post_id", "=", $post->id)->get(["type"])->results() : null;
+
+                if ($votes !== null) {
+                    foreach ($votes as $vote) {
+                        if ($vote->type == 1) {
+                            $amount++;
+                        } else {
+                            $amount--;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return $amount;
+    }
+
     public function getAvatar ($id) {
         return strlen($this->where("id", "=", $id)->get(["avatar"])->first()->avatar) > 0 ? $this->first()->avatar : "/public/app/img/man.jpg";
     }

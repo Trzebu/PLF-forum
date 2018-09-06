@@ -2,10 +2,20 @@
 
 namespace App\Models;
 use Libs\Model;
+use Libs\User as Auth;
 
 final class Post extends Model {
 
     protected $_table = "posts";
+
+    public function newAnswer ($postId, $categoryId, $content) {
+        $this->insert([
+            "parent" => $postId,
+            "category" => $categoryId,
+            "user_id" => Auth::data()->id,
+            "contents" => $content
+        ]);
+    }
 
     public function visitIncrement ($postId) {
         $visits = $this->where("id", "=", $postId)->get(["visits"])->first()->visits;
@@ -19,7 +29,7 @@ final class Post extends Model {
     }
 
     public function getAnswers ($postId) {
-        return $this->where("parent", "=", $postId)->get()->count() > 0 ? $this->results() : null;
+        return $this->where("parent", "=", $postId)->paginate(10)->get()->count() > 0 ? $this->results() : null;
     }
 
     public function getSubjectData ($postId, $categoryId) {
@@ -47,9 +57,7 @@ final class Post extends Model {
     }
 
     public function getPosts ($categoryId) {
-
         return $this->where("parent", "null")->and("category", "=", $categoryId)->orderBy(["id"])->paginate(10)->get()->count() > 0 ? $this : null;
-
     }
 
 }

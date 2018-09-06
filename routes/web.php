@@ -84,6 +84,12 @@ Route::get("/section/{sectionName}/{categoryId}/{postId}/{answerId}", [
     "as" => "post.to_post_index",
 ]);
 
+Route::post("/answer/{sectionName}/{categoryId}/{postId}", [
+    "uses" => "App\Http\Controllers\PostController@addAnswer",
+    "as" => "post.add_answer",
+    "middleware" => ["auth"]
+]);
+
 //Vote
 
 Route::get("/vote/{type}/{sectionId}/{categoryId}/{parentPostId}/{postId}/{token}", [

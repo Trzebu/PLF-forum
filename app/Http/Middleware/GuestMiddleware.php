@@ -18,6 +18,7 @@ class GuestMiddleware {
     public function __construct () {
         if (User::check()) {
             Redirect::to("home.index");
+            exit();
         }
     }
 
