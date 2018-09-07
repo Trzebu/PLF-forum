@@ -20,8 +20,9 @@ class User {
         }
     }
 
-    public function avatar () {
-        return strlen(self::data()->avatar) > 0 ? self::data()->avatar : "/public/app/img/man.jpg";
+    public function avatar ($size = 75) {
+        $md = md5(self::data()->email);
+        return "https://www.gravatar.com/avatar/{$md}?s={$size}";
     }
 
     public function permissions ($key = null) {

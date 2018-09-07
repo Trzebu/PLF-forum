@@ -32,8 +32,9 @@ final class User extends Model {
         return $amount;
     }
 
-    public function getAvatar ($id) {
-        return strlen($this->where("id", "=", $id)->get(["avatar"])->first()->avatar) > 0 ? $this->first()->avatar : "/public/app/img/man.jpg";
+    public function getAvatar ($id, $size = 100) {
+        $md = md5($this->where("id", "=", $id)->get(["email"])->first()->email);
+        return "https://www.gravatar.com/avatar/{$md}?s={$size}";
     }
 
     public function permissions ($id) {

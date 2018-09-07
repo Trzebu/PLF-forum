@@ -15,7 +15,7 @@
                     </li>
                     <li class="nav-item">
                         <div class="media">
-                            <img class="media-object mr-3 rounded-circle avatar_mini_thumb" src="{{ Auth()->avatar() }}" alt="{{ strip_tags(Auth()->data()->username) }}">
+                            <img class="media-object mr-3 rounded-circle avatar_mini_thumb" src="{{ Auth()->avatar(50) }}" alt="{{ strip_tags(Auth()->data()->username) }}">
                         </div>
                     </li>
                 @else

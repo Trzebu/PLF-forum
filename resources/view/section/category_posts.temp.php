@@ -5,7 +5,15 @@
     <table class="table">
 
         <thead class="w-100">
-            <th style="width: 50%; padding-left: 25px">Subject</th>
+            <th style="width: 50%; padding-left: 25px">
+
+                @if (Auth()->check()):
+                    <p><a href="{{ route('post.add_subject_to_category', ['sectionName' => $this->section_details->id, 'categoryId' => $this->category->id]) }}">Add new subject here</a></p>
+                @endif
+
+                Subjects
+
+            </th>
             <th class="w-10 text-center">Votes</th>
             <th class="w-10 text-center">Answers</th>
             <th class="w-10 text-center">Views</th>

@@ -45,7 +45,7 @@ final class Post extends Model {
     }
 
     public function getLastSubject ($categoryId) {
-        return $this->where("parent", "null")->and("category", "=", $categoryId)->rowsLimit(1)->get()->count() > 0 ? $this->first() : null;
+        return $this->where("parent", "null")->and("category", "=", $categoryId)->orderBy(["id"])->rowsLimit(1)->get()->count() > 0 ? $this->first() : null;
     }
 
     public function getSubjectsCount ($categoryId) {

@@ -90,6 +90,12 @@ Route::post("/answer/{sectionName}/{categoryId}/{postId}", [
     "middleware" => ["auth"]
 ]);
 
+Route::get("/addSubject/{sectionName}/{categoryId}", [
+    "uses" => "App\Http\Controllers\PostController@addSubject",
+    "as" => "post.add_subject_to_category",
+    "middleware" => ["auth"]
+]);
+
 //Vote
 
 Route::get("/vote/{type}/{sectionId}/{categoryId}/{parentPostId}/{postId}/{token}", [

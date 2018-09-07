@@ -39,7 +39,6 @@ class CreateUsersTable extends TableCreator {
         $this->string("password", 70)->notNullable();
         $this->string("email", 100)->notNullable();
         $this->int("permissions", 5)->default(1);
-        $this->text("avatar")->default("public/app/uploaded_images/man.jpg");
         $this->string("remember_me", 255)->nullable();
         $this->time();
 

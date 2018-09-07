@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        @if ($this->answers !== null):
+        @if ($this->answers->getAnswers($this->parent_post->id) !== null):
 
             @foreach ($this->answers->getAnswers($this->parent_post->id) as $answer):
 
@@ -67,13 +67,14 @@
                                     <img class="{{ $this->vote->checkGivenVoteType($answer->id) == '0' ? 'border border-primary rounded bg-red' : '' }}" src="{{ route('/') }}/public/app/img/vote_down.png">
                                 </a>
                             @endif
-                            <p>Votes: 
-                                @if ($this->vote->calcVotes($answer->id) == 0):
+                            <p>Votes:
+                                <?php $voteAmount = $this->vote->calcVotes($answer->id); ?>
+                                @if ($voteAmount == 0):
                                     0
-                                @elseif ($this->vote->calcVotes($answer->id) > 0):
-                                    <font color="green">+{{ $this->vote->calcVotes($answer->id) }}</font>
+                                @elseif ($voteAmount > 0):
+                                    <font color="green">+{{ $voteAmount }}</font>
                                 @else
-                                    <font color="red">{{ $this->vote->calcVotes($answer->id) }}</font>
+                                    <font color="red">{{ $voteAmount }}</font>
                                 @endif
                             </p>
                         </div>
