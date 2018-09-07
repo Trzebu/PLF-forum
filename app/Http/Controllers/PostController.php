@@ -11,8 +11,69 @@ use Libs\Token;
 use Libs\Session;
 use Libs\Http\Request;
 use Libs\User as Auth;
+use Libs\Tools\SlugUrl;
 
 final class PostController extends Controller {
+
+    public function addSubjectPost ($categoryId) {
+        $section = new Section();
+
+        if ($section->getCategory($categoryId) === null) {
+            Session::flash("alert_error", "Given category dosen't exists.");
+            return $this->redirect("home.index");
+        }
+
+        if (Auth::permissions("banned")) {
+            Session::flash("alert_error", "You can not create new thrade, because you have account block.");
+            return $this->redirect("home.index");
+        }
+
+        if ($this->validation(Request::input(), [
+            "title" => "required|min_string:10|max_string:120",
+            "post" => "required|min_string:10|max_string:65500",
+            "post_token" => "token" 
+        ])) {
+            $post = new Post();
+            $id = $post->addNewSubject(
+                Request::input("title"),
+                Request::input("post"),
+                $categoryId
+            );
+
+            return $this->redirect("post.slug_index", [
+                "sectionName" => $section->getSection($section->getCategory($categoryId)->parent)->url_name,
+                "categoryId" => $section->getCategory($categoryId)->url_name,
+                "postId" => $id,
+                "postSlugUrl" => SlugUrl::generate(Request::input("title"))
+            ]);
+
+        }
+
+        $this->redirect("post.add_subject_to_category", [
+            "sectionName" => $section->getSection($section->getCategory($categoryId)->parent)->url_name,
+            "categoryId" => $categoryId
+        ]);
+
+    }
+
+    public function addSubject ($sectionName, $categoryId) {
+
+        $section = new Section();
+
+        if ($section->getCategory($categoryId) === null) {
+            Session::flash("alert_error", "Given category dosen't exists.");
+            return $this->redirect("home.index");
+        }
+
+        if (Auth::permissions("banned")) {
+            Session::flash("alert_error", "You can not create new thrade, because you have account block.");
+            return $this->redirect("home.index");
+        }
+
+        $this->view->section = $section->getCategory($categoryId);
+        $this->view->render("post.addSubject");
+
+    }
 
     public function addAnswer ($sectionName, $categoryId, $postId) {
         $post = new Post();
@@ -38,7 +99,11 @@ final class PostController extends Controller {
             "post_token" => "token"
         ])) {
             Session::flash("alert_success", "Your answer has been added to this thrade!");
-            $post->newAnswer($postId, $section->getCategory($categoryId)->id, Request::input("post"));
+            $post->newAnswer(
+                $postId,
+                $section->getCategory($categoryId)->id,
+                Request::input("post")
+            );
         }
 
         return $this->redirect('post.to_post_index', [

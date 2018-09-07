@@ -8,6 +8,19 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function addNewSubject ($title, $content, $category) {
+
+        $this->insert([
+            "category" => $category,
+            "user_id" => Auth::data()->id,
+            "subject" => $title,
+            "contents" => $content
+        ]);
+
+        return $this->lastInsertedID();
+
+    }
+
     public function newAnswer ($postId, $categoryId, $content) {
         $this->insert([
             "parent" => $postId,
