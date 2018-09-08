@@ -90,19 +90,23 @@
         @endif
 
         @if (!Auth()->permissions('banned')):
-            <form method="post" action="{{ route('post.add_answer', ['sectionName' => $this->section_id, 'categoryId' => $this->category_id, 'postId' => $this->parent_post->id]) }}">
-                <div class="form-group">
-                    <label for="post">Your answer:</label>
-                    <textarea name="post" id="post" class="form-control {{ $this->errors->has('post') ? 'is-invalid' : '' }} w-100 mb-10" style="height: 300px" placeholder="Type something..."></textarea>
-                    @if ($this->errors->has("post")):
-                        <div class="invalid-feedback">
-                            {{ $this->errors->get("post")->first() }}
-                        </div>
-                    @endif
-                </div>
-                <input type="hidden" name="post_token" value="{{ $this->token->generate('post_token') }}">
-                <input type="submit" class="btn btn-success btn-lg w-100 mb-10" value="Send">
-            </form>
+            @if ($this->parent_post->status != 1):
+                <form method="post" action="{{ route('post.add_answer', ['sectionName' => $this->section_id, 'categoryId' => $this->category_id, 'postId' => $this->parent_post->id]) }}">
+                    <div class="form-group">
+                        <label for="post">Your answer:</label>
+                        <textarea name="post" id="post" class="form-control {{ $this->errors->has('post') ? 'is-invalid' : '' }} w-100 mb-10" style="height: 300px" placeholder="Type something..."></textarea>
+                        @if ($this->errors->has("post")):
+                            <div class="invalid-feedback">
+                                {{ $this->errors->get("post")->first() }}
+                            </div>
+                        @endif
+                    </div>
+                    <input type="hidden" name="post_token" value="{{ $this->token->generate('post_token') }}">
+                    <input type="submit" class="btn btn-success btn-lg w-100 mb-10" value="Send">
+                </form>
+            @else
+                <h5><font color="red">This thread is closed.</font></h5>
+            @endif
         @else
             <h5><font color="red">You can not write anything because you have been blocked.</font></h5>
         @endif

@@ -36,6 +36,8 @@ class CreateSectionsTable extends TableCreator {
 
         $this->increments("id");
         $this->int("parent", 50)->nullable();
+        $this->int("status", 10)->nullable();
+        $this->text("permissions")->nullable();
         $this->text("name");
         $this->text("url_name");
         $this->text("description");

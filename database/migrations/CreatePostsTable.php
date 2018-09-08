@@ -36,6 +36,7 @@ class CreatePostsTable extends TableCreator {
 
         $this->increments("id");
         $this->int("parent", 10)->nullable();
+        $this->int("status", 10)->nullable();
         $this->int("category", 10)->notNullable();
         $this->int("user_id", 10)->notNullable();
         $this->int("visits", 50)->default(1);

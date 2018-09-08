@@ -28,6 +28,12 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
+        if ($section->getCategory($categoryId)->status == 1 &&
+            !$section->checkPermissions($section->getCategory($categoryId)->id)) {
+            Session::flash("alert_error", "You can not write anything because this category is closed.");
+            return $this->redirect("home.index");
+        }
+
         if ($this->validation(Request::input(), [
             "title" => "required|min_string:10|max_string:120",
             "post" => "required|min_string:10|max_string:65500",
@@ -94,6 +100,25 @@ final class PostController extends Controller {
             return $this->redirect('home.index');
         }
 
+        if ($post->getSubjectData($postId, $section->getCategory($categoryId)->id)->status == 1) {
+            Session::flash("alert_error", "This subject has been closed!");
+            return $this->redirect('home.index');
+        }
+
+        if (($section->getSection(
+            $section->getCategory($categoryId)->id)->status == 1 ||
+            $post->getSubjectData($postId, $section->getCategory($categoryId)->id)->status == 1) &&
+            !$section->checkPermissions($section->getCategory($categoryId)->id)) {
+
+                Session::flash("alert_error", "This thread is closed!");
+                return $this->redirect('post.id_index', [
+                    'sectionName' => $sectionName,
+                    'categoryId' => $categoryId,
+                    'postId' => $postId
+                ]);
+
+        }
+
         if ($this->validation(Request::input(), [
             "post" => "required|min_string:10|max_string:65500",
             "post_token" => "token"
@@ -128,6 +153,11 @@ final class PostController extends Controller {
             $this->view->urlToken = Token::generate("url_token");
             $this->view->section_id = $sectionName;
             $this->view->category_id = $categoryId;
+            $this->view->hasPermissions = false;
+
+            if ($section->checkPermissions($section->getCategory($categoryId)->id)) {
+                $this->view->hasPermissions = true;
+            }
         }
 
         $this->view->render("post.viewIndex");

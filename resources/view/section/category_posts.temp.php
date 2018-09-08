@@ -8,7 +8,12 @@
             <th style="width: 50%; padding-left: 25px">
 
                 @if (Auth()->check()):
-                    <p><a href="{{ route('post.add_subject_to_category', ['sectionName' => $this->section_details->id, 'categoryId' => $this->category->id]) }}">Add new subject here</a></p>
+
+                    @if ($this->category->status == 1 && !$this->hasPermissions):
+                        <h5><font color="red">You can not write anything because this category is closed.</font></h5>
+                    @else
+                        <p><a href="{{ route('post.add_subject_to_category', ['sectionName' => $this->section_details->id, 'categoryId' => $this->category->id]) }}">Add new subject here</a></p>
+                    @endif
                 @endif
 
                 Subjects
@@ -26,7 +31,7 @@
 
                 <tr class="w-100">
                     <td style="width: 50%; padding-left: 25px">
-                        <a href="{{ route('post.slug_index', ['sectionName' => $this->section_details->url_name, 'categoryId' => $this->category->url_name, 'postId' => $post->id, 'postSlugUrl' => Libs\Tools\SlugUrl::generate($post->subject)]) }}">{{ $post->subject }}</a>
+                        <a href="{{ route('post.slug_index', ['sectionName' => $this->section_details->url_name, 'categoryId' => $this->category->url_name, 'postId' => $post->id, 'postSlugUrl' => Libs\Tools\SlugUrl::generate($post->subject)]) }}">{{ $post->status == 1 ? '<i class="fas fa-lock"></i>' : '<i class="fab fa-wpforms"></i>' }} {{ $post->subject }}</a>
                         <p class="small-grey-text">{{ substr(strip_tags($post->contents), 0, 80) }}...</p>
                     </td>
                     <td class="w-10 text-center">
