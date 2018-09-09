@@ -102,6 +102,24 @@ Route::post("/addSubject/{categoryId}", [
     "middleware" => ["auth"]
 ]);
 
+Route::post("/moveTo/{postId}/{categoryId}", [
+    "uses" => "App\Http\Controllers\PostController@moveTo",
+    "as" => "post.move_to",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/closeThread/{postId}/{categoryId}", [
+    "uses" => "App\Http\Controllers\PostController@closeThread",
+    "as" => "post.close_thread",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/openThread/{postId}/{categoryId}", [
+    "uses" => "App\Http\Controllers\PostController@openThread",
+    "as" => "post.open_thread",
+    "middleware" => ["auth"]
+]);
+
 //Vote
 
 Route::get("/vote/{type}/{sectionId}/{categoryId}/{parentPostId}/{postId}/{token}", [

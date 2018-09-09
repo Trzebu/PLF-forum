@@ -8,7 +8,7 @@
         <div id="post_{{ $this->parent_post->id }}" class="row border border-primary rounded mt-10 mb-10" style="background-color: #cccccc">
             <div class="col-10">
                 <h6 style="color: blue">{{ $this->parent_post->subject }}</h6>
-                {{ strip_tags($this->parent_post->contents) }}
+                {{ $this->parent_post->contents }}
             </div>
             <div class="col-2 mt-10 mb-10">
                 <div class="media">
@@ -37,6 +37,46 @@
                         @endif
                     </p>
                 </div>
+
+                @if ($this->hasPermissions):
+                    <div class="col">
+                        <form method="post" action="{{ route('post.move_to', ['postId' => $this->parent_post->id, 'categoryId' => $this->parent_post->category]) }}">
+                            <div class="form-group">
+                                <label for="move_to">Move to:</label>
+                                <select class="form-control" name="category">
+                                    @foreach ($this->categories as $category):
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="move_to_token" value="{{ $this->token->generate('move_to_token') }}">
+                                <input type="submit" class="btn btn-success w-100" name="" value="Move">
+                            </div>
+                        </form>
+                    </div>
+                @endif
+
+                @if (Auth()->check()):
+                    @if (($this->hasPermissions || $this->parent_post->user_id == Auth()->data()->id) && $this->parent_post->status != 1):
+                        <div class="col">
+                            <form method="post" action="{{ route('post.close_thread', ['postId' => $this->parent_post->id, 'categoryId' => $this->parent_post->category]) }}">
+                                <div class="form-group">
+                                    <input type="hidden" name="close_thread_token" value="{{ $this->token->generate('close_thread_token') }}">
+                                    <input type="submit" class="btn btn-success w-100" name="" value="Close">
+                                </div>
+                            </form>
+                        </div>
+                    @elseif ($this->hasPermissions && $this->parent_post->status == 1):
+                        <form method="post" action="{{ route('post.open_thread', ['postId' => $this->parent_post->id, 'categoryId' => $this->parent_post->category]) }}">
+                            <div class="form-group">
+                                <input type="hidden" name="open_thread_token" value="{{ $this->token->generate('open_thread_token') }}">
+                                <input type="submit" class="btn btn-success w-100" name="" value="Open">
+                            </div>
+                        </form>
+                    @endif
+                @endif
+
             </div>
         </div>
 
@@ -47,7 +87,7 @@
                 <div id="post_{{ $answer->id }}" class="row border border-primary rounded mt-10 mb-10">
                     <div class="col-10">
                         <h6 style="color: blue">Re: {{ $this->parent_post->subject }}</h6>
-                        {{ strip_tags($answer->contents) }}
+                        {{ $answer->contents }}
                     </div>
                     <div class="col-2 mt-10 mb-10">
                         <div class="media">
@@ -89,26 +129,22 @@
             <h3>It seems that no one answered in this thread, be first!</h3>
         @endif
 
-        @if (!Auth()->permissions('banned')):
-            @if ($this->parent_post->status != 1):
-                <form method="post" action="{{ route('post.add_answer', ['sectionName' => $this->section_id, 'categoryId' => $this->category_id, 'postId' => $this->parent_post->id]) }}">
-                    <div class="form-group">
-                        <label for="post">Your answer:</label>
-                        <textarea name="post" id="post" class="form-control {{ $this->errors->has('post') ? 'is-invalid' : '' }} w-100 mb-10" style="height: 300px" placeholder="Type something..."></textarea>
-                        @if ($this->errors->has("post")):
-                            <div class="invalid-feedback">
-                                {{ $this->errors->get("post")->first() }}
-                            </div>
-                        @endif
-                    </div>
-                    <input type="hidden" name="post_token" value="{{ $this->token->generate('post_token') }}">
-                    <input type="submit" class="btn btn-success btn-lg w-100 mb-10" value="Send">
-                </form>
-            @else
-                <h5><font color="red">This thread is closed.</font></h5>
-            @endif
+        @if (strlen($this->threadBlockedReason) == 0 || $this->hasPermissions):
+            <form method="post" action="{{ route('post.add_answer', ['sectionName' => $this->section_id, 'categoryId' => $this->category_id, 'postId' => $this->parent_post->id]) }}">
+                <div class="form-group">
+                    <label for="post">Your answer:</label>
+                    <textarea name="post" id="post" class="form-control {{ $this->errors->has('post') ? 'is-invalid' : '' }} w-100 mb-10" style="height: 300px" placeholder="Type something..."></textarea>
+                    @if ($this->errors->has("post")):
+                        <div class="invalid-feedback">
+                            {{ $this->errors->get("post")->first() }}
+                        </div>
+                    @endif
+                </div>
+                <input type="hidden" name="post_token" value="{{ $this->token->generate('post_token') }}">
+                <input type="submit" class="btn btn-success btn-lg w-100 mb-10" value="Send">
+            </form>
         @else
-            <h5><font color="red">You can not write anything because you have been blocked.</font></h5>
+            <h5><font color="red">{{ $this->threadBlockedReason }}</font></h5>
         @endif
 
     @else

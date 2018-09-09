@@ -8,6 +8,24 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function openThread ($postId) {
+        $this->where("id", "=", $postId)->update([
+            "status" => 0
+        ]);
+    }
+
+    public function closeThread ($postId) {
+        $this->where("id", "=", $postId)->update([
+            "status" => 1
+        ]);
+    }
+
+    public function moveTo ($postId, $categoryId) {
+        $this->where("id", "=", $postId)->or("parent", "=", $postId)->update([
+            "category" => $categoryId
+        ]);
+    }
+
     public function addNewSubject ($title, $content, $category) {
 
         $this->insert([

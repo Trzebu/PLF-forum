@@ -25,6 +25,12 @@
                                 <td style="width: 60%; padding-left: 25px">
                                     <a href="{{ route('section.category_posts', ['sectionName' => $section->url_name, 'categoryId' => $category->url_name]) }}">{{ $category->status == 1 ? '<i class="fas fa-lock"></i>' : '<i class="fab fa-wpforms"></i>' }} {{ $category->name }}</a>
                                     <p class="small-grey-text">{{ $category->description }}</p>
+                                    <p  class="small-grey-text">
+                                        Moderators:
+
+                                        {{ implode(", ", $this->section->getSectionModerators($category->id)) }}
+
+                                    </p>
                                 </td>
                                 <td class="w-10 text-center">{{ $this->postObj->getSubjectsCount($category->id) }}</td>
                                 <td class="w-10 text-center">{{ $this->postObj->getPostsCount($category->id) }}</td>
