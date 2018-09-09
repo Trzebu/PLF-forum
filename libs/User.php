@@ -22,10 +22,15 @@ class User {
 
     public function avatar ($size = 75) {
         $md = md5(self::data()->email);
-        return "https://www.gravatar.com/avatar/{$md}?s={$size}";
+        return strlen(self::data()->avatar) > 0 ? self::data()->avatar : "https://www.gravatar.com/avatar/{$md}?s={$size}";
     }
 
     public function permissions ($key = null) {
+
+        if (!self::check()) {
+            return false;
+        }
+
         $groups = DataBase::instance()->table("permissions")->where("id", "=", self::data()->permissions)->get()->first();
 
         if ($key !== null) {
