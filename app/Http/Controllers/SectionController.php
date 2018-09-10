@@ -39,11 +39,15 @@ final class SectionController extends Controller {
 
         $this->view->section_details = $section->getSection($sectionId);
         $this->view->category = $section->getCategory($categoryId);
-        $this->view->posts = $post->getPosts($this->view->category->id);
-        $this->view->vote = new Vote();
-        $this->view->postObj = $post;
-        $this->view->user = new User();
-        $this->view->hasPermissions = $section->checkPermissions($this->view->category->id);
+        $this->view->posts = null;
+
+        if ($this->view->category !== null) {
+            $this->view->posts = $post->getPosts($this->view->category->id);
+            $this->view->vote = new Vote();
+            $this->view->postObj = $post;
+            $this->view->user = new User();
+            $this->view->hasPermissions = $section->checkPermissions($this->view->category->id);
+        }
 
         $this->view->render("section.category_posts");
 

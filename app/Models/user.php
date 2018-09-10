@@ -8,6 +8,10 @@ use Libs\DataBase\DataBase as DB;
 final class User extends Model {
     protected $_table = "users";
 
+    public function calcPosts ($id) {
+        return DB::instance()->table("posts")->where("user_id", "=", $id)->numRow();
+    }
+
     public function calcReputation ($id) {
         $amount = 0;
         $posts = DB::instance()->table("posts")->where("user_id", "=", $id)->numRow() > 0 ? DB::instance()->table("posts")->where("user_id", "=", $id)->get(["id"])->results() : null;

@@ -15,6 +15,7 @@
                     <img class="media-object mr-3 rounded avatar_thumb" src="{{ $this->user->getAvatar($this->parent_post->user_id) }}" alt="{{ strip_tags($this->user->username($this->parent_post->user_id)) }}">
                 </div>
                 <p class="small-grey-text">Nick: {{ $this->user->username($this->parent_post->user_id) }}</p>
+                <p class="small-grey-text">Posts: <b>{{ $this->user->calcPosts($this->parent_post->user_id) }}</b></p>
                 <p class="small-grey-text">Reputation: <b>{{ $this->user->calcReputation($this->parent_post->user_id) }}</b></p>
                 <p class="small-grey-text">{{ $this->user->permissions($this->parent_post->user_id)->name }}</p>
                 <div class="col">
@@ -96,6 +97,7 @@
                         <p class="small-grey-text">
                             {{ $answer->user_id == $this->parent_post->user_id ? 'Nick (OP)' : 'Nick' }}: {{ $this->user->username($answer->user_id) }}
                         </p>
+                        <p class="small-grey-text">Posts: <b>{{ $this->user->calcPosts($answer->user_id) }}</b></p>
                         <p class="small-grey-text">Reputation: <b>{{ $this->user->calcReputation($answer->user_id) }}</b></p>
                         <p class="small-grey-text">{{ $this->user->permissions($answer->user_id)->name }}</p>
                         <div class="col">
