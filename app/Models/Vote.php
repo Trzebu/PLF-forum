@@ -9,6 +9,10 @@ final class Vote extends Model {
 
     protected $_table = "votes";
 
+    public function allGivenVotes() {
+        return $this->numRow();
+    }
+
     public function calcVotes ($postId) {
 
         $votes = $this->where("post_id", "=", $postId)->get(["type"])->count() > 0 ? $this->results() : null;

@@ -8,6 +8,25 @@ use Libs\DataBase\DataBase as DB;
 final class User extends Model {
     protected $_table = "users";
 
+    public function getLastTenRegisteredAccounts () {
+        $usernameColor = [];
+        $users = $this->orderBy(["id"])->rowsLimit(10)->get(["id"])->count() > 0 ? $this->results() : null;
+
+        foreach ($users as $user) {
+            array_push($usernameColor, [
+                "username" => $this->username($user->id),
+                "id" => $user->id
+            ]);
+        }
+
+        return $usernameColor;
+
+    }
+
+    public function accountsCount () {
+        return $this->numRow();
+    }
+
     public function calcPosts ($id) {
         return DB::instance()->table("posts")->where("user_id", "=", $id)->numRow();
     }

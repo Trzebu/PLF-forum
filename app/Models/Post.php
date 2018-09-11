@@ -8,6 +8,14 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function allPostsCount () {
+        return $this->where("parent", "not_null")->numRow();
+    }
+
+    public function allSubjectsCount () {
+        return $this->where("parent", "null")->numRow();
+    }
+
     public function openThread ($postId) {
         $this->where("id", "=", $postId)->update([
             "status" => 0

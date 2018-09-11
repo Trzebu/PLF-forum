@@ -21,9 +21,19 @@
         @if ($this->categories !== null):
             @foreach ($this->categories as $category):
 
+                @if ($category->status == 2):
+                    @if (Auth()->check()):
+                        @if (!$this->section->checkPermissions($category->id)):
+                            <?php continue; ?>
+                        @endif
+                    @else
+                        <?php continue; ?>
+                    @endif
+                @endif
+
                 <tr class="w-100">
                     <td style="width: 60%; padding-left: 25px">
-                        <a href="{{ route('section.category_posts', ['sectionName' => $this->section_details->url_name, 'categoryId' => $category->url_name]) }}">{{ $category->name }}</a>
+                        <a href="{{ route('section.category_posts', ['sectionName' => $this->section_details->url_name, 'categoryId' => $category->url_name]) }}">{{ $category->status == 1 ? '<i class="fas fa-lock"></i>' : '<i class="fab fa-wpforms"></i>' }} {{ $category->name }}</a>
                         <p class="small-grey-text">{{ $category->description }}</p>
                     </td>
                     <td class="w-10 text-center">{{ $this->postObj->getSubjectsCount($category->id) }}</td>

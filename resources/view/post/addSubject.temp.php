@@ -2,7 +2,7 @@
 
 <div class="col border border-primary rounded border-5" style="background-color: #f2f2f2;">
 
-    <h4>Create new thread in sdsds/dsds</h4>
+    <h4>Create new thread in {{ $this->sectionName }}/{{ $this->section->name }}</h4>
 
     <form method="post" action="{{ route('post.add_subject_to_category_send', ['categoryId' => $this->section->id]) }}">
 

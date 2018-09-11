@@ -26,6 +26,7 @@ final class SectionController extends Controller {
         if ($section->getSectionCategories($sectionId) !== null) {
             $this->view->categories = $section->getSectionCategories($sectionId);
             $this->view->section_details = $section->getSection($sectionId);
+            $this->view->section = $section;
             $this->view->postObj = new Post();
             $this->view->user = new User();
         }
@@ -40,6 +41,10 @@ final class SectionController extends Controller {
         $this->view->section_details = $section->getSection($sectionId);
         $this->view->category = $section->getCategory($categoryId);
         $this->view->posts = null;
+
+        if ($this->view->category->status == 2 && !$section->checkPermissions($this->view->category->id)) {
+            $this->view->category = null;
+        }
 
         if ($this->view->category !== null) {
             $this->view->posts = $post->getPosts($this->view->category->id);

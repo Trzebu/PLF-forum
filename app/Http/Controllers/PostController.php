@@ -113,7 +113,7 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
-        if ($section->getCategory($categoryId)->status == 1 &&
+        if (($section->getCategory($categoryId)->status == 1 || $section->getCategory($categoryId)->status == 2) &&
             !$section->checkPermissions($section->getCategory($categoryId)->id)) {
             Session::flash("alert_error", "You can not write anything because this category is closed.");
             return $this->redirect("home.index");
@@ -166,6 +166,7 @@ final class PostController extends Controller {
         }
 
         $this->view->section = $section->getCategory($categoryId);
+        $this->view->sectionName = $section->getSection($this->view->section->parent)->name;
         $this->view->render("post.addSubject");
 
     }
@@ -193,7 +194,8 @@ final class PostController extends Controller {
         }
 
         if ($section->getSection($section->getCategory($categoryId)->id)->status == 1 ||
-            $post->getSubjectData($postId, $section->getCategory($categoryId)->id)->status == 1) {
+            $post->getSubjectData($postId, $section->getCategory($categoryId)->id)->status == 1 ||
+            $section->getSection($section->getCategory($categoryId)->id)->status == 2) {
                 $error = "This thread is closed!";
         }
 
@@ -201,7 +203,6 @@ final class PostController extends Controller {
             Session::flash("alert_error", $error);
             return $this->redirect('home.index');
         }
-
 
         if ($this->validation(Request::input(), [
             "post" => "required|min_string:10|max_string:65500",
@@ -233,6 +234,11 @@ final class PostController extends Controller {
 
         $this->view->parent_post = $post->getSubjectData($postId, $section->getCategory($categoryId)->id);
         if ($this->view->parent_post !== null) {
+
+            if ($section->getCategory($categoryId)->status == 2 && !$section->checkPermissions($section->getCategory($categoryId)->id)) {
+                return $this->redirect("home.index");
+            }
+
             $post->visitIncrement($postId);
             $this->view->answers = $post;
             $this->view->user = new User();

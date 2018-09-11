@@ -7,16 +7,19 @@
         <thead class="w-100">
             <th style="width: 50%; padding-left: 25px">
 
-                @if (Auth()->check()):
-
-                    @if ($this->category->status == 1 && !$this->hasPermissions):
-                        <h5><font color="red">You can not write anything because this category is closed.</font></h5>
-                    @else
-                        <p><a href="{{ route('post.add_subject_to_category', ['sectionName' => $this->section_details->id, 'categoryId' => $this->category->id]) }}">Add new subject here</a></p>
+                @if ($this->category !== NULL):
+                    @if (Auth()->check()):
+                        @if ($this->category->status == 1 && !$this->hasPermissions):
+                            <h5><font color="red">You can not write anything because this category is closed.</font></h5>
+                        @else
+                            <p><a href="{{ route('post.add_subject_to_category', ['sectionName' => $this->section_details->id, 'categoryId' => $this->category->id]) }}">Add new subject here</a></p>
+                        @endif
                     @endif
+                    <p class="small-grey-text">{{ $this->section_details->name }}/{{ $this->category->name }}</p>
+                    Subjects
+                @else
+                    This category dosn't exists.
                 @endif
-
-                Subjects
 
             </th>
             <th class="w-10 text-center">Votes</th>
