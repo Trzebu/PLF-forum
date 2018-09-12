@@ -16,6 +16,84 @@ include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
 final class PostController extends Controller {
 
+    public function editPostSend ($postId) {
+
+        $post = new Post();
+        $section = new Section();
+        $postData = $post->getAnswer($postId);
+
+        if ($postData == null) {
+            return $this->redirect("home.index");
+        }
+
+        if ($postData->user_id != Auth()->data()->id && !$section->checkPermissions($postData->category)) {
+            return $this->redirect("home.index");
+        }
+
+        if ($postData->status == 1 && !$section->checkPermissions($postData->category)) {
+            return $this->redirect("home.index");
+        }
+
+        if ($postData->contents == Request::input("post")) {
+            Session::flash("alert_error", "Not found difference between content in database!");
+            return $this->redirect("home.index");
+        }
+
+        if ($this->validation(Request::input(), [
+            "post" => "required|min_string:10|max_string:65500",
+            "post_token" => "token"
+        ])) {
+            $bb = new \BbCode();
+            $bb->parse(strip_tags(Request::input("post"), false));
+
+            $post->editPost($postData->id, $bb->getHtml());
+        }
+
+        if ($postData->parent > 0) {
+            //redirect to answer
+            return $this->redirect("post.to_post_index", [
+                "sectionName" => $section->getSection($section->getCategory($postData->category)->parent)->url_name,
+                "categoryId" => $section->getCategory($postData->category)->url_name,
+                "postId" => $post->getAnswer($postData->parent)->id,
+                "answerId" => "#post_{$postData->id}"
+            ]);
+        }
+
+        return $this->redirect("post.slug_index", [
+            "sectionName" => $section->getSection($section->getCategory($postData->category)->parent)->url_name,
+            "categoryId" => $section->getCategory($postData->category)->url_name,
+            "postId" => $postData->id,
+            "postSlugUrl" => SlugUrl::generate($postData->subject)
+        ]);
+
+    }
+
+    public function editPost ($postId, $token) {
+
+        $post = new Post();
+        $section = new Section();
+        $postData = $post->getAnswer($postId);
+
+        if (!Token::check("url_token", $token)) {
+            return $this->redirect("home.index");
+        }
+
+        if ($postData == null) {
+            return $this->redirect("home.index");
+        }
+
+        if ($postData->user_id != Auth()->data()->id && !$section->checkPermissions($postData->category)) {
+            return $this->redirect("home.index");
+        }
+
+        if ($postData->status == 1 && !$section->checkPermissions($postData->category)) {
+            return $this->redirect("home.index");
+        }
+
+        $this->view->post = $postData;
+        $this->view->render("post.editPost");
+    }
+
     public function actionAnswer ($action, $id, $token) {
 
         $post = new Post();
@@ -271,7 +349,7 @@ final class PostController extends Controller {
             }
 
             $post->visitIncrement($postId);
-            $this->view->answers = $post;
+            $this->view->postObj = $post;
             $this->view->user = new User();
             $this->view->vote = new Vote();
             $this->view->urlToken = Token::generate("url_token");

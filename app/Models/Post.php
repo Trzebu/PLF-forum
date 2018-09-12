@@ -8,6 +8,13 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function editPost ($id, $content) {
+        $this->where("id", "=", $id)->update([
+            "status" => 2,
+            "contents" => $content
+        ]);
+    }
+
     public function changeAnswerStatus ($id, $action) {
         $this->where("id", "=", $id)->update([
             "status" => $action

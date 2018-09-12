@@ -126,6 +126,18 @@ Route::get("/answer/{action}/{postId}/{token}", [
     "middleware" => ["auth"]
 ]);
 
+Route::get("/post/edit/{postId}/{token}", [
+    "uses" => "App\Http\Controllers\PostController@editPost",
+    "as" => "post.edit",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/post/edit/{postId}", [
+    "uses" => "App\Http\Controllers\PostController@editPostSend",
+    "as" => "post.edit_send",
+    "middleware" => ["auth"]
+]);
+
 //Vote
 
 Route::get("/vote/{type}/{sectionId}/{categoryId}/{parentPostId}/{postId}/{token}", [

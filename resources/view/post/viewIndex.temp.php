@@ -9,6 +9,9 @@
             <div class="col-10">
                 <h6 style="color: blue">{{ $this->parent_post->subject }}</h6>
                 {{ $this->parent_post->contents }}
+                @if ($this->parent_post->status == 2):
+                    <p class="small-grey-text">Edited at: {{ $this->parent_post->updated_at }}</p>
+                @endif
             </div>
             <div class="col-2 mt-10 mb-10">
                 <div class="media">
@@ -18,8 +21,16 @@
                 <p class="small-grey-text">Posts: <b>{{ $this->user->calcPosts($this->parent_post->user_id) }}</b></p>
                 <p class="small-grey-text">Reputation: <b>{{ $this->user->calcReputation($this->parent_post->user_id) }}</b></p>
                 <p class="small-grey-text">{{ $this->user->permissions($this->parent_post->user_id)->name }}</p>
+                <p class="small-grey-text">{{ $this->postObj->dateTimeAlphaMonth($this->parent_post->created_at) }}</p>
                 <div class="col">
                     @if (Auth()->check()):
+
+                        @if ($this->hasPermissions || $this->parent_post->user_id == Auth()->data()->id):
+                            <div class="col">
+                                <a href="{{ route('post.edit', ['postId' => $this->parent_post->id, 'token' => $this->urlToken]) }}">Edit</a>
+                            </div>
+                        @endif
+
                         <a href="{{ route('vote.give', ['type' => 'up', 'sectionId' => $this->section_id, 'categoryId' => $this->category_id, 'parentPostId' => $this->parent_post->id, 'postId' => $this->parent_post->id, 'token' => $this->urlToken]) }}" title="Give vote up!">
                             <img class="{{ $this->vote->checkGivenVoteType($this->parent_post->id) == '1' ? 'border border-primary rounded bg-green' : '' }}" src="{{ route('/') }}/public/app/img/vote_up.png">
                         </a>
@@ -81,9 +92,9 @@
             </div>
         </div>
 
-        @if ($this->answers->getAnswers($this->parent_post->id) !== null):
+        @if ($this->postObj->getAnswers($this->parent_post->id) !== null):
 
-            @foreach ($this->answers->getAnswers($this->parent_post->id) as $answer):
+            @foreach ($this->postObj->getAnswers($this->parent_post->id) as $answer):
 
                 <div id="post_{{ $answer->id }}" class="row border border-primary rounded mt-10 mb-10">
                     <div class="col-10">
@@ -95,6 +106,9 @@
                             @endif
                         @else
                             {{ $answer->contents }}
+                            @if ($answer->status == 2):
+                                <p class="small-grey-text">Edited at: {{ $answer->updated_at }}</p>
+                            @endif
                         @endif
                     </div>
                     <div class="col-2 mt-10 mb-10">
@@ -107,8 +121,15 @@
                         <p class="small-grey-text">Posts: <b>{{ $this->user->calcPosts($answer->user_id) }}</b></p>
                         <p class="small-grey-text">Reputation: <b>{{ $this->user->calcReputation($answer->user_id) }}</b></p>
                         <p class="small-grey-text">{{ $this->user->permissions($answer->user_id)->name }}</p>
+                        <p class="small-grey-text">{{ $this->postObj->dateTimeAlphaMonth($answer->created_at) }}</p>
                         <div class="col">
                             @if (Auth()->check()):
+                                <div class="col">
+                                    @if ($this->hasPermissions || $this->parent_post->user_id == Auth()->data()->id):
+                                        <a href="{{ route('post.edit', ['postId' => $answer->id, 'token' => $this->urlToken]) }}">Edit</a>
+                                    @endif
+                                </div>
+
                                 <a href="{{ route('vote.give', ['type' => 'up', 'sectionId' => $this->section_id, 'categoryId' => $this->category_id, 'parentPostId' => $this->parent_post->id, 'postId' => $answer->id, 'token' => $this->urlToken]) }}" title="Give vote up!">
                                     <img class="{{ $this->vote->checkGivenVoteType($answer->id) == '1' ? 'border border-primary rounded bg-green' : '' }}" src="{{ route('/') }}/public/app/img/vote_up.png">
                                 </a>
@@ -141,7 +162,7 @@
 
             @endforeach
 
-            {{ $this->answers->paginateRender() }}
+            {{ $this->postObj->paginateRender() }}
 
         @else
             <h3>It seems that no one answered in this thread, be first!</h3>
