@@ -88,7 +88,14 @@
                 <div id="post_{{ $answer->id }}" class="row border border-primary rounded mt-10 mb-10">
                     <div class="col-10">
                         <h6 style="color: blue">Re: {{ $this->parent_post->subject }}</h6>
-                        {{ $answer->contents }}
+                        @if ($answer->status == 1):
+                            <font  color="red"><h4>This answer has been deleted by moderator!</h4></font>
+                            @if ($this->hasPermissions):
+                                {{ $answer->contents }}
+                            @endif
+                        @else
+                            {{ $answer->contents }}
+                        @endif
                     </div>
                     <div class="col-2 mt-10 mb-10">
                         <div class="media">
@@ -119,6 +126,15 @@
                                     <font color="red">{{ $voteAmount }}</font>
                                 @endif
                             </p>
+                            @if ($this->hasPermissions):
+                                @if ($answer->status == 1):
+                                    <a href="{{ route('post.remove_or_restore', ['action' => 'restore', 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Restore</a>
+                                @else
+                                    <a href="{{ route('post.remove_or_restore', ['action' => 'remove', 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Remove</a>
+                                @endif
+                            @else
+                                <a href="">Report this answer!</a>
+                            @endif
                         </div>
                     </div>
                 </div>

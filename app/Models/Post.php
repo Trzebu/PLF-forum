@@ -8,6 +8,12 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function changeAnswerStatus ($id, $action) {
+        $this->where("id", "=", $id)->update([
+            "status" => $action
+        ]);
+    }
+
     public function allPostsCount () {
         return $this->where("parent", "not_null")->numRow();
     }

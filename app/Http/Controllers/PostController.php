@@ -16,6 +16,37 @@ include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
 final class PostController extends Controller {
 
+    public function actionAnswer ($action, $id, $token) {
+
+        $post = new Post();
+        $section = new Section();
+        $answer = $post->getAnswer($id);
+
+        if ($answer == null) {
+            return $this->redirect("home.index");
+        }
+
+        if (!$section->checkPermissions($answer->category)) {
+            return $this->redirect("home.index");
+        }
+
+        if (!Token::check('url_token', $token)) {
+            return $this->redirect("home.index");
+        }
+
+        $action = $action == "remove" ? 1 : 0;
+
+        $post->changeAnswerStatus($id, $action);
+
+        return $this->redirect("post.slug_index", [
+            "sectionName" => $section->getSection($section->getCategory($answer->category)->parent)->url_name,
+            "categoryId" => $section->getCategory($answer->category)->url_name,
+            "postId" => $answer->parent,
+            "postSlugUrl" => SlugUrl::generate($post->getSubjectData($answer->parent, $section->getCategory($answer->category)->id)->subject)
+        ]); 
+
+    } 
+
     public function openThread ($postId, $categoryId) {
         $post = new Post();
         $section = new Section();

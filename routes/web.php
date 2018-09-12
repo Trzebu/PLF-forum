@@ -120,6 +120,12 @@ Route::post("/openThread/{postId}/{categoryId}", [
     "middleware" => ["auth"]
 ]);
 
+Route::get("/answer/{action}/{postId}/{token}", [
+    "uses" => "App\Http\Controllers\PostController@actionAnswer",
+    "as" => "post.remove_or_restore",
+    "middleware" => ["auth"]
+]);
+
 //Vote
 
 Route::get("/vote/{type}/{sectionId}/{categoryId}/{parentPostId}/{postId}/{token}", [
