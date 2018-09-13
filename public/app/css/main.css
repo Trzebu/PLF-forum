@@ -74,3 +74,10 @@
 .bg-red {
     background: red;
 }
+
+.code_area {
+    width: 100%;
+    padding: 10px;
+    background: white;
+    border: 2px dotted black;
+}

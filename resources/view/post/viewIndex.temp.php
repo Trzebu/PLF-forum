@@ -8,7 +8,8 @@
         <div id="post_{{ $this->parent_post->id }}" class="row border border-primary rounded mt-10 mb-10" style="background-color: #cccccc">
             <div class="col-10">
                 <h6 style="color: blue">{{ $this->parent_post->subject }}</h6>
-                {{ $this->parent_post->contents }}
+                <?php $this->bb->parse($this->parent_post->contents, false) ?>
+                {{ $this->bb->getHtml() }}
                 @if ($this->parent_post->status == 2):
                     <p class="small-grey-text">Edited at: {{ $this->parent_post->updated_at }}</p>
                 @endif
@@ -25,7 +26,7 @@
                 <div class="col">
                     @if (Auth()->check()):
 
-                        @if ($this->hasPermissions || $this->parent_post->user_id == Auth()->data()->id):
+                        @if ($this->hasPermissions || ($this->parent_post->user_id == Auth()->data()->id && $this->parent_post->status != 1)):
                             <div class="col">
                                 <a href="{{ route('post.edit', ['postId' => $this->parent_post->id, 'token' => $this->urlToken]) }}">Edit</a>
                             </div>
@@ -99,13 +100,14 @@
                 <div id="post_{{ $answer->id }}" class="row border border-primary rounded mt-10 mb-10">
                     <div class="col-10">
                         <h6 style="color: blue">Re: {{ $this->parent_post->subject }}</h6>
+                        <?php $this->bb->parse($answer->contents, false) ?>
                         @if ($answer->status == 1):
                             <font  color="red"><h4>This answer has been deleted by moderator!</h4></font>
                             @if ($this->hasPermissions):
-                                {{ $answer->contents }}
+                                {{ $this->bb->getHtml() }}
                             @endif
                         @else
-                            {{ $answer->contents }}
+                            {{ $this->bb->getHtml() }}
                             @if ($answer->status == 2):
                                 <p class="small-grey-text">Edited at: {{ $answer->updated_at }}</p>
                             @endif
@@ -125,7 +127,7 @@
                         <div class="col">
                             @if (Auth()->check()):
                                 <div class="col">
-                                    @if ($this->hasPermissions || $this->parent_post->user_id == Auth()->data()->id):
+                                    @if ($this->hasPermissions || ($answer->user_id == Auth()->data()->id && $this->parent_post->status != 1)):
                                         <a href="{{ route('post.edit', ['postId' => $answer->id, 'token' => $this->urlToken]) }}">Edit</a>
                                     @endif
                                 </div>

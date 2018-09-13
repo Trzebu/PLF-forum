@@ -43,10 +43,8 @@ final class PostController extends Controller {
             "post" => "required|min_string:10|max_string:65500",
             "post_token" => "token"
         ])) {
-            $bb = new \BbCode();
-            $bb->parse(strip_tags(Request::input("post"), false));
 
-            $post->editPost($postData->id, $bb->getHtml());
+            $post->editPost($postData->id, strip_tags(Request::input("post")));
         }
 
         if ($postData->parent > 0) {
@@ -235,12 +233,9 @@ final class PostController extends Controller {
         ])) {
             $post = new Post();
 
-            $bb = new \BbCode();
-            $bb->parse(strip_tags(Request::input("post"), false));
-
             $id = $post->addNewSubject(
                 Request::input("title"),
-                $bb->getHtml(),
+                strip_tags(Request::input("post")),
                 $categoryId
             );
 
@@ -317,14 +312,12 @@ final class PostController extends Controller {
             "post" => "required|min_string:10|max_string:65500",
             "post_token" => "token"
         ])) {
-            $bb = new \BbCode();
-            $bb->parse(strip_tags(Request::input("post"), false));
 
             Session::flash("alert_success", "Your answer has been added to this thrade!");
             $post->newAnswer(
                 $postId,
                 $section->getCategory($categoryId)->id,
-                $bb->getHtml()
+                strip_tags(Request::input("post"))
             );
         }
 
@@ -357,6 +350,9 @@ final class PostController extends Controller {
             $this->view->category_id = $categoryId;
             $this->view->hasPermissions = false;
             $this->view->threadBlockedReason = "";
+            $this->view->bb = new \BbCode();
+            // $bb = new \BbCode();
+            // $bb->parse(strip_tags(Request::input("post"), false));
 
             if ($section->checkPermissions($section->getCategory($categoryId)->id)) {
                 $this->view->hasPermissions = true;
