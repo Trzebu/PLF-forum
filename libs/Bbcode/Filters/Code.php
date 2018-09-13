@@ -10,8 +10,8 @@
 class BbCodeFilterCode {
 	public $tags = array(
 		'code' => array(
-			'open' => 'div class="code_wrapper"',
-			'close' => 'div',
+			'open' => 'code class="code_wrapper"',
+			'close' => 'code',
 			'notallowed_child' => 'all',
 			'leave_notallowed_child' => 1,
 			'leave_notallowed_parent' => 1,
