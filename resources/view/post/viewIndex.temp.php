@@ -8,6 +8,7 @@
         <div id="post_{{ $this->parent_post->id }}" class="row border border-primary rounded mt-10 mb-10" style="background-color: #cccccc">
             <div class="col-10">
                 <h6 style="color: blue">{{ $this->parent_post->subject }}</h6>
+                <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($this->parent_post->created_at) }}</p>
                 <?php $this->bb->parse($this->parent_post->contents, false) ?>
                 {{ $this->bb->getHtml() }}
                 @if ($this->parent_post->status == 2):
@@ -22,7 +23,6 @@
                 <p class="small-grey-text">Posts: <b>{{ $this->user->calcPosts($this->parent_post->user_id) }}</b></p>
                 <p class="small-grey-text">Reputation: <b>{{ $this->user->calcReputation($this->parent_post->user_id) }}</b></p>
                 <p class="small-grey-text">{{ $this->user->permissions($this->parent_post->user_id)->name }}</p>
-                <p class="small-grey-text">{{ $this->postObj->dateTimeAlphaMonth($this->parent_post->created_at) }}</p>
                 <div class="col">
                     @if (Auth()->check()):
 
@@ -100,6 +100,7 @@
                 <div id="post_{{ $answer->id }}" class="row border border-primary rounded mt-10 mb-10">
                     <div class="col-10">
                         <h6 style="color: blue">Re: {{ $this->parent_post->subject }}</h6>
+                        <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($answer->created_at) }}</p>
                         <?php $this->bb->parse($answer->contents, false) ?>
                         @if ($answer->status == 1):
                             <font  color="red"><h4>This answer has been deleted by moderator!</h4></font>
@@ -123,7 +124,6 @@
                         <p class="small-grey-text">Posts: <b>{{ $this->user->calcPosts($answer->user_id) }}</b></p>
                         <p class="small-grey-text">Reputation: <b>{{ $this->user->calcReputation($answer->user_id) }}</b></p>
                         <p class="small-grey-text">{{ $this->user->permissions($answer->user_id)->name }}</p>
-                        <p class="small-grey-text">{{ $this->postObj->dateTimeAlphaMonth($answer->created_at) }}</p>
                         <div class="col">
                             @if (Auth()->check()):
                                 <div class="col">

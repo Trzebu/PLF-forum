@@ -19,7 +19,7 @@
                     <h5>Last registered account:</h5>
 
                     @foreach (App\Models\Stats::lastRegistered() as $user):
-                        <a href="{{ $user['id'] }}">{{ $user['username'] }}</a>
+                        <a href="{{ route('profile.index_by_id', ['id' => $user['id']]) }}">{{ $user['username'] }}</a>
                     @endforeach
 
                 </div>

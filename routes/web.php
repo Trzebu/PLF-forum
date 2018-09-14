@@ -145,3 +145,15 @@ Route::get("/vote/{type}/{sectionId}/{categoryId}/{parentPostId}/{postId}/{token
     "as" => "vote.give",
     "middleware" => ["auth"]
 ]);
+
+//User profile
+
+Route::get("/profile/{id}/{username}", [
+    "uses" => "App\Http\Controllers\ProfileController@index",
+    "as" => "profile.index"
+]);
+
+Route::get("/profile/{id}", [
+    "uses" => "App\Http\Controllers\ProfileController@redirectToIndex",
+    "as" => "profile.index_by_id"
+]);

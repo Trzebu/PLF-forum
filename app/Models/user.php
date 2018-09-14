@@ -8,6 +8,10 @@ use Libs\DataBase\DataBase as DB;
 final class User extends Model {
     protected $_table = "users";
 
+    public function data ($id) {
+        return $this->where("id", "=", $id)->get()->count() > 0 ? $this->first() : null;
+    }
+
     public function getLastTenRegisteredAccounts () {
         $usernameColor = [];
         $users = $this->orderBy(["id"])->rowsLimit(10)->get(["id"])->count() > 0 ? $this->results() : null;

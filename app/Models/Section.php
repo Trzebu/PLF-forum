@@ -28,7 +28,7 @@ final class Section extends Model {
                         if ($permit == $key && $value == 1) {
                             $mods = DB::instance()->table("users")->where("permissions", "=", $permission->id)->get(["id", "username"])->results();
                             foreach ($mods as $user) {
-                                array_push($moderators, "<a href='{$user->id}'><font color='{$permission->color}'>{$user->username}</font></a>");
+                                array_push($moderators, "<a href='" . route('profile.index_by_id', ["id" => $user->id]) . "'><font color='{$permission->color}'>{$user->username}</font></a>");
                             }
                         }
                     }
