@@ -202,7 +202,9 @@ class DataBase implements Countable {
 
         $sql = "INSERT INTO {$this->_table} (`".implode('`, `', $keys)."`) VALUES ({$values})";
 
-        return $this->query($sql);
+        $t = $this->query($sql);
+        $this->reset();
+        return $t;
     }
 
     public function lastInsertedID () {
