@@ -81,3 +81,8 @@
     background: white;
     border: 2px dotted black;
 }
+
+.profile_avatar {
+    width: 160px;
+    height: 160px;
+}

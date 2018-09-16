@@ -30,6 +30,18 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
+        if ($postData->parent > 0) {
+            if (!Auth::permissions("creating_answers")) {
+                Session::flash("alert_error", "You can not edit this answer, because you have no permissions to creating answers.");
+                return $this->redirect("home.index");
+            }
+        } else {
+            if (!Auth::permissions("create_thread")) {
+                Session::flash("alert_error", "You can not edit this thread, because you have no permissions to creating threads.");
+                return $this->redirect("home.index");
+            }
+        }
+
         if ($postData->status == 1 && !$section->checkPermissions($postData->category)) {
             return $this->redirect("home.index");
         }
@@ -43,7 +55,6 @@ final class PostController extends Controller {
             "post" => "required|min_string:10|max_string:65500",
             "post_token" => "token"
         ])) {
-
             $post->editPost($postData->id, strip_tags(Request::input("post")));
         }
 
@@ -73,6 +84,11 @@ final class PostController extends Controller {
         $postData = $post->getAnswer($postId);
 
         if (!Token::check("url_token", $token)) {
+            return $this->redirect("home.index");
+        }
+
+        if (!Auth::permissions("create_thread")) {
+            Session::flash("alert_error", "You can not create new thrade, because you have no permissions to creating threads.");
             return $this->redirect("home.index");
         }
 
@@ -215,8 +231,8 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
-        if (Auth::permissions("banned")) {
-            Session::flash("alert_error", "You can not create new thrade, because you have account block.");
+        if (!Auth::permissions("create_thread")) {
+            Session::flash("alert_error", "You can not create new thrade, because you have no permissions to creating threads.");
             return $this->redirect("home.index");
         }
 
@@ -264,8 +280,8 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
-        if (Auth::permissions("banned")) {
-            Session::flash("alert_error", "You can not create new thrade, because you have account block.");
+        if (!Auth::permissions("create_thread")) {
+            Session::flash("alert_error", "You can not create new thrade, because you have no permissions to creating threads.");
             return $this->redirect("home.index");
         }
 
@@ -281,8 +297,8 @@ final class PostController extends Controller {
 
         $error = "";
 
-        if (Auth::permissions("banned")) {
-            $error = "You can not write anything because you have been blocked.";
+        if (!Auth::permissions("creating_answers")) {
+            $error = "You can not write anything, because you have no permissions to creating answers.";
         }
 
         if ($section->getCategory($categoryId) === null) {
@@ -351,8 +367,6 @@ final class PostController extends Controller {
             $this->view->hasPermissions = false;
             $this->view->threadBlockedReason = "";
             $this->view->bb = new \BbCode();
-            // $bb = new \BbCode();
-            // $bb->parse(strip_tags(Request::input("post"), false));
 
             if ($section->checkPermissions($section->getCategory($categoryId)->id)) {
                 $this->view->hasPermissions = true;
@@ -363,8 +377,8 @@ final class PostController extends Controller {
 
             if (!Auth::check()) {
                 $this->view->threadBlockedReason = "You must be logged if you want to write something in this thread.";
-            } else if (Auth()->permissions('banned')) {
-                $this->view->threadBlockedReason = "You can not write anything, because you have been blocked.";
+            } else if (!Auth()->permissions('creating_answers')) {
+                $this->view->threadBlockedReason = "You can not write anything, because you have no permissions to creating answers.";
             } else if ($section->getCategory($categoryId)->status == 1) {
                 $this->view->threadBlockedReason = "You can not write anything, because this category is closed by Moderator or Administrator.";
             } else if ($this->view->parent_post->status == 1) {

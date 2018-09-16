@@ -7,12 +7,18 @@ use App\Models\Vote;
 use App\Models\Post;
 use Libs\Token;
 use Libs\User as Auth;
+use Libs\Session;
 
 final class VoteController extends Controller {
 
     public function give ($type, $sectionId, $categoryId, $parentPostId, $postId, $token) {
 
         if (!Token::check("url_token", $token)) {
+            return $this->redirect("home.index");
+        }
+
+        if (!Auth::permissions("voting")) {
+            Session::flash("alert_error", "You can not give vote, because you have no permissions to voting.");
             return $this->redirect("home.index");
         }
 

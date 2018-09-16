@@ -157,3 +157,28 @@ Route::get("/profile/{id}", [
     "uses" => "App\Http\Controllers\ProfileController@redirectToIndex",
     "as" => "profile.index_by_id"
 ]);
+
+Route::get("/profile", [
+    "uses" => "App\Http\Controllers\ProfileController@usersList",
+    "as" => "profile.users_list"
+]);
+
+//Friend actions
+
+Route::get("/friend/add/{type}/{userId}/{token}", [
+    "uses" => "App\Http\Controllers\FriendsController@addFriend",
+    "as" => "friend.add",
+    "middleware" => ["auth"]
+]);
+
+Route::get("/friend/remove/{userId}/{token}", [
+    "uses" => "App\Http\Controllers\FriendsController@removeFriend",
+    "as" => "friend.remove",
+    "middleware" => ["auth"]
+]);
+
+Route::get("/friend/accetp/{userId}/{token}", [
+    "uses" => "App\Http\Controllers\FriendsController@acceptFriendRequest",
+    "as" => "friend.accept",
+    "middleware" => ["auth"]
+]);

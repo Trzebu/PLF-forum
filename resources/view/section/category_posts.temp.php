@@ -50,7 +50,7 @@
                     <td class="w-10 text-center">{{ $post->visits }}</td>
                     <td style="width: 20%;">
                         @if ($this->postObj->getLastPost($post->id, $this->category->id) !== null):
-                            <p class="small-grey-text">Author: {{ $this->user->username($this->postObj->getLastPost($post->id, $this->category->id)->user_id) }}</p>
+                            <p class="small-grey-text">Author: <a href="{{ route('profile.index_by_id', ['id' => $this->postObj->getLastPost($post->id, $this->category->id)->user_id]) }}">{{ $this->user->username($this->postObj->getLastPost($post->id, $this->category->id)->user_id) }}</a></p>
                             <p class="small-grey-text">{{ $this->postObj->dateTimeAlphaMonth($this->postObj->getLastPost($post->id, $this->category->id)->created_at) }}</p>
                         @else
                             This subject is empty.

@@ -8,6 +8,14 @@ use Libs\DataBase\DataBase as DB;
 final class User extends Model {
     protected $_table = "users";
 
+    public function getUsers () {
+        return $this->orderBy(["created_at"])->paginate(20)->get(["id", "username"])->count() > 0 ? $this->results() : null;
+    }
+
+    public function calcGivenVotes ($id) {
+        return DB::instance()->table('votes')->where("user_id", "=", $id)->numRow();
+    }
+
     public function data ($id) {
         return $this->where("id", "=", $id)->get()->count() > 0 ? $this->first() : null;
     }
@@ -62,6 +70,23 @@ final class User extends Model {
     public function getAvatar ($id, $size = 100) {
         $md = md5($this->where("id", "=", $id)->get(["email"])->first()->email);
         return  strlen($this->where("id", "=", $id)->get(["avatar"])->first()->avatar) > 0 ? $this->first()->avatar : "https://www.gravatar.com/avatar/{$md}?s={$size}";
+    }
+
+    public function allPermissions ($id) {
+        $permissions = $this->where("id", "=", $id)->get(["permissions"])->first()->permissions;
+        $hasPermissions = [];
+        $groups = DB::instance()->table("permissions")->where("id", "=", $permissions)->get(["permissions"])->first()->permissions;
+        $groups = json_decode($groups);
+
+        foreach ($groups as $key => $value) {
+
+            if ($value == 1) {
+                array_push($hasPermissions, $key);
+            }
+
+        }
+
+        return $hasPermissions;
     }
 
     public function permissions ($id) {

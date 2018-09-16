@@ -17,6 +17,7 @@ class Controller {
         $this->view->token = new Token();
         $this->view->errors = new ValidationErrors();
         $this->view->translate = new Translate();
+        $this->view->title = "Forum";
     }
 
     protected function validation ($post, $filters) {

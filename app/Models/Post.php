@@ -8,6 +8,14 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function calcAnswersCreatedByUser ($id) {
+        return $this->where("user_id", "=", $id)->and("parent", "not_null")->numRow();
+    }
+
+    public function calcThreadsCreatedByUser ($id) {
+        return $this->where("user_id", "=", $id)->and("parent", "null")->numRow();
+    }
+
     public function editPost ($id, $content) {
         $this->where("id", "=", $id)->update([
             "status" => 2,
