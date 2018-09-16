@@ -100,7 +100,11 @@ class User {
     public function data () {
         if (self::check()) {
             if (self::$_data === null) {
-                self::$_data = DataBase::instance()->table("users")->where("id", "=", Session::get("u_id"))->get()->first();
+                $db = DataBase::instance()->table("users");
+                self::$_data = $db->where("id", "=", Session::get("u_id"))->get()->first();
+                $db->where("id", "=", Session::get("u_id"))->update([
+                    "updated_at" => date("Y-m-d H:i:s")
+                ]);
             }
             return self::$_data;
         }
