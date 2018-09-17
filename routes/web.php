@@ -182,3 +182,11 @@ Route::get("/friend/accetp/{userId}/{token}", [
     "as" => "friend.accept",
     "middleware" => ["auth"]
 ]);
+
+//Private messages
+
+Route::get("/messages", [
+    "uses" => "App\Http\Controllers\PrivateMessageController@index",
+    "as" => "message.view",
+    "middleware" => ["auth"]
+]);

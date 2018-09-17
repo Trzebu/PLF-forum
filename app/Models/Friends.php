@@ -9,30 +9,38 @@ final class Friends extends Model {
 
     protected $_table = "friends";
 
+    public function getRequestSendedToUser () {
+        return (array) $this->where("friend_id", "=", Auth::data()->id)
+                            ->and("type", "=", 1)
+                            ->get(["user_id", "type"])
+                            ->count() > 0 ? $this->results() : [];
+    }
+
     public function getFriends ($userId) {
         $friends = $this->where("user_id", "=", $userId)
                     ->or("friend_id", "=", $userId)
+                    ->and("type", "=", 2)
                     ->get(["friend_id", "user_id", "type"])
                     ->count() > 0 ? $this->results() : null;
         $ids = [];
 
         if ($friends !== null) {
             foreach ($friends as $friend) {
-                if (Auth::data()->id == $friend->user_id ) {
+                if ($userId == $friend->user_id ) {
                     array_push($ids, [
-                        "id" => $friend->friend_id,
+                        "user_id" => $friend->friend_id,
                         "type" => $friend->type
                     ]);
                 } else {
                     array_push($ids, [
-                        "id" => $friend->user_id,
+                        "user_id" => $friend->user_id,
                         "type" => $friend->type
                     ]);
                 }
             }
         }
 
-        return count($ids) > 0 ? $ids : null;
+        return (array) $ids;
 
     }
 

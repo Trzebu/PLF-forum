@@ -11,6 +11,9 @@
                         <a class="nav-link" href="{{ route('auth.login') }}">Options</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('message.view') }}">Messages</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('auth.logout') }}">Logout</a>
                     </li>
                     <li class="nav-item">
