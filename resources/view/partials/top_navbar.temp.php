@@ -11,7 +11,7 @@
                         <a class="nav-link" href="{{ route('auth.login') }}">Options</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('message.view') }}">Messages</a>
+                        <a class="nav-link" href="{{ route('message.view') }}">Messages {{ Auth()->getterToUnreadedMessages() > 0 ? '<font color="red">(' . Auth()->getterToUnreadedMessages() . ')</font>' : '' }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('auth.logout') }}">Logout</a>

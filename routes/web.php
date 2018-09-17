@@ -190,3 +190,15 @@ Route::get("/messages", [
     "as" => "message.view",
     "middleware" => ["auth"]
 ]);
+
+Route::get("/messages/thread/{userId}", [
+    "uses" => "App\Http\Controllers\PrivateMessageController@thread",
+    "as" => "message.thread",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/messages/thread/{userId}", [
+    "uses" => "App\Http\Controllers\PrivateMessageController@threadPost",
+    "as" => "message.thread",
+    "middleware" => ["auth"]
+]);

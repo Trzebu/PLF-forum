@@ -38,6 +38,7 @@ class CreatePrivate_messagesTable extends TableCreator {
         $this->int("user_id", 10)->notNullable();
         $this->int("to_user_id", 10)->notNullable();
         $this->text("contents");
+        $this->int("readed", 1)->default(0);
         $this->time();
 
         /**
