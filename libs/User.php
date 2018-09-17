@@ -4,6 +4,7 @@ namespace Libs;
 use Libs\Session;
 use Libs\DataBase\DataBase;
 use Libs\Cookie;
+use App\Models\PrivateMessage;
 
 class User {
 
@@ -18,6 +19,11 @@ class User {
                 }
             }
         }
+    }
+
+    public function getterToUnreadedMessages () {
+        $message = new PrivateMessage();
+        return $message->getUnreadedMessagesAmount();
     }
 
     public function avatar ($size = 75) {

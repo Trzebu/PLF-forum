@@ -179,7 +179,7 @@ class TemplateCompiler {
         }
 
         $params = trim(Str::replace($params[0], ["/" => "."]));
-        $this->_code[$line] = "<?php require_once(\"{$params}\" . \".ctemp.php\"); ?>";
+        $this->_code[$line] = "<?php include(\"{$params}\" . \".ctemp.php\"); ?>";
         array_push($this->_includes, $params);
     }
 

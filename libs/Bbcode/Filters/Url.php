@@ -31,7 +31,7 @@ class BbCodeFilterUrl {
 
 	public $tags = array(
 		'url' => array(
-			'open' => 'a style="color: blue; text-decoration: underline;"',
+			'open' => 'a style="color: blue; text-decoration: underline;" target="_blank"',
 			'close' => 'a',
 			'allowed_child' => array('img'),
 			'parse_body' => 'parseUrl',
