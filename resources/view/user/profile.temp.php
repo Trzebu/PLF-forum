@@ -13,8 +13,8 @@
         <div class="col">
             <h4>{{ $this->user->username($this->data->id) }}</h4>
             <p class="small-grey-text">Rank: <font color="{{ $this->user->permissions($this->data->id)->color }}">{{ $this->user->permissions($this->data->id)->name }}</font></p>
-            <p class="small-grey-text">Registered at: {{ $this->user->dateTimeAlphaMonth($this->data->created_at) }}</p>
-            <p class="small-grey-text">Last visit: {{ $this->user->diffToHuman($this->data->updated_at) }}</p>
+            <p class="small-grey-text">Registered from: {{ $this->user->diffToHuman($this->data->created_at) }} ({{ $this->user->dateTimeAlphaMonth($this->data->created_at, true) }})</p>
+            <p class="small-grey-text">{{ $this->user->online($this->data->updated_at) }}</p>
             <p class="small-grey-text">Threads: {{ $this->threads }}</p>
             <p class="small-grey-text">Answers: {{ $this->answers }}</p>
             <p class="small-grey-text">Casted votes: {{ $this->user->calcGivenVotes($this->data->id) }}</p>

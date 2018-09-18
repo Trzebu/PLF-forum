@@ -8,7 +8,7 @@
                         <a class="nav-link" href="{{ route('profile.index_by_id', ['id' => Auth()->data()->id]) }}">Your profile ({{ Auth()->data()->username }})</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('auth.login') }}">Options</a>
+                        <a class="nav-link" href="{{ route('auth.options') }}">Options</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('message.view') }}">Messages {{ Auth()->getterToUnreadedMessages() > 0 ? '<font color="red">(' . Auth()->getterToUnreadedMessages() . ')</font>' : '' }}</a>

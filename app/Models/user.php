@@ -8,6 +8,19 @@ use Libs\DataBase\DataBase as DB;
 final class User extends Model {
     protected $_table = "users";
 
+    public function changeUserSettings ($fields) {
+
+    }
+
+    public function online ($time) {
+
+        if ($this->calcTimeDiff($time) > 30) {
+            return (string) "Last visit: {$this->diffToHuman($time)}";
+        }
+
+        return (string) '<font color="green">Online</font>';
+    }
+
     public function getUsers () {
         return $this->orderBy(["created_at"])->paginate(20)->get(["id", "username"])->count() > 0 ? $this->results() : null;
     }

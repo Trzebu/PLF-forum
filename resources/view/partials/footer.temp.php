@@ -8,7 +8,7 @@
                     <h5>Posts:</h5>
                     Threads amount: {{ App\Models\Stats::threads() }}<br>
                     Posts amount: {{ App\Models\Stats::posts() }}<br>
-                    Given votes: {{ App\Models\Stats::votes() }}
+                    Casted votes: {{ App\Models\Stats::votes() }}
                 </div>
                 <div class="col">
                     <h5>Users:</h5>

@@ -10,6 +10,39 @@ use Libs\User as Auth;
 
 final class AuthController extends Controller {
 
+    public function changeBaseSettings () {
+        $user = new User();
+
+        if (Request::input("email") == Auth::data()->email || empty(Request::input("email"))) {
+            if ($this->validation(Request::input(), [
+                "old_password" => ["required", "old password"],
+                "new_password" => ["required|min_string:5", "new password"],
+                "new_password_again" => ["same:new_password", "new password again"],
+                "base_settings_token" => "token"
+            ])) {
+                if (password_verify($password, $db->password)) {
+
+                } else {
+                    Session::flash("alert_error", "The password provided is incorrect");
+                }
+            }
+
+            return $this->redirect("auth.options");
+        }
+
+        // if ($this->validation(Request::input(), [
+
+        // ])) {
+
+        // }
+
+    }
+
+    public function viewOptions () {
+        $this->view->data = Auth::data();
+        $this->view->render("user.options");
+    }
+
     public function indexLogin () {
         $this->view->render("auth.login");
     }

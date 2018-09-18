@@ -202,3 +202,18 @@ Route::post("/messages/thread/{userId}", [
     "as" => "message.thread",
     "middleware" => ["auth"]
 ]);
+
+
+//Users options
+
+Route::get("/user/options", [
+    "uses" => "App\Http\Controllers\AuthController@viewOptions",
+    "as" => "auth.options",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/user/options/base_settings", [
+    "uses" => "App\Http\Controllers\AuthController@changeBaseSettings",
+    "as" => "auth.base_settings",
+    "middleware" => ["auth"]
+]);

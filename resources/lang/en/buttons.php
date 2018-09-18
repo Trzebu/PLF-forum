@@ -5,4 +5,5 @@ return [
     "choose" => "Choose",
     "register" => "Register",
     "login" => "Login",
+    "save" => "Save"
 ];
