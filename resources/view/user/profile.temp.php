@@ -28,10 +28,10 @@
         </div>
         <div class="col">
             <h5>Basic information</h5>
-            <p class="small-grey-text">Name: {{ !is_null($this->data->full_name) ? $this->data->full_name : 'hidden' }}</p>
-            <p class="small-grey-text">City: {{ !is_null($this->data->city) ? $this->data->city : 'hidden' }}</p>
-            <p class="small-grey-text">From: {{ !is_null($this->data->country) ? $this->data->country : 'hidden' }}</p>
-            <p class="small-grey-text">WWW: {{ !is_null($this->data->www) ? '<a href="' . $this->data->www . '" target="_blank">' . $this->data->www . '</a>' : 'hidden' }}</p>
+            <p class="small-grey-text">Name: {{ strlen($this->data->full_name) > 0 ? $this->data->full_name : 'hidden' }}</p>
+            <p class="small-grey-text">City: {{ strlen($this->data->city) > 0 ? $this->data->city : 'hidden' }}</p>
+            <p class="small-grey-text">From: {{ strlen($this->data->country) > 0 ? $this->data->country : 'hidden' }}</p>
+            <p class="small-grey-text">WWW: {{ strlen($this->data->www) > 0 ? '<a href="' . $this->data->www . '" target="_blank">' . $this->data->www . '</a>' : 'hidden' }}</p>
         </div>
     </div>
     <div class="col-12 text-center border-bottom">

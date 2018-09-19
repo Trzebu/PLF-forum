@@ -10,6 +10,21 @@ use Libs\User as Auth;
 
 final class AuthController extends Controller {
 
+    public function changeAvatar () {
+        //dd(getimagesize ($_FILES['fileToUpload']['tmp_name']));
+        // dd($_FILES['image']);
+        // dd($_POST);
+
+        if ($this->validation(Request::input(), [
+            "image" => "required|image:gif",
+            "avatar_change_token" => "token"
+        ])) {
+            dd("sd");
+        }
+
+        return $this->redirect("auth.options");
+    }
+
     public function changeGeneralSettings () {
         if ($this->validation(Request::input(), [
             "full_name" => ["max_string:250", "full name"],

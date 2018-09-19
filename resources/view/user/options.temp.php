@@ -52,7 +52,7 @@
         <h4>General settings:</h4>
     </div>
     <div class="col-12 border-bottom">
-        <form class="form-vertical" action="" method="post">
+        <form class="form-vertical" action="{{ route('auth.general_settings') }}" method="post">
             <div class="form-group">
                 <label for="full_name">Full name:</label>
                 <input type="text" name="full_name" id="full_name" class="form-control {{ $this->errors->has('full_name') ? 'is-invalid' : '' }}" value="{{ $this->errors->has('full_name') ? Libs\Http\Request::old('full_name') : $this->data->full_name }}">
@@ -95,6 +95,28 @@
             </div>
         </form>
     </div>
+    <div class="col-12 text-center">
+        <h4>Avatar:</h4>
+    </div>
+    <div class="col-12 border-bottom">
+        <form action="{{ route('auth.change_avatar') }}" method="post" enctype="multipart/form-data">
+            <div class="input-group mb-3">
+                <div class="custom-file">
+                    <input type="file" accept="image/*" class="custom-file-input {{ $this->errors->has('image') ? 'is-invalid' : '' }}" name="image" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+                    <label class="custom-file-label" for="inputGroupFile01">{{ $this->translate->get('buttons.choose_image') }}</label>
+                </div>
+            </div>
+            @if ($this->errors->has("image")):
+                <p class="text-danger">{{ $this->errors->get("image")->first() }}</p>
+            @endif
+            <input type="hidden" name="avatar_change_token" value="{{ $this->token->generate('avatar_change_token') }}">
+            <div class="form-group">
+                <button type="submit" class="btn btn-success mx-auto d-block w-100">{{ $this->translate->get('buttons.save') }}!</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script type="text/javascript" src="{{ route('/') }}/public/app/js/showFileName.js"></script>
 
 @include partials/footer

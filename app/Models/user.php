@@ -9,7 +9,8 @@ final class User extends Model {
     protected $_table = "users";
 
     public function changeUserSettings ($fields) {
-
+        $this->where("id", "=", Auth::data()->id)
+            ->update($fields);
     }
 
     public function online ($time) {

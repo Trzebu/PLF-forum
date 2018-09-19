@@ -217,3 +217,15 @@ Route::post("/user/options/base_settings", [
     "as" => "auth.base_settings",
     "middleware" => ["auth"]
 ]);
+
+Route::post("/user/options/general_settings", [
+    "uses" => "App\Http\Controllers\AuthController@changeGeneralSettings",
+    "as" => "auth.general_settings",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/user/options/change_avatar", [
+    "uses" => "App\Http\Controllers\AuthController@changeAvatar",
+    "as" => "auth.change_avatar",
+    "middleware" => ["auth"]
+]);

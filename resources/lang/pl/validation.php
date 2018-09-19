@@ -18,4 +18,5 @@ return [
     "unique" => ":attribute jest już zajęty.",
     "token" => "Token wygasł. Spróbuj ponownie.",
     "accepted" => ":attribute musi zostać zaakceptowany.",
+    "url" => ":attribute musi być poprawnym adresem URL.",
 ];
