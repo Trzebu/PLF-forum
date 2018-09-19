@@ -36,10 +36,25 @@ class Request {
     }
 
     public function input ($name = null) {
-        if ($name !== null) {
-            return isset($_POST[$name]) ? $_POST[$name] : null;
+        $data = [];
+
+        if (!empty($_POST)) {
+            $data = array_merge($data, $_POST);
         }
-        return $_POST;
+
+        if (!empty($_FILES)) {
+            $data = array_merge($data, $_FILES);
+        }
+
+        if (!empty($_GET)) {
+            $data = array_merge($data, $_GET);
+        }
+
+        if ($name !== null) {
+            return isset($data[$name]) ? $data[$name] : null;
+        }
+
+        return $data;
     }
 
     public static function method ($method) {

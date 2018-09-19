@@ -20,5 +20,5 @@ function route ($routeName, $params = []) {
         return Config::get("host") . $path;
     }
 
-    return null;
+    dd("Path {$routeName} dosen't exists!");
 }

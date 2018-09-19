@@ -113,7 +113,20 @@ class Validation {
                         }
                     break;
                     case "required":
+                        $error = false;
+                        if (isset($post[$input])) {
+                            if (isset($post[$input]["name"])) {
+                                if (strlen($post[$input]["name"]) == 0) {
+                                    $error = true;
+                                }
+                            }
+                        }
+
                         if (empty($post[$input])) {
+                            $error = true;
+                        }
+
+                        if ($error) {
                             $this->addError($input, Str::replace(Translate::get("validation.required"), [
                                 ":attribute" => $attribute
                             ]));
@@ -122,6 +135,13 @@ class Validation {
                     case "unique":
                         if (DB::instance()->table($value)->where($input, "=", $post[$input])->get(["id"])->count() > 0) {
                             $this->addError($input, Str::replace(Translate::get("validation.unique"), [
+                                ":attribute" => $attribute
+                            ]));
+                        }
+                    break;
+                    case "url":
+                        if (filter_var($post[$input], FILTER_VALIDATE_URL) === FALSE && !empty($post[$input])) {
+                            $this->addError($input, Str::replace(Translate::get("validation.url"), [
                                 ":attribute" => $attribute
                             ]));
                         }
@@ -146,7 +166,7 @@ class Validation {
     }
 
     public function errors () {
-        return count($this->_errors) > 0 ? $this->_errors : null;
+        return (int) count($this->_errors) > 0 ? $this->_errors : (unset) null;
     }
 
 }
