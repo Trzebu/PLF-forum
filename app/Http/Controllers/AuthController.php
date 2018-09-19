@@ -10,32 +10,64 @@ use Libs\User as Auth;
 
 final class AuthController extends Controller {
 
+    public function changeGeneralSettings () {
+        if ($this->validation(Request::input(), [
+            "full_name" => ["max_string:250", "full name"],
+            "city" => "max_string:250",
+            "country" => "max_string:250",
+            "www" => "max_string:250|url",
+            "general_settings_token" => "token"
+        ])) {
+            $user = new User();
+            Session::flash("alert_success", "Your general settings has been successfully changed");
+            $user->changeUserSettings([
+                "full_name" => Request::input("full_name"),
+                "city" => Request::input("city"),
+                "country" => Request::input("country"),
+                "www" => Request::input("www"),
+            ]);
+        }
+
+        return $this->redirect("auth.options");
+    }
+
     public function changeBaseSettings () {
         $user = new User();
 
-        if (Request::input("email") == Auth::data()->email || empty(Request::input("email"))) {
+        if (Request::input("email") != Auth::data()->email && !empty(Request::input("email"))) {
+            if ($this->validation(Request::input(), [
+                "old_password" => ["required", "old password"],
+                "email" => ["required|unique:users|max_string:100", Translate::get("auth.inputs.email")],
+                "base_settings_token" => "token"
+            ])) {
+                if (password_verify(Request::input("old_password"), Auth::data()->password)) {
+                    $user->changeUserSettings([
+                        "email" => Request::input("email")
+                    ]);
+                } else {
+                    Session::flash("alert_error", "The password provided is incorrect");
+                }
+            }
+        }
+
+        if (!empty(Request::input("new_password"))) {
             if ($this->validation(Request::input(), [
                 "old_password" => ["required", "old password"],
                 "new_password" => ["required|min_string:5", "new password"],
                 "new_password_again" => ["same:new_password", "new password again"],
                 "base_settings_token" => "token"
             ])) {
-                if (password_verify($password, $db->password)) {
-
+                if (password_verify(Request::input("old_password"), Auth::data()->password)) {
+                    $user->changeUserSettings([
+                        "password" => password_hash(Request::input("new_password"), PASSWORD_DEFAULT)
+                    ]);
                 } else {
                     Session::flash("alert_error", "The password provided is incorrect");
                 }
             }
-
-            return $this->redirect("auth.options");
         }
-
-        // if ($this->validation(Request::input(), [
-
-        // ])) {
-
-        // }
-
+        Session::flash("alert_success", "Your base settings has been successfully changed");
+        return $this->redirect("auth.options");
     }
 
     public function viewOptions () {
