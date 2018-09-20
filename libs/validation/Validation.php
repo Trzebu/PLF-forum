@@ -8,165 +8,75 @@ use Libs\DataBase\DataBase as DB;
 
 class Validation {
 
-    private $_errors = [];
+    private static $_fields = [];
+    private static $_attribute = "";
+    private static $_currentInput = "";
+    private static $_rules = [];
+    private static $_currentRule = null;
+    private static $_errors = [];
 
-    public function __construct ($post, $filters) {
-        $this->execute($post, $filters);
+    private function __construct ($fields, $rules) {
+        self::$_fields = $fields;
+        self::$_rules = $rules;
+
+        self::checkRules();
     }
 
-    private function execute ($post, $filters) {
-        //Standard 
-        $token_check = false;
+    private function checkRules () {
 
-        foreach ($filters as $input => $values) {
-            $attribute = is_array($values) ? $values[1] : $input;
-            $values = is_array($values) ? $values[0] : $values;
-            $values = explode("|", $values);
+        foreach (self::$_rules as $rule => $value) {
 
-            foreach ($values as $key) {
-                $key = explode(":", $key);
-                $value = isset($key[1]) ? $key[1] : null;
+            self::$_attribute = is_array($value) ? $value[1] : $rule;
+            self::$_currentInput = $rule;
+            $rules = explode("|", is_array($value) ? $value[0] : $value);
 
-                switch ($key[0]) {
-                    case "accepted":
-                        if (!isset($post[$input])) {
-                            $this->addError($input, Str::replace(Translate::get("validation.accepted"), [
-                                ":attribute" => $attribute
-                            ]));
-                        }
-                    break;
-                    case "token":
-                        if (isset($post[$input])) {
-                            $token_check = true;
-                            if (!Token::check($input, $post[$input])) {
-                                $this->addError($input, Translate::get("validation.token"));
-                            }
-                        }
-                    break;
-                    case "min_string":
-                        if (strlen($post[$input]) < $value) {
-                            $this->addError($input, Str::replace(Translate::get("validation.min.string"), [
-                                ":attribute" => $attribute,
-                                ":min" => $value
-                            ]));
-                        }
-                    break;
-                    case "min_numeric":
-                        if (intval($post[$input]) < $value) {
-                            $this->addError($input, Str::replace(Translate::get("validation.min.numeric"), [
-                                ":attribute" => $attribute,
-                                ":min" => $value
-                            ]));
-                        }
-                    break;
-                    case "max_string":
-                        if (strlen($post[$input]) > $value) {
-                            $this->addError($input, Str::replace(Translate::get("validation.max.string"), [
-                                ":attribute" => $attribute,
-                                ":max" => $value
-                            ]));
-                        }
-                    break;
-                    case "max_numeric":
-                        if (intval($post[$input]) > $value) {
-                            $this->addError($input, Str::replace(Translate::get("validation.max.numeric"), [
-                                ":attribute" => $attribute,
-                                ":max" => $value
-                            ]));
-                        }
-                    break;
-                    case "numeric":
-                        if (!ctype_digit($post[$input])) {
-                            $this->addError($input, Str::replace(Translate::get("validation.numeric"), [
-                                ":attribute" => $attribute
-                            ]));
-                        }
-                    break;
-                    case "string":
-                        if (!is_string($post[$input])) {
-                            $this->addError($input, Str::replace(Translate::get("validation.string"), [
-                                ":attribute" => $attribute
-                            ]));
-                        }
-                    break;
-                    case "alpha":
-                        if (!ctype_alpha($post[$input])) {
-                            $this->addError($input, Str::replace(Translate::get("validation.alpha"), [
-                                ":attribute" => $attribute
-                            ]));
-                        }
-                    break;
-                    case "alpha_num":
-                        if (!ctype_alnum($post[$input])) {
-                            $this->addError($input, Str::replace(Translate::get("validation.alpha_num"), [
-                                ":attribute" => $attribute
-                            ]));
-                        }
-                    break;
-                    case "same":
-                        $other = is_array($filters[$value]) ? $filters[$value][1] : $value;
-                        if ($post[$input] != $post[$value]) {
-                            $this->addError($input, Str::replace(Translate::get("validation.same"), [
-                                ":attribute" => $attribute,
-                                ":other" => $other
-                            ]));
-                        }
-                    break;
-                    case "required":
-                        $error = false;
-                        if (isset($post[$input])) {
-                            if (isset($post[$input]["name"])) {
-                                if (strlen($post[$input]["name"]) == 0) {
-                                    $error = true;
-                                }
-                            }
-                        }
+            foreach ($rules as $rule) {
+                $methods = [];
+                foreach (explode(">", $rule) as $rule) {
+                    $rule = explode(":", $rule);
 
-                        if (empty($post[$input])) {
-                            $error = true;
-                        }
-
-                        if ($error) {
-                            $this->addError($input, Str::replace(Translate::get("validation.required"), [
-                                ":attribute" => $attribute
-                            ]));
-                        }
-                    break;
-                    case "unique":
-                        if (DB::instance()->table($value)->where($input, "=", $post[$input])->get(["id"])->count() > 0) {
-                            $this->addError($input, Str::replace(Translate::get("validation.unique"), [
-                                ":attribute" => $attribute
-                            ]));
-                        }
-                    break;
-                    case "url":
-                        if (filter_var($post[$input], FILTER_VALIDATE_URL) === FALSE && !empty($post[$input])) {
-                            $this->addError($input, Str::replace(Translate::get("validation.url"), [
-                                ":attribute" => $attribute
-                            ]));
-                        }
-                    break;
+                    array_push($methods, [
+                        "method" => $rule[0],
+                        "argument" => isset($rule[1]) ? $rule[1] : (unset) null
+                    ]);
                 }
+
+                $ruleName = "Libs\Validation\Rules\\" . $methods[0]["method"];
+
+                self::$_currentRule = new $ruleName($methods);
             }
 
         }
 
-        if (!$token_check) {
-            dd("You must set the CSRF protection token!");
-        }
-
     }
 
-    private function addError ($inputName, $error) {
-        array_push($this->_errors, [$inputName, $error]);
+    public static function start ($fields, $rules) {
+        new Validation($fields, $rules);
     }
 
-    public function check () {
-        return (bool) count($this->_errors) == 0;
+    public static function currentInputGetter () {
+        return self::$_currentInput;
     }
 
-    public function errors () {
-        return (int) count($this->_errors) > 0 ? $this->_errors : (unset) null;
+    public static function attributeNameGetter () {
+        return self::$_attribute;
     }
+
+    public static function fieldsGetter () {
+        return self::$_fields;
+    }
+
+    public static function errorsGetter () {
+        return self::$_errors;
+    }
+
+    public static function addError ($inputName, $error) {
+        array_push(self::$_errors, [$inputName, $error]);
+    }
+
+    public static function check () {
+        return (bool) count(self::$_errors) == 0;
+    }
+
 
 }
