@@ -6,15 +6,15 @@ use Libs\DataBase\DataBase as DB;
 /**
 * Run the migrations.
 *
-* Auto created at: 2018-09-01 19:27:01
+* Auto created at: 2018-09-20 14:22:20
 *
 * PHP Light Framework Migration File.
 *
 */
 
-class CreateUsersTable extends TableCreator {
+class CreateUsers_filesTable extends TableCreator {
 
-    protected $tableName = "users";
+    protected $tableName = "users_files";
 
     public function create () {
 
@@ -35,17 +35,10 @@ class CreateUsersTable extends TableCreator {
          */
 
         $this->increments("id");
-        $this->string("username", 30)->notNullable();
-        $this->string("password", 70)->notNullable();
-        $this->string("email", 100)->notNullable();
-        $this->int("permissions", 5)->default(1);
-        $this->int("avatar", 50)->nullable();
-        $this->string("full_name", 255)->nullable();
-        $this->string("city", 255)->nullable();
-        $this->string("country", 255)->nullable();
-        $this->string("www", 255)->nullable();
-        $this->text("about");
-        $this->string("remember_me", 255)->nullable();
+        $this->int("user_id", 20);
+        $this->string("original_name", 255);
+        $this->string("path", 255);
+        $this->bigInt("size");
         $this->time();
 
         /**

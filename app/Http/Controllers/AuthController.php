@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Files;
 use Libs\Http\Request;
 use Libs\Session;
 use Libs\Translate;
@@ -11,15 +12,21 @@ use Libs\User as Auth;
 final class AuthController extends Controller {
 
     public function changeAvatar () {
-        //dd(getimagesize ($_FILES['fileToUpload']['tmp_name']));
-        // dd($_FILES['image']);
-        // dd($_POST);
 
+        if (!Auth::permissions("file_uploading")) {
+            Session::flash("alert_error", "You have no permissions to uploading files.");
+            return $this->redirect("auth.options");
+        }
+        
         if ($this->validation(Request::input(), [
-            "image" => "required|image:gif",
+            "image" => "required|file>image:gif,x-icon,bmp>max_size:256000>min_resolution:200,200>max_resolution:300,300",
             "avatar_change_token" => "token"
         ])) {
-            dd("sd");
+            $file = new Files();
+            $user = new User();
+            $user->changeUserSettings([
+                "avatar" => $file->upload(Request::input("image"))
+            ]);
         }
 
         return $this->redirect("auth.options");
@@ -27,10 +34,10 @@ final class AuthController extends Controller {
 
     public function changeGeneralSettings () {
         if ($this->validation(Request::input(), [
-            "full_name" => ["max_string:250", "full name"],
-            "city" => "max_string:250",
-            "country" => "max_string:250",
-            "www" => "max_string:250|url",
+            "full_name" => ["str>max:250", "full name"],
+            "city" => "str>max:250",
+            "country" => "str>max:250",
+            "www" => "str>max:250|is_valid>url",
             "general_settings_token" => "token"
         ])) {
             $user = new User();
@@ -52,7 +59,7 @@ final class AuthController extends Controller {
         if (Request::input("email") != Auth::data()->email && !empty(Request::input("email"))) {
             if ($this->validation(Request::input(), [
                 "old_password" => ["required", "old password"],
-                "email" => ["required|unique:users|max_string:100", Translate::get("auth.inputs.email")],
+                "email" => ["required|is_valid>email|str>max:100|unique:users", Translate::get("auth.inputs.email")],
                 "base_settings_token" => "token"
             ])) {
                 if (password_verify(Request::input("old_password"), Auth::data()->password)) {
@@ -68,7 +75,7 @@ final class AuthController extends Controller {
         if (!empty(Request::input("new_password"))) {
             if ($this->validation(Request::input(), [
                 "old_password" => ["required", "old password"],
-                "new_password" => ["required|min_string:5", "new password"],
+                "new_password" => ["required|str>min:5", "new password"],
                 "new_password_again" => ["same:new_password", "new password again"],
                 "base_settings_token" => "token"
             ])) {

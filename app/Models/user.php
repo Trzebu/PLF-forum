@@ -4,6 +4,7 @@ namespace App\Models;
 use Libs\Model;
 use Libs\User as Auth;
 use Libs\DataBase\DataBase as DB;
+use Libs\Config;
 
 final class User extends Model {
     protected $_table = "users";
@@ -83,7 +84,13 @@ final class User extends Model {
 
     public function getAvatar ($id, $size = 100) {
         $md = md5($this->where("id", "=", $id)->get(["email"])->first()->email);
-        return  strlen($this->where("id", "=", $id)->get(["avatar"])->first()->avatar) > 0 ? $this->first()->avatar : "https://www.gravatar.com/avatar/{$md}?s={$size}";
+        $path = DB::instance()
+                    ->table("users_files")
+                    ->where("id", "=", $this->where("id", "=", $id)->get(["avatar"])->first()->avatar)
+                    ->get(["path"]);
+        $path = $path->count() > 0 ? $path->first()->path : null;
+
+        return  $path !== null ? route("/") . Config::get("upload_dir") . "/" . $path : "https://www.gravatar.com/avatar/{$md}?s={$size}";
     }
 
     public function allPermissions ($id) {

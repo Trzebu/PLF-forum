@@ -114,6 +114,7 @@
                 <button type="submit" class="btn btn-success mx-auto d-block w-100">{{ trans('buttons.save') }}!</button>
             </div>
         </form>
+        <a href="{{ route('user_files.index') }}">Set avatar from uploaded files</a>
     </div>
 </div>
 

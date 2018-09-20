@@ -229,3 +229,23 @@ Route::post("/user/options/change_avatar", [
     "as" => "auth.change_avatar",
     "middleware" => ["auth"]
 ]);
+
+//Users files
+
+Route::get("/user_files", [
+    "uses" => "App\Http\Controllers\UserFiles@index",
+    "as" => "user_files.index",
+    "middleware" => ["auth"]
+]);
+
+Route::get("/user_files/view/{fileId}", [
+    "uses" => "App\Http\Controllers\UserFiles@viewFile",
+    "as" => "user_files.view_file",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/user_files/upload_new", [
+    "uses" => "App\Http\Controllers\UserFiles@upload_new",
+    "as" => "user_files.upload_new",
+    "middleware" => ["auth"]
+]);

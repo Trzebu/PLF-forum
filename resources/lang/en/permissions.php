@@ -10,5 +10,6 @@ return [
     "creating_answers" => "Creating answers",
     "voting" => "Voting",
     "create_thread" => "Thread creating",
-    "banning" => "Banning"
+    "banning" => "Banning",
+    "file_uploading" => "Uploading files"
 ];

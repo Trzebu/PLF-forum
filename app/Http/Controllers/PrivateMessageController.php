@@ -28,7 +28,7 @@ final class PrivateMessageController extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "post" => "max_string:65000|min_string:1",
+            "post" => "str>max:65000|str>min:1",
             "post_token" => "token"
         ])) {
             $message->send($userId, Request::input("post"));

@@ -52,7 +52,7 @@ final class PostController extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "post" => "required|min_string:10|max_string:65500",
+            "post" => "required|str>min:10|str>max:65500",
             "post_token" => "token"
         ])) {
             $post->editPost($postData->id, strip_tags(Request::input("post")));
@@ -243,8 +243,8 @@ final class PostController extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "title" => "required|min_string:10|max_string:120",
-            "post" => "required|min_string:10|max_string:65500",
+            "title" => "required|str>min:10|str>max:120",
+            "post" => "required|str>min:10|str>max:65500",
             "post_token" => "token" 
         ])) {
             $post = new Post();
@@ -325,7 +325,7 @@ final class PostController extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "post" => "required|min_string:10|max_string:65500",
+            "post" => "required|str>min:10|str>max:65500",
             "post_token" => "token"
         ])) {
 

@@ -6,6 +6,7 @@ return [
     "register" => "Register",
     "login" => "Login",
     "save" => "Save",
+    "upload" => "Upload",
     "choose_file" => "Choose file",
     "choose_image" => "Choose image",
 ];
