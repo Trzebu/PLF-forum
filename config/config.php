@@ -20,6 +20,7 @@ $GLOBALS = [
             "db_name" => "forum", 
             "username" => "root",
             "password" => "",
-        ]
+        ],
+        "upload_dir" => "/public/app/uploaded/",
     ]
 ];

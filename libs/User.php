@@ -4,6 +4,7 @@ namespace Libs;
 use Libs\Session;
 use Libs\DataBase\DataBase;
 use Libs\Cookie;
+use Libs\Config;
 use App\Models\PrivateMessage;
 
 class User {
@@ -28,7 +29,13 @@ class User {
 
     public function avatar ($size = 75) {
         $md = md5(self::data()->email);
-        return strlen(self::data()->avatar) > 0 ? self::data()->avatar : "https://www.gravatar.com/avatar/{$md}?s={$size}";
+        $path = DataBase::instance()
+                    ->table("users_files")
+                    ->where("id", "=", self::data()->avatar)
+                    ->get(["path"]);
+        $path = $path->count() > 0 ? $path->first()->path : null;
+        
+        return $path !== null ? route("/") . Config::get("upload_dir") . "/" . $path : "https://www.gravatar.com/avatar/{$md}?s={$size}";
     }
 
     public function permissions ($key = null) {

@@ -33,7 +33,7 @@ class Translate {
 
         if (self::$_path === null || self::$_path != $path) {
             self::$_path = $path;
-            self::$_file = require_once($path);
+            self::$_file = include($path);
             return self::$_file;
         }
 
