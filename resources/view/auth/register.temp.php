@@ -41,6 +41,14 @@
                     </div>
                 @endif
             </div>
+            <div class="checkbox {{ $this->errors->has('rule') ? 'is-invalid' : '' }}">
+                <label>
+                    <input type="checkbox" name="rule"> I accept rules
+                </label>
+                @if ($this->errors->has('rule')):
+                    <p class="text-danger">{{ $this->errors->get('rule')->first() }}</p>
+                @endif
+            </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-default">{{ $this->translate->get('buttons.register') }}!</button>
             </div>

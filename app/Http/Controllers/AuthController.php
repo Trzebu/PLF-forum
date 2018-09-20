@@ -123,11 +123,12 @@ final class AuthController extends Controller {
     public function postRegister () {
         
         if ($this->validation(Request::input(), [
-            "username" => ["required|alpha_num|unique:users|min_string:4|max_string:30", Translate::get("auth.inputs.username")],
-            "email" => ["required|unique:users|max_string:100", Translate::get("auth.inputs.email")],
-            "password" => ["required|min_string:5", Translate::get("auth.inputs.password")],
+            "username" => ["required|alpha:num|unique:users|str>min:4>max:30", Translate::get("auth.inputs.username")],
+            "email" => ["required|is_valid>email|unique:users|str>max:100", Translate::get("auth.inputs.email")],
+            "password" => ["required|str>min:5", Translate::get("auth.inputs.password")],
             "password_again" => ["same:password", Translate::get("auth.inputs.password_again")],
-            "_token" => "token" 
+            "rule" => "accepted",
+            "_token" => "token"
         ])) {
             $user = new User();
             $user->create(Request::input());

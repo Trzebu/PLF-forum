@@ -20,15 +20,15 @@ class Controller {
         $this->view->title = "Forum";
     }
 
-    protected function validation ($post, $filters) {
-        $validation = new Validation($post, $filters);
+    protected function validation ($fields, $filters) {
+        Validation::start($fields, $filters);
 
-        if ($validation->errors() !== null) {
-            ValidationErrors::set($validation->errors());
-            Request::old($post);
+        if (!Validation::check()) {
+            ValidationErrors::set(Validation::errorsGetter());
+            Request::old($fields);
         }
 
-        return $validation->check();
+        return Validation::check();
     }
 
     protected function redirect ($path, $params = []) {

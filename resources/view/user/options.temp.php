@@ -111,7 +111,7 @@
             @endif
             <input type="hidden" name="avatar_change_token" value="{{ $this->token->generate('avatar_change_token') }}">
             <div class="form-group">
-                <button type="submit" class="btn btn-success mx-auto d-block w-100">{{ $this->translate->get('buttons.save') }}!</button>
+                <button type="submit" class="btn btn-success mx-auto d-block w-100">{{ trans('buttons.save') }}!</button>
             </div>
         </form>
     </div>
