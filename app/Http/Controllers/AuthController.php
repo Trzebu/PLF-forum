@@ -3,32 +3,30 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Files;
 use Libs\Http\Request;
 use Libs\Session;
 use Libs\Translate;
 use Libs\User as Auth;
+use Libs\Token;
 
 final class AuthController extends Controller {
 
-    public function changeAvatar () {
+    public function __construct () {
+        parent::__construct();
+        $this->user = new User();
+    }
 
-        if (!Auth::permissions("file_uploading")) {
-            Session::flash("alert_error", "You have no permissions to uploading files.");
+    public function disableAvatar ($token) {
+
+        if (!Token::check("disable_avatar", $token)) {
             return $this->redirect("auth.options");
         }
-        
-        if ($this->validation(Request::input(), [
-            "image" => "required|file>image:gif,x-icon,bmp>max_size:256000>min_resolution:200,200>max_resolution:300,300",
-            "avatar_change_token" => "token"
-        ])) {
-            $file = new Files();
-            $user = new User();
-            $user->changeUserSettings([
-                "avatar" => $file->upload(Request::input("image"))
-            ]);
-        }
+ 
+        $this->user->changeUserSettings([
+            "avatar" => 0
+        ]);
 
+        Session::flash("alert_success", "Your avatar has been disabled.");
         return $this->redirect("auth.options");
     }
 
@@ -40,9 +38,8 @@ final class AuthController extends Controller {
             "www" => "str>max:250|is_valid>url",
             "general_settings_token" => "token"
         ])) {
-            $user = new User();
             Session::flash("alert_success", "Your general settings has been successfully changed");
-            $user->changeUserSettings([
+            $this->user->changeUserSettings([
                 "full_name" => Request::input("full_name"),
                 "city" => Request::input("city"),
                 "country" => Request::input("country"),
@@ -54,7 +51,6 @@ final class AuthController extends Controller {
     }
 
     public function changeBaseSettings () {
-        $user = new User();
 
         if (Request::input("email") != Auth::data()->email && !empty(Request::input("email"))) {
             if ($this->validation(Request::input(), [
@@ -63,7 +59,7 @@ final class AuthController extends Controller {
                 "base_settings_token" => "token"
             ])) {
                 if (password_verify(Request::input("old_password"), Auth::data()->password)) {
-                    $user->changeUserSettings([
+                    $this->user->changeUserSettings([
                         "email" => Request::input("email")
                     ]);
                 } else {
@@ -80,7 +76,7 @@ final class AuthController extends Controller {
                 "base_settings_token" => "token"
             ])) {
                 if (password_verify(Request::input("old_password"), Auth::data()->password)) {
-                    $user->changeUserSettings([
+                    $this->user->changeUserSettings([
                         "password" => password_hash(Request::input("new_password"), PASSWORD_DEFAULT)
                     ]);
                 } else {
@@ -137,8 +133,7 @@ final class AuthController extends Controller {
             "rule" => "accepted",
             "_token" => "token"
         ])) {
-            $user = new User();
-            $user->create(Request::input());
+            $this->user->create(Request::input());
 
             Session::flash("alert_success", Translate::get("auth.register_success"));
         }

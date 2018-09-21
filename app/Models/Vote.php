@@ -8,7 +8,7 @@ use Libs\User as Auth;
 final class Vote extends Model {
 
     protected $_table = "votes";
-
+    
     public function allGivenVotes() {
         return $this->numRow();
     }

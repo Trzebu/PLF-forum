@@ -212,6 +212,12 @@ Route::get("/user/options", [
     "middleware" => ["auth"]
 ]);
 
+Route::get("/user/options/disable_avatar/{token}", [
+    "uses" => "App\Http\Controllers\AuthController@disableAvatar",
+    "as" => "auth.disable_avatar",
+    "middleware" => ["auth"]
+]);
+
 Route::post("/user/options/base_settings", [
     "uses" => "App\Http\Controllers\AuthController@changeBaseSettings",
     "as" => "auth.base_settings",
@@ -224,8 +230,8 @@ Route::post("/user/options/general_settings", [
     "middleware" => ["auth"]
 ]);
 
-Route::post("/user/options/change_avatar", [
-    "uses" => "App\Http\Controllers\AuthController@changeAvatar",
+Route::post("/upload/upload_avatar", [
+    "uses" => "App\Http\Controllers\UserFiles@uploadAvatar",
     "as" => "auth.change_avatar",
     "middleware" => ["auth"]
 ]);
@@ -244,8 +250,26 @@ Route::get("/user_files/view/{fileId}", [
     "middleware" => ["auth"]
 ]);
 
+Route::get("/user_files/duplicate/{fileId}/{token}", [
+    "uses" => "App\Http\Controllers\UserFiles@duplicate",
+    "as" => "user_files.duplicate",
+    "middleware" => ["auth"]
+]);
+
+Route::get("/user_files/remove/{fileId}/{token}", [
+    "uses" => "App\Http\Controllers\UserFiles@remove",
+    "as" => "user_files.remove",
+    "middleware" => ["auth"]
+]);
+
+Route::get("/user_files/{fileId}/set_as_avatar/{token}", [
+    "uses" => "App\Http\Controllers\UserFiles@setAsAvatar",
+    "as" => "user_files.set_as_avatar",
+    "middleware" => ["auth"]
+]);
+
 Route::post("/user_files/upload_new", [
-    "uses" => "App\Http\Controllers\UserFiles@upload_new",
+    "uses" => "App\Http\Controllers\UserFiles@uploadNew",
     "as" => "user_files.upload_new",
     "middleware" => ["auth"]
 ]);

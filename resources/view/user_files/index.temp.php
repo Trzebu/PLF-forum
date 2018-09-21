@@ -2,6 +2,22 @@
 
 <div class="col border border-primary rounded mt-10 mb-10 border-5" style="padding: 0">
 
+    <form action="{{ route('user_files.upload_new') }}" method="post" enctype="multipart/form-data">
+        <div class="input-group mb-3">
+            <div class="custom-file">
+                <input type="file" accept="" class="custom-file-input {{ $this->errors->has('file') ? 'is-invalid' : '' }}" name="file" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+                <label class="custom-file-label" for="inputGroupFile01">{{ $this->translate->get('buttons.choose_file') }}</label>
+            </div>
+        </div>
+        @if ($this->errors->has("file")):
+            <p class="text-danger">{{ $this->errors->get("file")->first() }}</p>
+        @endif
+        <input type="hidden" name="upload_file_token" value="{{ $this->token->generate('upload_file_token') }}">
+        <div class="form-group">
+            <button type="submit" class="btn btn-success mx-auto d-block w-100">{{ trans('buttons.upload') }}!</button>
+        </div>
+    </form>
+
     @if ($this->files !== null):
 
         <table class="table border-bottom">
@@ -31,26 +47,10 @@
             </tbody>
 
         </table>
-
+        <center>{{ $this->file->paginateRender() }}</center>
     @else
         <h4>You don't have uploaded files!</h4>
     @endif
-
-    <form action="{{ route('user_files.upload_new') }}" method="post" enctype="multipart/form-data">
-        <div class="input-group mb-3">
-            <div class="custom-file">
-                <input type="file" accept="" class="custom-file-input {{ $this->errors->has('file') ? 'is-invalid' : '' }}" name="file" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
-                <label class="custom-file-label" for="inputGroupFile01">{{ $this->translate->get('buttons.choose_file') }}</label>
-            </div>
-        </div>
-        @if ($this->errors->has("file")):
-            <p class="text-danger">{{ $this->errors->get("file")->first() }}</p>
-        @endif
-        <input type="hidden" name="upload_file_token" value="{{ $this->token->generate('upload_file_token') }}">
-        <div class="form-group">
-            <button type="submit" class="btn btn-success mx-auto d-block w-100">{{ trans('buttons.upload') }}!</button>
-        </div>
-    </form>
 
 </div>
 

@@ -9,6 +9,37 @@ use Libs\Config;
 final class Files extends Model {
     protected $_table = "users_files";
 
+    public function remove ($id) {
+        unlink(__ROOT__ . Config::get("upload_dir") . $this->getFile($id)->path);
+        $this->where("id", "=", $id)->delete();
+    }
+
+    public function getImageSize ($fileId) {
+        $data = getimagesize(__ROOT__ . Config::get("upload_dir") . $this->getFile($fileId)->path);
+        return $data == null ? false : (object) [
+            "width" => $data[0],
+            "height" => $data[1]
+        ];
+    }
+
+    public function duplicate ($fileId) {
+        $source_file = $this->getFile($fileId);
+        $newFileName = uniqid(true);
+        $ext = pathinfo($source_file->path, PATHINFO_EXTENSION);
+        $path = __ROOT__ . Config::get("upload_dir");
+
+        if (copy($path . $source_file->path, "{$path}{$newFileName}.{$ext}")) {
+            return $this->insert([
+                "user_id" => Auth::data()->id,
+                "original_name" => $source_file->original_name,
+                "path" => "{$newFileName}.{$ext}",
+                "size" => $source_file->size
+            ])->lastInsertedID();
+        }
+
+        return false;
+    }
+
     public function isValidImage ($path) {
         $validExtansion = ["jpg", "jpeg", "png"];
 
@@ -20,7 +51,7 @@ final class Files extends Model {
     }
 
     public function getMyFiles () {
-        return $this->where("user_id", "=", Auth::data()->id)->get()->count() > 0 ? $this->results() : (unset) null;
+        return $this->where("user_id", "=", Auth::data()->id)->orderBy(["created_at"])->paginate(100)->get()->count() > 0 ? $this->results() : (unset) null;
     }
 
     public function upload ($file) {

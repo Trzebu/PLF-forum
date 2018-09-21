@@ -11,5 +11,6 @@ return [
     "voting" => "Voting",
     "create_thread" => "Thread creating",
     "banning" => "Banning",
-    "file_uploading" => "Uploading files"
+    "file_uploading" => "Uploading files",
+    "file_managing" => "File managing"
 ];

@@ -114,7 +114,10 @@
                 <button type="submit" class="btn btn-success mx-auto d-block w-100">{{ trans('buttons.save') }}!</button>
             </div>
         </form>
-        <a href="{{ route('user_files.index') }}">Set avatar from uploaded files</a>
+        @if (Auth()->data()->avatar > 0):
+            <p><a href="{{ route('auth.disable_avatar', ['token' => $this->token->generate('disable_avatar')]) }}">Disable current avatar</a></p>
+        @endif
+        <p><a href="{{ route('user_files.index') }}">Set avatar from uploaded files</a></p>
     </div>
 </div>
 
