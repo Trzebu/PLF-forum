@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Friends;
+use App\Models\ModerationNotes;
 use Libs\Tools\SlugUrl;
 use Libs\Token;
+use Libs\User as Auth;
 include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
 final class ProfileController extends Controller {
@@ -37,8 +39,10 @@ final class ProfileController extends Controller {
         $this->view->title = "Forum - {$this->view->data->username} profile";
         $this->view->user = $user;
         $this->view->friend = new Friends();
-        $this->view->friends = $this->view->friend->getFriends($this->view->data->id);
+        $this->view->notes = new ModerationNotes();
+        $this->view->bb = new \BbCode();
         $this->view->urlToken = Token::generate("url_token");
+        $this->view->friends = $this->view->friend->getFriends($this->view->data->id);
         $this->view->threads = $post->calcThreadsCreatedByUser($this->view->data->id);
         $this->view->answers = $post->calcAnswersCreatedByUser($this->view->data->id);
         $this->view->render("user.profile");

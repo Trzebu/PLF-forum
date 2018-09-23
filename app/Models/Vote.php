@@ -15,22 +15,10 @@ final class Vote extends Model {
 
     public function calcVotes ($postId) {
 
-        $votes = $this->where("post_id", "=", $postId)->get(["type"])->count() > 0 ? $this->results() : null;
-        $votesAmount = 0;
+        $votesPositive = $this->where("post_id", "=", $postId)->and("type", "=", 1)->numRow();
+        $votesNegative = $this->where("post_id", "=", $postId)->and("type", "=", 0)->numRow();
 
-        if ($votes !== null) {
-
-            foreach ($votes as $vote) {
-                if ($vote->type == 0) {
-                    $votesAmount--;
-                } else {
-                    $votesAmount++;
-                }
-            }
-
-        }
-
-        return $votesAmount;
+        return $votesPositive - $votesNegative;
     }
 
     public function changeVote ($type, $postId) {

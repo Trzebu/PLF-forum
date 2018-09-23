@@ -273,3 +273,11 @@ Route::post("/user_files/upload_new", [
     "as" => "user_files.upload_new",
     "middleware" => ["auth"]
 ]);
+
+//Moderation notes
+
+Route::post("/moderation_notes/add_personal_note/{userId}", [
+    "uses" => "App\Http\Controllers\ModerationNotesController@addPersonalNote",
+    "as" => "moderation_notes.add_personal_note",
+    "middleware" => ["auth"]
+]);

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Post;
 use App\Models\Section;
 use App\Models\Vote;
+use App\Models\ModerationNotes;
 use Libs\Token;
 use Libs\Session;
 use Libs\Http\Request;
@@ -16,17 +17,21 @@ include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
 final class PostController extends Controller {
 
-    public function editPostSend ($postId) {
+    public function __construct () {
+        parent::__construct();
+        $this->section = new Section();
+        $this->post = new Post();
+        $this->notes = new ModerationNotes();
+    }
 
-        $post = new Post();
-        $section = new Section();
-        $postData = $post->getAnswer($postId);
+    public function editPostSend ($postId) {
+        $postData = $this->post->getAnswer($postId);
 
         if ($postData == null) {
             return $this->redirect("home.index");
         }
 
-        if ($postData->user_id != Auth()->data()->id && !$section->checkPermissions($postData->category)) {
+        if ($postData->user_id != Auth()->data()->id && !$this->section->checkPermissions($postData->category)) {
             return $this->redirect("home.index");
         }
 
@@ -42,7 +47,7 @@ final class PostController extends Controller {
             }
         }
 
-        if ($postData->status == 1 && !$section->checkPermissions($postData->category)) {
+        if ($postData->status == 1 && !$this->section->checkPermissions($postData->category)) {
             return $this->redirect("home.index");
         }
 
@@ -55,22 +60,23 @@ final class PostController extends Controller {
             "post" => "required|str>min:10|str>max:65500",
             "post_token" => "token"
         ])) {
-            $post->editPost($postData->id, strip_tags(Request::input("post")));
+            $this->notes->editPostNote($postData->id, $postData->contents, Request::input("post"));
+            $this->post->editPost($postData->id, strip_tags(Request::input("post")));
         }
 
         if ($postData->parent > 0) {
             //redirect to answer
             return $this->redirect("post.to_post_index", [
-                "sectionName" => $section->getSection($section->getCategory($postData->category)->parent)->url_name,
-                "categoryId" => $section->getCategory($postData->category)->url_name,
-                "postId" => $post->getAnswer($postData->parent)->id,
+                "sectionName" => $this->section->getSection($this->section->getCategory($postData->category)->parent)->url_name,
+                "categoryId" => $this->section->getCategory($postData->category)->url_name,
+                "postId" => $this->post->getAnswer($postData->parent)->id,
                 "answerId" => "#post_{$postData->id}"
             ]);
         }
 
         return $this->redirect("post.slug_index", [
-            "sectionName" => $section->getSection($section->getCategory($postData->category)->parent)->url_name,
-            "categoryId" => $section->getCategory($postData->category)->url_name,
+            "sectionName" => $this->section->getSection($this->section->getCategory($postData->category)->parent)->url_name,
+            "categoryId" => $this->section->getCategory($postData->category)->url_name,
             "postId" => $postData->id,
             "postSlugUrl" => SlugUrl::generate($postData->subject)
         ]);
@@ -78,10 +84,7 @@ final class PostController extends Controller {
     }
 
     public function editPost ($postId, $token) {
-
-        $post = new Post();
-        $section = new Section();
-        $postData = $post->getAnswer($postId);
+        $postData = $this->post->getAnswer($postId);
 
         if (!Token::check("url_token", $token)) {
             return $this->redirect("home.index");
@@ -96,11 +99,11 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
-        if ($postData->user_id != Auth()->data()->id && !$section->checkPermissions($postData->category)) {
+        if ($postData->user_id != Auth()->data()->id && !$this->section->checkPermissions($postData->category)) {
             return $this->redirect("home.index");
         }
 
-        if ($postData->status == 1 && !$section->checkPermissions($postData->category)) {
+        if ($postData->status == 1 && !$this->section->checkPermissions($postData->category)) {
             return $this->redirect("home.index");
         }
 
@@ -109,16 +112,13 @@ final class PostController extends Controller {
     }
 
     public function actionAnswer ($action, $id, $token) {
-
-        $post = new Post();
-        $section = new Section();
-        $answer = $post->getAnswer($id);
+        $answer = $this->post->getAnswer($id);
 
         if ($answer == null) {
             return $this->redirect("home.index");
         }
 
-        if (!$section->checkPermissions($answer->category)) {
+        if (!$this->section->checkPermissions($answer->category)) {
             return $this->redirect("home.index");
         }
 
@@ -127,106 +127,103 @@ final class PostController extends Controller {
         }
 
         $action = $action == "remove" ? 1 : 0;
+        $this->notes->removeRestoryNote($id, $action == 1 ? "removed" : "restored");
 
-        $post->changeAnswerStatus($id, $action);
+        $this->post->changeAnswerStatus($id, $action);
 
         return $this->redirect("post.slug_index", [
-            "sectionName" => $section->getSection($section->getCategory($answer->category)->parent)->url_name,
-            "categoryId" => $section->getCategory($answer->category)->url_name,
+            "sectionName" => $this->section->getSection($this->section->getCategory($answer->category)->parent)->url_name,
+            "categoryId" => $this->section->getCategory($answer->category)->url_name,
             "postId" => $answer->parent,
-            "postSlugUrl" => SlugUrl::generate($post->getSubjectData($answer->parent, $section->getCategory($answer->category)->id)->subject)
+            "postSlugUrl" => SlugUrl::generate($this->post->getSubjectData($answer->parent, $this->section->getCategory($answer->category)->id)->subject)
         ]); 
 
     } 
 
     public function openThread ($postId, $categoryId) {
-        $post = new Post();
-        $section = new Section();
-
-        if ($post->getSubjectData($postId, $categoryId) === null) {
+        if ($this->post->getSubjectData($postId, $categoryId) === null) {
             return $this->redirect("home.index");
         }
 
-        if (!$section->checkPermissions($post->getSubjectData($postId, $categoryId)->category)) {
+        if (!$this->section->checkPermissions($this->post->getSubjectData($postId, $categoryId)->category)) {
             return $this->redirect("home.index");
         }
 
         if ($this->validation(Request::input(), [
             "open_thread_token" => "token"
         ])) {
-            $post->openThread($postId);
+            $this->notes->openCloseNote($postId, "open");
+            $this->post->openThread($postId);
         }
 
         return $this->redirect("post.slug_index", [
-            "sectionName" => $section->getSection($section->getCategory($categoryId)->parent)->url_name,
+            "sectionName" => $this->section->getSection($this->section->getCategory($categoryId)->parent)->url_name,
             "categoryId" => $categoryId,
             "postId" => $postId,
-            "postSlugUrl" => SlugUrl::generate($post->getSubjectData($postId, $categoryId)->subject)
+            "postSlugUrl" => SlugUrl::generate($this->post->getSubjectData($postId, $categoryId)->subject)
         ]); 
 
     }
 
     public function closeThread ($postId, $categoryId) {
-        $post = new Post();
-        $section = new Section();
-
-        if ($post->getSubjectData($postId, $categoryId) === null) {
+        if ($this->post->getSubjectData($postId, $categoryId) === null) {
             return $this->redirect("home.index");
         }
 
-        if ($post->getSubjectData($postId, $categoryId)->user_id != Auth::data()->id && !$section->checkPermissions($post->getSubjectData($postId, $categoryId)->category)) {
+        if ($this->post->getSubjectData($postId, $categoryId)->user_id != Auth::data()->id 
+            && !$this->section->checkPermissions($this->post->getSubjectData($postId, $categoryId)->category)) {
             return $this->redirect("home.index");
         }
 
         if ($this->validation(Request::input(), [
             "close_thread_token" => "token"
         ])) {
-            $post->closeThread($postId);
+            if ($this->section->checkPermissions($this->post->getSubjectData($postId, $categoryId)->category)) {
+                $this->notes->openCloseNote($postId, "close");
+            }
+            $this->post->closeThread($postId);
         }
 
         return $this->redirect("post.slug_index", [
-            "sectionName" => $section->getSection($section->getCategory($categoryId)->parent)->url_name,
+            "sectionName" => $this->section->getSection($this->section->getCategory($categoryId)->parent)->url_name,
             "categoryId" => $categoryId,
             "postId" => $postId,
-            "postSlugUrl" => SlugUrl::generate($post->getSubjectData($postId, $categoryId)->subject)
+            "postSlugUrl" => SlugUrl::generate($this->post->getSubjectData($postId, $categoryId)->subject)
         ]);        
     }
 
     public function moveTo ($postId, $categoryId) {
-        $post = new Post();
-        $section = new Section();
-
-        if ($post->getSubjectData($postId, $categoryId) === null) {
+        if ($this->post->getSubjectData($postId, $categoryId) === null) {
             return $this->redirect("home.index");
         }
 
-        if (!$section->checkPermissions($post->getSubjectData($postId, $categoryId)->category)) {
+        if (!$this->section->checkPermissions($this->post->getSubjectData($postId, $categoryId)->category)) {
             return $this->redirect("home.index");
         }
 
-        if ($section->getCategory(Request::input("category")) === null) {
+        if ($this->section->getCategory(Request::input("category")) === null) {
             return $this->redirect("home.index");
         }
 
         if ($this->validation(Request::input(), [
             "move_to_token" => "token"
         ])) {
-            $post->moveTo($postId, Request::input("category"));
+            $this->notes->moveToNote($postId, Request::input("category"));
+            $this->post->moveTo($postId, Request::input("category"));
         }
 
+
         return $this->redirect("post.slug_index", [
-            "sectionName" => $section->getSection($section->getCategory(Request::input('category'))->parent)->url_name,
-            "categoryId" => $section->getCategory(Request::input('category'))->url_name,
+            "sectionName" => $this->section->getSection($this->section->getCategory(Request::input('category'))->parent)->url_name,
+            "categoryId" => $this->section->getCategory(Request::input('category'))->url_name,
             "postId" => $postId,
-            "postSlugUrl" => SlugUrl::generate($post->getSubjectData($postId, Request::input('category'))->subject)
+            "postSlugUrl" => SlugUrl::generate($this->post->getSubjectData($postId, Request::input('category'))->subject)
         ]);
 
     }
 
     public function addSubjectPost ($categoryId) {
-        $section = new Section();
-
-        if ($section->getCategory($categoryId) === null) {
+        if ($this->section->getCategory($categoryId) === null) {
             Session::flash("alert_error", "Given category dosen't exists.");
             return $this->redirect("home.index");
         }
@@ -236,8 +233,9 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
-        if (($section->getCategory($categoryId)->status == 1 || $section->getCategory($categoryId)->status == 2) &&
-            !$section->checkPermissions($section->getCategory($categoryId)->id)) {
+        if (($this->section->getCategory($categoryId)->status == 1 
+            || $this->section->getCategory($categoryId)->status == 2) 
+            && !$this->section->checkPermissions($section->getCategory($categoryId)->id)) {
             Session::flash("alert_error", "You can not write anything because this category is closed.");
             return $this->redirect("home.index");
         }
@@ -247,17 +245,16 @@ final class PostController extends Controller {
             "post" => "required|str>min:10|str>max:65500",
             "post_token" => "token" 
         ])) {
-            $post = new Post();
 
-            $id = $post->addNewSubject(
+            $id = $this->post->addNewSubject(
                 Request::input("title"),
                 strip_tags(Request::input("post")),
                 $categoryId
             );
 
             return $this->redirect("post.slug_index", [
-                "sectionName" => $section->getSection($section->getCategory($categoryId)->parent)->url_name,
-                "categoryId" => $section->getCategory($categoryId)->url_name,
+                "sectionName" => $this->section->getSection($this->section->getCategory($categoryId)->parent)->url_name,
+                "categoryId" => $this->section->getCategory($categoryId)->url_name,
                 "postId" => $id,
                 "postSlugUrl" => SlugUrl::generate(Request::input("title"))
             ]);
@@ -265,17 +262,14 @@ final class PostController extends Controller {
         }
 
         $this->redirect("post.add_subject_to_category", [
-            "sectionName" => $section->getSection($section->getCategory($categoryId)->parent)->url_name,
+            "sectionName" => $this->section->getSection($this->section->getCategory($categoryId)->parent)->url_name,
             "categoryId" => $categoryId
         ]);
 
     }
 
     public function addSubject ($sectionName, $categoryId) {
-
-        $section = new Section();
-
-        if ($section->getCategory($categoryId) === null) {
+        if ($this->section->getCategory($categoryId) === null) {
             Session::flash("alert_error", "Given category dosen't exists.");
             return $this->redirect("home.index");
         }
@@ -285,41 +279,38 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
-        $this->view->section = $section->getCategory($categoryId);
-        $this->view->sectionName = $section->getSection($this->view->section->parent)->name;
+        $this->view->section = $this->section->getCategory($categoryId);
+        $this->view->sectionName = $this->section->getSection($this->view->section->parent)->name;
         $this->view->render("post.addSubject");
 
     }
 
     public function addAnswer ($sectionName, $categoryId, $postId) {
-        $post = new Post();
-        $section = new Section();
-
         $error = "";
 
         if (!Auth::permissions("creating_answers")) {
             $error = "You can not write anything, because you have no permissions to creating answers.";
         }
 
-        if ($section->getCategory($categoryId) === null) {
+        if ($this->section->getCategory($categoryId) === null) {
             $error = "This section dosn't exists!";
         }
 
-        if ($post->getSubjectData($postId, $section->getCategory($categoryId)->id) === null) {
+        if ($this->post->getSubjectData($postId, $this->section->getCategory($categoryId)->id) === null) {
             $error = "This subject dosn't exists!";
         }
 
-        if ($post->getSubjectData($postId, $section->getCategory($categoryId)->id)->status == 1) {
+        if ($this->post->getSubjectData($postId, $this->section->getCategory($categoryId)->id)->status == 1) {
             $error = "This subject has been closed!";
         }
 
-        if ($section->getSection($section->getCategory($categoryId)->id)->status == 1 ||
-            $post->getSubjectData($postId, $section->getCategory($categoryId)->id)->status == 1 ||
-            $section->getSection($section->getCategory($categoryId)->id)->status == 2) {
+        if ($this->section->getSection($this->section->getCategory($categoryId)->id)->status == 1 ||
+            $this->post->getSubjectData($postId, $this->section->getCategory($categoryId)->id)->status == 1 ||
+            $this->section->getSection($this->section->getCategory($categoryId)->id)->status == 2) {
                 $error = "This thread is closed!";
         }
 
-        if (strlen($error) > 0 && !$section->checkPermissions($section->getCategory($categoryId)->id)) {
+        if (strlen($error) > 0 && !$this->section->checkPermissions($this->section->getCategory($categoryId)->id)) {
             Session::flash("alert_error", $error);
             return $this->redirect('home.index');
         }
@@ -330,9 +321,9 @@ final class PostController extends Controller {
         ])) {
 
             Session::flash("alert_success", "Your answer has been added to this thrade!");
-            $post->newAnswer(
+            $this->post->newAnswer(
                 $postId,
-                $section->getCategory($categoryId)->id,
+                $this->section->getCategory($categoryId)->id,
                 strip_tags(Request::input("post"))
             );
         }
@@ -347,18 +338,15 @@ final class PostController extends Controller {
     }
 
     public function viewIndex ($sectionName, $categoryId, $postId, $postSlugUrl = null) {
-        $post = new Post();
-        $section = new Section();
-
-        $this->view->parent_post = $post->getSubjectData($postId, $section->getCategory($categoryId)->id);
+        $this->view->parent_post = $this->post->getSubjectData($postId, $this->section->getCategory($categoryId)->id);
         if ($this->view->parent_post !== null) {
 
-            if ($section->getCategory($categoryId)->status == 2 && !$section->checkPermissions($section->getCategory($categoryId)->id)) {
+            if ($this->section->getCategory($categoryId)->status == 2 && !$this->section->checkPermissions($this->section->getCategory($categoryId)->id)) {
                 return $this->redirect("home.index");
             }
 
-            $post->visitIncrement($postId);
-            $this->view->postObj = $post;
+            $this->post->visitIncrement($postId);
+            $this->view->postObj = $this->post;
             $this->view->user = new User();
             $this->view->vote = new Vote();
             $this->view->urlToken = Token::generate("url_token");
@@ -368,9 +356,9 @@ final class PostController extends Controller {
             $this->view->threadBlockedReason = "";
             $this->view->bb = new \BbCode();
 
-            if ($section->checkPermissions($section->getCategory($categoryId)->id)) {
+            if ($this->section->checkPermissions($this->section->getCategory($categoryId)->id)) {
                 $this->view->hasPermissions = true;
-                $this->view->categories = $section->getAllCategories();
+                $this->view->categories = $this->section->getAllCategories();
             }
 
             /*Checking post status*/
@@ -379,7 +367,7 @@ final class PostController extends Controller {
                 $this->view->threadBlockedReason = "You must be logged if you want to write something in this thread.";
             } else if (!Auth()->permissions('creating_answers')) {
                 $this->view->threadBlockedReason = "You can not write anything, because you have no permissions to creating answers.";
-            } else if ($section->getCategory($categoryId)->status == 1) {
+            } else if ($this->section->getCategory($categoryId)->status == 1) {
                 $this->view->threadBlockedReason = "You can not write anything, because this category is closed by Moderator or Administrator.";
             } else if ($this->view->parent_post->status == 1) {
                 $this->view->threadBlockedReason = "You can not write anything, because this thread is closed.";

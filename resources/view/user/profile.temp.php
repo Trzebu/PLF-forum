@@ -108,6 +108,42 @@
             @endif
         @endif
     </div>
+    @if (Auth()->check()):
+        @if (Auth()->data()->id == $this->data->id || Auth()->permissions("moderator")):
+            @if (Auth()->permissions("moderator")):
+                <div class="col-12 text-center mb-10 border-top">
+                    <form method="post" action="{{ route('moderation_notes.add_personal_note', ['userId' => $this->data->id]) }}">
+                        <div class="form-group">
+                            <label for="post">Add presonal note for {{ $this->data->username }}:</label>
+                            <textarea name="post" id="post" class="form-control {{ $this->errors->has('post') ? 'is-invalid' : '' }} w-100 mb-10" style="height: 300px" placeholder="Type something..."></textarea>
+                            @if ($this->errors->has("post")):
+                                <div class="invalid-feedback">
+                                    {{ $this->errors->get("post")->first() }}
+                                </div>
+                            @endif
+                        </div>
+                        <input type="hidden" name="post_token" value="{{ $this->token->generate('post_token') }}">
+                        <input type="submit" class="btn btn-success btn-lg w-100 mb-10" value="Send">
+                    </form>
+                </div>
+            @endif
+            <div class="col-12 text-center mb-10 border-top">
+                <h5>Moderation notes for {{ $this->data->username }} (visible only for mods and user)</h5>
+            </div>
+            <div class="col-12 mb-10 border-top">
+                @foreach ($this->notes->getNotes($this->data->id) as $note):
+                    <?php $this->bb->parse($note->contents, false) ?>
+                    <div class="col mt-10 border">
+                        <p class="small-grey-text">Created by <a href="{{ route('profile.index_by_id', ['id' => $note->mod_id]) }}">{{ $this->user->username($note->mod_id) }}</a></p>
+                        <p class="small-grey-text">Created at: {{ $this->user->dateTimeAlphaMonth($note->created_at) }}</p>
+                        <div class="col border-top">
+                            {{ $this->bb->getHtml() }}
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    @endif
 </div>
 
 @include partials/footer
