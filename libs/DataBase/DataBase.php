@@ -94,7 +94,9 @@ class DataBase implements Countable {
             $sql .= " " . implode(" ", $this->_atEnd);
         }
 
-        return $this->query($sql);
+        $t = $this->query($sql);
+        $this->reset();
+        return $t;
     }
 
     public function paginate ($limit = 1) {
