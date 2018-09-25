@@ -349,6 +349,7 @@ final class PostController extends Controller {
             $this->view->postObj = $this->post;
             $this->view->user = new User();
             $this->view->vote = new Vote();
+            $this->view->reportToken = Token::generate("report_token");
             $this->view->urlToken = Token::generate("url_token");
             $this->view->section_id = $sectionName;
             $this->view->category_id = $categoryId;

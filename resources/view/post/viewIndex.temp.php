@@ -87,6 +87,8 @@
                                 <input type="submit" class="btn btn-success w-100" name="" value="Open">
                             </div>
                         </form>
+                    @else
+                        <a href="{{ route('report.contents', ['id' => $this->parent_post->id, 'contents' => 'post', 'token' => $this->reportToken]) }}">Report this thread!</a>
                     @endif
                 @endif
 
@@ -129,6 +131,8 @@
                                 <div class="col">
                                     @if ($this->hasPermissions || ($answer->user_id == Auth()->data()->id && $this->parent_post->status != 1)):
                                         <a href="{{ route('post.edit', ['postId' => $answer->id, 'token' => $this->urlToken]) }}">Edit</a>
+                                    @else
+                                        <a href="{{ route('report.contents', ['id' => $answer->id, 'contents' => 'post', 'token' => $this->reportToken]) }}">Report this answer!</a>
                                     @endif
                                 </div>
 
@@ -155,8 +159,6 @@
                                 @else
                                     <a href="{{ route('post.remove_or_restore', ['action' => 'remove', 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Remove</a>
                                 @endif
-                            @else
-                                <a href="">Report this answer!</a>
                             @endif
                         </div>
                     </div>

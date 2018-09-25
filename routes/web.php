@@ -281,3 +281,23 @@ Route::post("/moderation_notes/add_personal_note/{userId}", [
     "as" => "moderation_notes.add_personal_note",
     "middleware" => ["auth"]
 ]);
+
+//reports
+
+Route::get("/report/{id}/{contents}/{token}", [
+    "uses" => "App\Http\Controllers\ReportController@report",
+    "as" => "report.contents",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/report/{id}/{contents}", [
+    "uses" => "App\Http\Controllers\ReportController@reportPost",
+    "as" => "report.contents_post",
+    "middleware" => ["auth"]
+]);
+
+Route::get("/report/view", [ //moders view
+    "uses" => "App\Http\Controllers\ReportController@viewReports",
+    "as" => "report.view",
+    "middleware" => ["auth"]
+]);

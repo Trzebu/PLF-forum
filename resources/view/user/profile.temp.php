@@ -48,7 +48,7 @@
         @if (Auth()->data()->id != $this->data->id):
             <div class="col-12 text-center border-bottom mt-10">
                 <a href="{{ route('message.thread', ['userId' => $this->data->id]) }}" class="btn btn-success mb-10">Send private message</a>
-                <a href="" class="btn btn-danger mb-10">Report user</a>
+                <a href="{{ route('report.contents', ['id' => $this->data->id, 'contents' => 'profile', 'token' => $this->token->generate('report_token')]) }}" class="btn btn-danger mb-10">Report user</a>
             </div>
         @endif
     @endif

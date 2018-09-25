@@ -26,6 +26,10 @@
             <div class="col mb-10">
                 <a href="{{ route('user_files.remove', ['fileId' => $this->data->id, 'token' => $this->token->generate('remove_token')]) }}" class="btn btn-danger">Remove this file</a>
             </div>
+        @else
+            <div class="col mb-10">
+                <a class="btn btn-success" href="{{ route('report.contents', ['id' => $this->data->id, 'contents' => 'file', 'token' => $this->token->generate('report_token')]) }}">Report this file</a>
+            </div>
         @endif
         @if (Auth()->permissions("file_uploading")):
             <div class="col mb-10">

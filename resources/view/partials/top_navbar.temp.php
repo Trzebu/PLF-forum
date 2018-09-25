@@ -4,6 +4,11 @@
         <div class="my-2 my-lg-0">
             <ul class="navbar-nav mr-auto">
                 @if (Auth()->check()):
+                    @if (Auth()->permissions("moderator")):
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('report.view') }}">View reports</a>
+                        </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('profile.index_by_id', ['id' => Auth()->data()->id]) }}">Your profile ({{ Auth()->data()->username }})</a>
                     </li>
