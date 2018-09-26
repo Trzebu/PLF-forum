@@ -301,3 +301,9 @@ Route::get("/report/view", [ //moders view
     "as" => "report.view",
     "middleware" => ["auth"]
 ]);
+
+Route::get("/report/view/{id}", [ //moders view
+    "uses" => "App\Http\Controllers\ReportController@viewReportByID",
+    "as" => "report.view_by_id",
+    "middleware" => ["auth"]
+]);

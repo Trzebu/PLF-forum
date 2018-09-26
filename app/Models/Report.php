@@ -16,6 +16,10 @@ final class Report extends Model {
         "profile" => "moderator"
     ];
 
+    public function getReport ($id) {
+        return $this->where("id", "=", $id)->get()->count() > 0 ? $this->first() : null;
+    }
+
     public function modHasPermissions ($type, $id) {
         $section = new Section();
 

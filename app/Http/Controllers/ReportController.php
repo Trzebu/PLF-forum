@@ -18,6 +18,24 @@ final class ReportController extends Controller {
     public function __construct () {
         parent::__construct();
         $this->report = new Report();
+        $this->user = new User();
+    }
+
+    public function viewReportByID ($id) {
+        $this->view->data = $this->report->getReport($id);
+        $this->view->user = $this->user;
+
+        if ($this->view->data === null) {
+            Session::flash("alert_error", "This report dosen't exists.");
+            return $this->redirect("report.view");
+        }
+
+        if (!$this->report->modHasPermissions($this->view->data->content_type, $this->view->data->id)) {
+            Session::flash("alert_error", "You have no permissions to moderating this report.");
+            return $this->redirect("report.view");
+        }
+
+        $this->view->render("report.view_report");
     }
 
     public function viewReports () {
@@ -30,7 +48,7 @@ final class ReportController extends Controller {
             }
         }
 
-        $this->view->user = new User();
+        $this->view->user = $this->user;
         $this->view->render("report.mods_view");
     }
 
@@ -57,8 +75,7 @@ final class ReportController extends Controller {
                 return $this->redirect("home.index");
             }
         } else if ($contentType == "profile") {
-            $user = new User();
-            $data = $user->data($id);
+            $data = $this->user->data($id);
 
             if ($data === null) {
                 return $this->redirect("home.index");
@@ -135,8 +152,7 @@ final class ReportController extends Controller {
 
             $this->view->data = $file->getFile($id);
         } else if ($contentType == "profile") {
-            $user = new User();
-            $data = $user->data($id);
+            $data = $this->user->data($id);
 
             if ($data === null) {
                 return $this->redirect("home.index");

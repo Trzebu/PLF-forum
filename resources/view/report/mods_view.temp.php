@@ -24,7 +24,7 @@
                         <td>{{ $report->content_type }}</td>
                         <td>{{ $report->content_id }}</td>
                         <td>{{ trans("report.statuses." . $report->status) }}</td>
-                        <td><a href="" class="btn btn-success">View {{ $report->id }}</a></td>
+                        <td><a href="{{ route('report.view_by_id', ['id' => $report->id]) }}" class="btn btn-success">View {{ $report->id }}</a></td>
                         <td>{{ $this->user->dateTimeAlphaMonth($report->created_at, true) }}</td>
                     </tr>
                 @endforeach
