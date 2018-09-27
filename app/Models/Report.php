@@ -16,6 +16,10 @@ final class Report extends Model {
         "profile" => "moderator"
     ];
 
+    public function caseUpdate ($id, $fields) {
+        return $this->where("id", "=", $id)->update($fields);
+    }
+
     public function getReport ($id) {
         return $this->where("id", "=", $id)->get()->count() > 0 ? $this->first() : null;
     }

@@ -12,6 +12,7 @@ use Libs\User as Auth;
 use Libs\Token;
 use Libs\Session;
 use Libs\Http\Request;
+include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
 final class ReportController extends Controller {
 
@@ -19,6 +20,35 @@ final class ReportController extends Controller {
         parent::__construct();
         $this->report = new Report();
         $this->user = new User();
+    }
+
+    public function changeCaseStatus ($id) {
+        if ($this->report->getReport($id) === null) {
+            Session::flash("alert_error", "This report dosen't exists.");
+            return $this->redirect("report.view");
+        }
+
+        if (!$this->report->modHasPermissions($this->report->getReport($id)->content_type, $this->report->getReport($id)->id)) {
+            Session::flash("alert_error", "You have no permissions to moderating this report.");
+            return $this->redirect("report.view");
+        }
+
+        $statuses = trans("report.statuses");
+
+        if (!isset($statuses[Request::input("status")])) {
+            Session::flash("alert_error", "This status dosen't exists.");
+            return $this->redirect("report.view");
+        }
+        if ($this->validation(Request::input(), [
+            "status_change_token" => "token"
+        ])) {
+            $this->report->update($id, [
+                "status" => Request::input("status")
+            ]);
+            Session::flash("alert_success", "The case status has been changed.");
+        }
+
+        return $this->redirect("report.view");
     }
 
     public function viewReportByID ($id) {
@@ -33,6 +63,45 @@ final class ReportController extends Controller {
         if (!$this->report->modHasPermissions($this->view->data->content_type, $this->view->data->id)) {
             Session::flash("alert_error", "You have no permissions to moderating this report.");
             return $this->redirect("report.view");
+        }
+
+        if ($this->view->data->content_type == "post") {
+            $post = new Post();
+            $section = new Section();
+            $bb = new \BbCode();
+            $content = $post->getAnswer($this->view->data->content_id);
+            $bb->parse($content->contents, false);
+            $this->view->author = $content->user_id;
+            $this->view->contentCreatedAt = $content->created_at;
+
+            if (is_null($content->parent)) {
+                $this->view->link = route("post.id_index", [
+                    "sectionName" => $section->getSectionByCategory($content->category)->id,
+                    "categoryId" => $content->category,
+                    "postId" => $content->id
+                ]);
+                $this->view->contents = "<center><h5>Thread - {$content->subject}</h5></center><br>{$bb->getHtml()}";
+            } else {
+                $this->view->link = route("post.to_post_index", [
+                    "sectionName" => $section->getSectionByCategory($content->category)->id,
+                    "categoryId" => $content->category,
+                    "postId" => $content->parent,
+                    "answerId" => "#post_" . $content->id
+                ]);
+                $this->view->contents = "<center><h5>Post</h5></center><br>{$bb->getHtml()}";
+            }
+
+        } else if ($this->view->data->content_type == "file") {
+            $file = new Files();
+            $this->view->author = $file->getFile($this->view->data->content_id)->user_id;
+            $this->view->contentCreatedAt = $file->getFile($this->view->data->content_id)->created_at;
+            $this->view->link = route("user_files.view_file", ["fileId" => $this->view->data->content_id]);
+            $this->view->contents = "<center><h5>File - {$file->getFile($this->view->data->content_id)->original_name}</h5></center><br>";
+        } else if ($this->view->data->content_type == "profile") {
+            $this->view->author = $this->view->data->content_id;
+            $this->view->contentCreatedAt = $this->view->user->data($this->view->data->content_id)->created_at;
+            $this->view->link = route('profile.index_by_id', ["id" => $this->view->data->content_id]);
+            $this->view->contents = "<center><h5>Profile - <a href='" . route('profile.index_by_id', ["id" => $this->view->data->content_id]) . "'>{$this->view->user->username($this->view->data->content_id)}</a></h5></center><br>";
         }
 
         $this->view->render("report.view_report");

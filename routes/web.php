@@ -307,3 +307,15 @@ Route::get("/report/view/{id}", [ //moders view
     "as" => "report.view_by_id",
     "middleware" => ["auth"]
 ]);
+
+Route::post("/report/change_case_status/{id}", [
+    "uses" => "App\Http\Controllers\ReportController@changeCaseStatus",
+    "as" => "report.change_case_status",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/report/forward_case/{id}", [
+    "uses" => "App\Http\Controllers\ReportController@forwardCase",
+    "as" => "report.forward_case",
+    "middleware" => ["auth"]
+]);

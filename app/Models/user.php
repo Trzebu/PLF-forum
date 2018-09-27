@@ -9,6 +9,31 @@ use Libs\Config;
 final class User extends Model {
     protected $_table = "users";
 
+    public function getByPermission ($permission) {
+        $groups = DB::instance()->table("permissions")->get()->results();
+        $groupsIds = [];
+
+        foreach ($groups as $group) {
+            $permits = json_decode($group->permissions);
+
+            if (isset($permits->$permission)) {
+                if ($permits->$permission == 1) {
+                    array_push($groupsIds, $group->id);
+                }
+            }
+        }
+
+        $this->where("permissions", "=", $groupsIds[0]);
+        array_shift($groupsIds);
+
+        foreach ($groupsIds as $id) {
+            $this->or("permissions", "=", $id);
+        }
+        
+        return $this->get(["id"])->results();
+
+    }
+
     public function changeUserSettings ($fields) {
         $this->where("id", "=", Auth::data()->id)
             ->update($fields);

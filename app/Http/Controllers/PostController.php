@@ -345,6 +345,7 @@ final class PostController extends Controller {
                 return $this->redirect("home.index");
             }
 
+            $this->view->title = "{$this->view->parent_post->subject} - Forum";
             $this->post->visitIncrement($postId);
             $this->view->postObj = $this->post;
             $this->view->user = new User();
