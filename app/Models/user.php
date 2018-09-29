@@ -31,7 +31,6 @@ final class User extends Model {
         }
         
         return $this->get(["id"])->results();
-
     }
 
     public function changeUserSettings ($fields) {

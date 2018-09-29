@@ -16,12 +16,28 @@ final class Report extends Model {
         "profile" => "moderator"
     ];
 
+    public function getMyReports () {
+        return $this->where("user_id", "=", Auth::data()->id)
+                    ->and("parent", "null")
+                    ->orderBy(["created_at"])
+                    ->get()
+                    ->count() > 0 ? $this->results() : (unset) null;
+    }
+
+    public function sendResponse ($id, $contents) {
+        return $this->insert([
+            "user_id" => Auth::data()->id,
+            "parent" => $id,
+            "reason" => $contents
+        ])->lastInsertedId();
+    }
+
     public function caseUpdate ($id, $fields) {
         return $this->where("id", "=", $id)->update($fields);
     }
 
     public function getReport ($id) {
-        return $this->where("id", "=", $id)->get()->count() > 0 ? $this->first() : null;
+        return $this->where("id", "=", $id)->or("parent", "=", $id)->get()->count() > 0 ? $this->results() : null;
     }
 
     public function modHasPermissions ($type, $id) {
@@ -38,7 +54,13 @@ final class Report extends Model {
     }
 
     public function getAll () {
-        return $this->where("status", "=", 0)->or("status", "=", 1)->or("mod_id", "=", Auth::data()->id)->get()->count() > 0 ? $this->results() : (unset) null;
+        return $this->where("status", "=", 0)
+                    ->or("status", "=", 1)
+                    ->or("mod_id", "=", Auth::data()->id)
+                    ->and("parent", "null")
+                    ->orderBy(["status"], "ASC")
+                    ->get()
+                    ->count() > 0 ? $this->results() : (unset) null;
     }
 
     public function new ($fields) {

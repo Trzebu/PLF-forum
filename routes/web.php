@@ -290,6 +290,24 @@ Route::get("/report/{id}/{contents}/{token}", [
     "middleware" => ["auth"]
 ]);
 
+Route::post("/report/change_case_status/{id}", [
+    "uses" => "App\Http\Controllers\ReportController@changeCaseStatus",
+    "as" => "report.change_case_status",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/report/forward_case/{id}", [
+    "uses" => "App\Http\Controllers\ReportController@forwardCase",
+    "as" => "report.forward_case",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/report/send_response/{id}", [
+    "uses" => "App\Http\Controllers\ReportController@sendResponse",
+    "as" => "report.send_response",
+    "middleware" => ["auth"]
+]);
+
 Route::post("/report/{id}/{contents}", [
     "uses" => "App\Http\Controllers\ReportController@reportPost",
     "as" => "report.contents_post",
@@ -308,14 +326,20 @@ Route::get("/report/view/{id}", [ //moders view
     "middleware" => ["auth"]
 ]);
 
-Route::post("/report/change_case_status/{id}", [
-    "uses" => "App\Http\Controllers\ReportController@changeCaseStatus",
-    "as" => "report.change_case_status",
+Route::get("/report/my_reports", [ //user view
+    "uses" => "App\Http\Controllers\ReportController@myReports",
+    "as" => "report.my_reports",
     "middleware" => ["auth"]
 ]);
 
-Route::post("/report/forward_case/{id}", [
-    "uses" => "App\Http\Controllers\ReportController@forwardCase",
-    "as" => "report.forward_case",
+Route::get("/my_reports/view/{id}", [ //user view
+    "uses" => "App\Http\Controllers\ReportController@viewMyReport",
+    "as" => "report.view_my_report",
+    "middleware" => ["auth"]
+]);
+
+Route::get("/reconsideration/{id}/{token}", [ //user view
+    "uses" => "App\Http\Controllers\ReportController@reconsideration",
+    "as" => "report.reconsideration",
     "middleware" => ["auth"]
 ]);

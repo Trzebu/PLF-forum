@@ -18,6 +18,7 @@ class Controller {
         $this->view->errors = new ValidationErrors();
         $this->view->translate = new Translate();
         $this->view->title = "Forum";
+        $this->view->theme = "bootstrap";
     }
 
     protected function validation ($fields, $filters) {

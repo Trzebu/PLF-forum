@@ -20,15 +20,200 @@ final class ReportController extends Controller {
         parent::__construct();
         $this->report = new Report();
         $this->user = new User();
+        $this->view->user = $this->user;
+    }
+ 
+    public function reconsideration ($id, $token) {
+
+        if (!Token::check("url_token", $token)) {
+            return $this->redirect("report.my_reports");
+        }
+
+        $data = $this->report->getReport($id)[0];
+
+        if ($data === null) {
+            Session::flash("alert_error", "This report dosen't exists.");
+            return $this->redirect("report.my_reports");
+        }
+
+        if (Auth::data()->id != $data->user_id) {
+            Session::flash("alert_error", "This report is not yours.");
+            return $this->redirect("home.index");
+        }
+
+        if ($data->status == 0 ||
+            $data->status == 1 ||
+            $data->status == 2 ||
+            $data->status == 3 ||
+            $data->status == 6) {
+            Session::flash("alert_error", "This report is durning reconsideration.");
+            return $this->redirect("report.view_my_report", [
+                "id" => $id
+            ]);
+        }
+
+        if ($data->status == 7) {
+            Session::flash("alert_error", "This case has been blocked.");
+            return $this->redirect("report.view_my_report", [
+                "id" => $id
+            ]);
+        }
+
+        Session::flash("alert_info", "Your report has been send to reconsideration.");
+        $this->report->sendResponse($id, "<i>Ask about reconsideration.</i>");
+        $this->report->caseUpdate($id, [
+            "status" => 6
+        ]);
+
+        return $this->redirect("report.view_my_report", [
+            "id" => $id
+        ]);
     }
 
-    public function changeCaseStatus ($id) {
-        if ($this->report->getReport($id) === null) {
+    public function viewMyReport ($id) {
+        $this->view->conversation = $this->report->getReport($id);
+        $this->view->data = $this->view->conversation[0];
+
+        if ($this->view->data === null) {
+            Session::flash("alert_error", "This report dosen't exists.");
+            return $this->redirect("home.index");
+        }
+
+        if (Auth::data()->id != $this->view->data->user_id) {
+            Session::flash("alert_error", "This report is not yours.");
+            return $this->redirect("home.index");
+        }
+
+        if ($this->view->data->content_type == "post") {
+            $post = new Post();
+            $section = new Section();
+            $content = $post->getAnswer($this->view->data->content_id);
+
+            if (is_null($content->parent)) {
+                $this->view->link = route("post.id_index", [
+                    "sectionName" => $section->getSectionByCategory($content->category)->id,
+                    "categoryId" => $content->category,
+                    "postId" => $content->id
+                ]);
+            } else {
+                $this->view->link = route("post.to_post_index", [
+                    "sectionName" => $section->getSectionByCategory($content->category)->id,
+                    "categoryId" => $content->category,
+                    "postId" => $content->parent,
+                    "answerId" => "#post_" . $content->id
+                ]);
+            }
+
+        } else if ($this->view->data->content_type == "file") {
+            $file = new Files();
+            $this->view->link = route("user_files.view_file", ["fileId" => $this->view->data->content_id]);
+        } else if ($this->view->data->content_type == "profile") {
+            $this->view->link = route('profile.index_by_id', ["id" => $this->view->data->content_id]);
+        }
+
+        $this->view->render("report.view_my_report");
+    }
+
+    public function myReports () {
+        $this->view->reports = $this->report->getMyReports();
+        $this->view->render("report.my_reports");
+    }
+
+    public function sendResponse ($id) {
+        $data = $this->report->getReport($id)[0];
+        if ($data === null) {
+            Session::flash("alert_error", "This report dosen't exists.");
+            return $this->redirect("home.index");
+        }
+
+        if ($data->status == 4 ||
+            $data->status == 5 ||
+            $data->status == 6 ||
+            $data->status == 7) {
+            Session::flash("alert_error", "This case is closed.");
+            return $this->redirect("home.index");
+        }
+
+        if ($data->user_id != Auth::data()->id 
+            && $data->mod_id != Auth::data()->id) {
+            Session::flash("alert_error", "You are not a member of this conversation.");
+            return $this->redirect("home.index");
+        }
+
+        if ($this->validation(Request::input(), [
+            "post" => ["required|str>min:10>max:2000", "message"],
+            "post_token" => "token"
+        ])) {
+            $this->report->sendResponse($id, Request::input("post"));
+        }
+
+        if (Auth::permissions("moderator")) {
+            return $this->redirect("report.view_by_id", [
+                "id" => $id
+            ]);
+        } else {
+            return $this->redirect("report.view_my_report", [
+                "id" => $id
+            ]);
+        }
+
+    }
+
+    public function forwardCase ($id) {
+        if ($this->report->getReport($id)[0] === null) {
             Session::flash("alert_error", "This report dosen't exists.");
             return $this->redirect("report.view");
         }
 
-        if (!$this->report->modHasPermissions($this->report->getReport($id)->content_type, $this->report->getReport($id)->id)) {
+        if (!$this->report->modHasPermissions($this->report->getReport($id)[0]->content_type, $this->report->getReport($id)[0]->content_id) 
+            && $this->report->getReport($id)[0]->mod_id != Auth::data()->id) {
+            Session::flash("alert_error", "You have no permissions to moderating this report.");
+            return $this->redirect("report.view");
+        }
+
+        if ($this->user->data(Request::input("forward")) === null) {
+            Session::flash("alert_error", "This user dosen't exists.");
+            return $this->redirect("report.view_by_id", [
+                "id" => $id
+            ]);
+        }
+
+        if (Request::input("forward") == $this->report->getReport($id)[0]->mod_id) {
+            Session::flash("alert_error", "You can not forward this case to you.");
+            return $this->redirect("report.view_by_id", [
+                "id" => $id
+            ]);
+        }
+
+        if ($this->report->getReport($id)[0]->status != 2) {
+            Session::flash("alert_error", "You must set \"Case pending\" status if you want to forward this case.");
+            return $this->redirect("report.view_by_id", [
+                "id" => $id
+            ]);
+        }
+
+        if ($this->validation(Request::input(), [
+            "forward_token" => "token"
+        ])) {
+            Session::flash("alert_success", "Case has been forwarded.");
+            $this->report->sendResponse($id, "<i>This case has been forwarded to {$this->user->username(Request::input('forward'))}</i>");
+            $this->report->caseUpdate($id, [
+                "status" => 3,
+                "mod_id" => Request::input("forward")
+            ]); 
+        }
+
+        $this->redirect("report.view");
+    } 
+
+    public function changeCaseStatus ($id) {
+        if ($this->report->getReport($id)[0] === null) {
+            Session::flash("alert_error", "This report dosen't exists.");
+            return $this->redirect("report.view");
+        }
+
+        if (!$this->report->modHasPermissions($this->report->getReport($id)[0]->content_type, $this->report->getReport($id)[0]->content_id) 
+            && $this->report->getReport($id)[0]->mod_id != Auth::data()->id) {
             Session::flash("alert_error", "You have no permissions to moderating this report.");
             return $this->redirect("report.view");
         }
@@ -42,25 +227,30 @@ final class ReportController extends Controller {
         if ($this->validation(Request::input(), [
             "status_change_token" => "token"
         ])) {
-            $this->report->update($id, [
-                "status" => Request::input("status")
-            ]);
             Session::flash("alert_success", "The case status has been changed.");
+            $this->report->sendResponse($id, "<i>Change case status to " . trans("report.statuses." . Request::input("status")) . "</i>");
+            $this->report->caseUpdate($id, [
+                "status" => Request::input("status"),
+                "mod_id" => Auth::data()->id
+            ]);
         }
 
-        return $this->redirect("report.view");
+        return $this->redirect("report.view_by_id", [
+            "id" => $id
+        ]);
     }
 
     public function viewReportByID ($id) {
-        $this->view->data = $this->report->getReport($id);
-        $this->view->user = $this->user;
+        $this->view->conversation = $this->report->getReport($id);
+        $this->view->data = $this->view->conversation[0];
 
         if ($this->view->data === null) {
             Session::flash("alert_error", "This report dosen't exists.");
             return $this->redirect("report.view");
         }
 
-        if (!$this->report->modHasPermissions($this->view->data->content_type, $this->view->data->id)) {
+        if (!$this->report->modHasPermissions($this->view->data->content_type, $this->view->data->id) 
+            && $this->view->data->mod_id != Auth::data()->id) {
             Session::flash("alert_error", "You have no permissions to moderating this report.");
             return $this->redirect("report.view");
         }
@@ -108,16 +298,20 @@ final class ReportController extends Controller {
     }
 
     public function viewReports () {
+        if (!Auth::permissions("moderator")) {
+            return $this->redirect("home.index");
+        }
+
         $this->view->reports = $this->report->getAll();
         $j = count($this->view->reports);
 
         for ($i = 0; $i < $j; $i++) {
-            if (!$this->report->modHasPermissions($this->view->reports[$i]->content_type, $this->view->reports[$i]->content_id)) {
+            if (!$this->report->modHasPermissions($this->view->reports[$i]->content_type, $this->view->reports[$i]->content_id) 
+                && $this->view->reports[$i]->mod_id != Auth::data()->id) {
                 unset($this->view->reports[$i]);
             }
         }
 
-        $this->view->user = $this->user;
         $this->view->render("report.mods_view");
     }
 
@@ -199,7 +393,6 @@ final class ReportController extends Controller {
             return $this->redirect("home.index");
         }
 
-        $this->view->user = new User();
         $this->view->contents = $contentType;
 
         if ($contentType == "post") {
