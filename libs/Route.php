@@ -63,11 +63,12 @@ class Route {
             $params = [];
             if (count($url_chunks) == count($route_chunks)) {
                 for ($i = 0; $i < count($route_chunks); $i++) {
+                    //echo $url_chunks[$i], " ", $route_chunks[$i];
                     if (substr($route_chunks[$i], 0, 1) == "{") {
                         array_push($params, $url_chunks[$i]);
-                        continue;
+                        //continue;
                     } else if ($route_chunks[$i] == $url_chunks[$i]) {
-                        continue;
+                        //continue;
                     } else {
                         $route_ok = false;
                     }

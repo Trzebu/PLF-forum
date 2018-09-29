@@ -28,7 +28,7 @@ class BbCodeFilterCode {
 	 */
 	public function parseCode($tag, &$openNode, &$body, &$closeNode) {
 		// tutaj mozemy dodać geshi czy to tez sie podoba
-		$openNode['text'].='<div class="code_title">Kod</div><div class="code_area">';
+		$openNode['text'].='<div class="code_title">Code</div><div class="code_area">';
 		$closeNode['text'] = '</div>'.$closeNode['text'];
 	}
 	/**

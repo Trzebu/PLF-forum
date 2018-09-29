@@ -54,7 +54,7 @@ class Translate {
                 }
             }
 
-            return is_array($file) ? implode(".", $path) : $file;
+            return $file;
 
         }
         return implode(".", $path);

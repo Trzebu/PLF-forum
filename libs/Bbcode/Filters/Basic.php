@@ -117,7 +117,7 @@ class BbCodeFilterBasic {
 				}
 			}
 		}
-		$openNode['text'].='<div class="quote_title">Cytat '.$divText.':</div><div class="quote_area">';
+		$openNode['text'].='<div class="quote_title">Quote '.$divText.':</div><div class="quote_area">';
 		$closeNode['text'] = '</div>'.$closeNode['text'];
 	}
 }

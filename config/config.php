@@ -11,7 +11,7 @@ $GLOBALS = [
         ],
         "dirs" => [
             "resources" => "/resources",
-            "view" => "/resources/view",
+            "view" => "/resources/views",
             "compiled_templates" => "/storage/views",
         ],
         "DataBase" => [
@@ -21,6 +21,7 @@ $GLOBALS = [
             "username" => "root",
             "password" => "",
         ],
+        "theme" => "bootstrap",
         "upload_dir" => "/public/app/uploaded/",
     ]
 ];

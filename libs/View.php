@@ -19,9 +19,9 @@ class View {
 
     public function render ($path) {
         $path = str_replace(".", "/", $path);
-        $ctempPath = __ROOT__ . Config::get("dirs/compiled_templates") . "/" . Str::replace($path, ["/" => "."]) . ".ctemp.php";
+        $ctempPath = __ROOT__ . Config::get("dirs/compiled_templates") . "/" . Str::replace(Config::get("theme") . "/" . $path, ["/" => "."]) . ".ctemp.php";
         try {
-            if (!file_exists(__ROOT__ . Config::get("dirs/view") . "/" . $path . ".temp.php")) {
+            if (!file_exists(__ROOT__ . Config::get("dirs/view") . "/" . Config::get("theme") . "/" . $path . ".temp.php")) {
                 Throw new Exception("Template {$path} not found.");
             } else if (!file_exists($ctempPath) && !Config::get("debug")) {
                 Throw new Exception("Template {$path} is not compiled!");
