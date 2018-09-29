@@ -6,8 +6,10 @@ return [
         0 => "New",
         1 => "Opened",
         2 => "Case pending",
-        3 => "The case is not considered",
-        4 => "The case is resolved",
-        5 => "The case has been blocked"
+        3 => "Forwarded",
+        4 => "Not considered",
+        5 => "Resolved",
+        6 => "For reconsideration",
+        7 => "Blocked",
     ]
 ];
