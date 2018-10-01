@@ -60,7 +60,7 @@ class Request {
         }
 
         if ($name !== null) {
-            return isset($data[$name]) ? strip_tags($data[$name]) : null;
+            return isset($data[$name]) ? is_array($data[$name]) ? $data[$name] : strip_tags($data[$name]) : null;
         }
 
         return $data;
