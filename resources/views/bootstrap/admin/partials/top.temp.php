@@ -16,7 +16,7 @@
         <div class="page-container">
             <div class="tabs">
                 <ul>
-                    <li class="tab {{ !Libs\Http\Request::inUrl('general_settings') ?: 'tab-active' }}"><a href="">General</a></li>
+                    <li class="tab {{ !Libs\Http\Request::inUrl('general_settings') ?: 'tab-active' }}"><a href="{{ route('admin.general_settings') }}">General</a></li>
                     <li class="tab"><a href="">Forums</a></li>
                     <li class="tab"><a href="">Posting</a></li>
                     <li class="tab"><a href="">Usera and Groups</a></li>

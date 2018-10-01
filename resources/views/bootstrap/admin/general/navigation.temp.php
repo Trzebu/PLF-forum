@@ -21,8 +21,8 @@
     <div class="navigation-block">
         <div class="header">System</div>
         <ul>
-            <li><a href="">System registry</a></li>
-            <li><a href="">PHP information</a></li>
+            <li class="{{ !Libs\Http\Request::inUrl('system_registry') ?: 'left-navigation-active' }}"><a href="{{ route('admin.general_settings.system_registry') }}">System registry</a></li>
+            <li class="{{ !Libs\Http\Request::inUrl('php_info') ?: 'left-navigation-active' }}"><a href="{{ route('admin.general_settings.php_info') }}">PHP information</a></li>
         </ul>
     </div>
 </div>

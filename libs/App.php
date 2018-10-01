@@ -6,7 +6,11 @@ use Libs\Http\Request;
 class App {
 
     public function __construct () {
-        require_once(__ROOT__ . '/routes/web.php');
+        foreach (scandir(__ROOT__ . '/routes/') as $dir) {
+            if (strpos($dir, ".") !== 0) {
+                require_once(__ROOT__ . '/routes/' . $dir);
+            }
+        }
         $route = Route::getRoutes(Request::url());
 
         if (!$route) {
