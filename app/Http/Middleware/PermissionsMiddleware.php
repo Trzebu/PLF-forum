@@ -17,8 +17,7 @@ class PermissionsMiddleware {
 
     public function __construct () {
         $_allowed_groups = [ //here you can add more groups with permit.
-            "admin",
-            "moderator",
+            "admin"
         ];
         $has_permission = false;
 

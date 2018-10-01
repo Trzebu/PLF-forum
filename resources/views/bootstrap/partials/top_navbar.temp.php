@@ -9,6 +9,11 @@
                             <a class="nav-link" href="{{ route('report.view') }}">View reports</a>
                         </li>
                     @endif
+                    @if (Auth()->permissions("admin")):
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.general_settings') }}">Administration CP</a>
+                        </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('profile.index_by_id', ['id' => Auth()->data()->id]) }}">Your profile ({{ Auth()->data()->username }})</a>
                     </li>

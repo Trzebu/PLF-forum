@@ -1,1 +1,4 @@
 /storage/*.key
+LICENSE
+README.md
+storage/views/bootstrap.message.view.ctemp.php

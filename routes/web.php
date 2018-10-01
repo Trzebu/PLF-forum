@@ -343,3 +343,17 @@ Route::get("/reconsideration/{id}/{token}", [ //user view
     "as" => "report.reconsideration",
     "middleware" => ["auth"]
 ]);
+
+/************** ADMINISTRATIONS *********************/
+
+Route::get("/admin", [
+    "uses" => "App\Http\Controllers\AdminControllers\GeneralController@generalView",
+    "as" => "admin.general_settings",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings", [
+    "uses" => "App\Http\Controllers\AdminControllers\GeneralController@generalView",
+    "as" => "admin.general_settings",
+    "middleware" => ["permissions"]
+]);

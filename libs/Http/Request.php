@@ -18,6 +18,15 @@ class Request {
         return count(self::$_urlVars) > 0 ? self::$_urlVars : null;
     }
 
+    public static function inUrl ($needle) {
+        $url = explode("/", self::url());
+        if (in_array($needle, $url)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function old ($name = null) {
         if ($name !== null) {
             if (is_array($name)) {
