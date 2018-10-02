@@ -1,17 +1,15 @@
 <?php
 
 return [
-    "max" => [
-        "numeric" => "The :attribute may not be greater than :max.",
-    ],
-    "min" => [
-        "numeric" => "The :attribute must be at least :min.",
-    ],
-    "numeric" => "The :attribute must be a number.",
     "string" => [
         "str" => "The :attribute must be a string.",
         "min" => "The :attribute must be at least :min characters.",
         "max" => "The :attribute may not be greater than :max characters."
+    ],
+    "integre" => [
+        "num" => "The :attribute must be a number.",
+        "min" => "The :attribute must be at least :min.",
+        "max" => "The :attribute may not be greater than :max."
     ],
     "alpha" => [
         "letters" => "The :attribute may only contain letters.",

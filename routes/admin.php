@@ -35,3 +35,15 @@ Route::get("/admin/general_settings/php_info", [
     "as" => "admin.general_settings.php_info",
     "middleware" => ["permissions"]
 ]);
+
+Route::get("/admin/general_settings/system_registry/new", [
+    "uses" => "App\Http\Controllers\AdminControllers\SystemRegistryController@addNewRegistry",
+    "as" => "admin.general_settings.system_registry.new",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/system_registry/new/post", [
+    "uses" => "App\Http\Controllers\AdminControllers\SystemRegistryController@addNewRegistryPost",
+    "as" => "admin.general_settings.system_registry.new.post",
+    "middleware" => ["permissions"]
+]);

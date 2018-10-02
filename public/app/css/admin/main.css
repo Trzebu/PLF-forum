@@ -4,7 +4,7 @@ body {
     background-color: #dbd7d1;
     color: #536482;
     font-family: "Trebuchet MS", Helvetica, sans-serif;
-        font-size: 100%;
+    font-size: 1em;
 }
 
 .text-center {
@@ -96,6 +96,7 @@ body {
 .main {
     width: 85%;
     padding-left: 10px;
+    padding-right: 10px;
 }
 
 .navigation-block > .header {
@@ -129,7 +130,7 @@ body {
 }
 
 .navigation-block > ul > li > a {
-        display: block;
+    display: block;
     padding: 3px 3px 3px 8px;
     margin: 1px 0;
     text-decoration: none;
@@ -191,4 +192,165 @@ td {
     padding: 4px;
     line-height: 1.20em;
     background-color: #dcebfe;
+}
+
+tr:nth-child(odd) > td {
+    background-color: #cee2fd;
+}
+
+.fieldset {
+    margin: 15px 0;
+    padding: 10px;
+    border-top: 1px solid #D7D7D7;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    border-left: 1px solid #D7D7D7;
+    background-color: #FFFFFF;
+    position: relative;
+    border-radius: 3px;
+}
+
+.legend {
+    padding: 1px 0;
+    font-family: Tahoma,arial,Verdana,Sans-serif;
+    font-size: .9em;
+    font-weight: bold;
+    color: #115098;
+    margin-top: -20px;
+    position: relative;
+    text-transform: none;
+    line-height: 1.2em;
+    top: -.2em;
+    vertical-align: middle;
+}
+
+.fieldset dl {
+    overflow: hidden;
+    margin-bottom: 10px;
+    font-size: 0.85em;
+}
+
+.fieldset dt {
+    width: 45%;
+    text-align: left;
+    border: none;
+    border-right: 1px solid #CCCCCC;
+    padding-top: 3px;
+    float: left;
+}
+
+dt label {    
+    font-size: 1.00em;
+    text-align: left;
+    font-weight: bold;
+    color: #4A5A73;
+    padding: 0 5px 0 0;
+}
+
+dt span {
+    padding: 0 5px 0 0;
+}
+
+.fieldset dd {
+    margin: 0 0 0 45%;
+    padding: 0 0 0 5px;
+    border: none;
+    border-left: 1px solid #CCCCCC;
+    vertical-align: top;
+    font-size: 1.00em;
+}
+
+dd input {
+    font-size: 1.00em;
+    max-width: 100%;
+    margin: 2px 0;
+}
+
+dd select {
+    font-size: 100%;
+    font-size: 1em;
+    width: auto;
+    max-width: 100%;
+    margin: 2px 0;
+}
+
+input, textarea {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 0.90em;
+    font-weight: normal;
+    vertical-align: middle;
+    padding: 2px;
+    color: #111111;
+    border-left: 1px solid #AFAEAA;
+    border-top: 1px solid #AFAEAA;
+    border-right: 1px solid #D5D5C8;
+    border-bottom: 1px solid #D5D5C8;
+    background-color: #E3DFD8;
+}
+
+select {
+    background-color: #FAFAFA;
+    border: 1px solid #666666;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 0.85em;
+    font-weight: normal;
+    font-style: normal;
+    cursor: pointer;
+    padding: 1px;
+    vertical-align: middle;
+    width: auto;
+    color: #000;
+}
+
+input.radio, input.checkbox, input.permissions-checkbox {
+    width: auto !important;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.buttons {
+    text-align: center;
+    margin: 0;
+    padding: 4px;
+    margin-top: 10px;
+}
+
+.button {
+    width: auto !important;
+    padding: 1px 3px 0 3px;
+    font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
+    color: #000;
+    font-size: 0.85em;
+    background: #EFEFEF;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: #d9d9d9;
+}
+
+.alert {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 2px dotted black;
+}
+
+.success {
+    border-color: green;
+    background: lightgreen;
+    color: green;
+}
+
+.info {
+    border-color: blue;
+    background: lightblue;
+    color: blue;
+}
+
+.error {
+    border-color: #cc0000;
+    background: #ffb3b3;
+    color: #cc0000;
 }

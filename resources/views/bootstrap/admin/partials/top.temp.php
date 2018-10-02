@@ -12,8 +12,8 @@
         <div class="text-center">
             <h2>Administration Controll Panel</h2>
         </div>
-        @include admin/partials/alerts
         <div class="page-container">
+            @include admin/partials/alerts
             <div class="tabs">
                 <ul>
                     <li class="tab {{ !Libs\Http\Request::inUrl('general_settings') ?: 'tab-active' }}"><a href="{{ route('admin.general_settings') }}">General</a></li>
