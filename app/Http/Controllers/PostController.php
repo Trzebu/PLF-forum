@@ -10,6 +10,7 @@ use App\Models\Vote;
 use App\Models\ModerationNotes;
 use Libs\Token;
 use Libs\Session;
+use Libs\Config;
 use Libs\Http\Request;
 use Libs\User as Auth;
 use Libs\Tools\SlugUrl;
@@ -241,8 +242,13 @@ final class PostController extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "title" => "required|str>min:10|str>max:120",
-            "post" => "required|str>min:10|str>max:65500",
+            "title" => "required|str>min:" .
+                        Config::get("posting/title/length/min") .
+                        "|str>max:120" .
+                        Config::get("posting/title/length/max"),
+            "post" => "required|str>min:" .
+                        Config::get("posting/contents/length/min") . "|str>max:" .
+                        Config::get("posting/contents/length/max"),
             "post_token" => "token" 
         ])) {
 
@@ -316,7 +322,9 @@ final class PostController extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "post" => "required|str>min:10|str>max:65500",
+            "post" => "required|str>min:" .
+                        Config::get("posting/answers/contents/length/min") . "|str>max:" .
+                        Config::get("posting/answers/contents/length/max"),
             "post_token" => "token"
         ])) {
 

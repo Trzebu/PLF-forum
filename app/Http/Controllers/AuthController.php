@@ -8,6 +8,7 @@ use Libs\Session;
 use Libs\Translate;
 use Libs\User as Auth;
 use Libs\Token;
+use Libs\Config;
 
 final class AuthController extends Controller {
 
@@ -126,9 +127,18 @@ final class AuthController extends Controller {
     public function postRegister () {
         
         if ($this->validation(Request::input(), [
-            "username" => ["required|alpha:num|unique:users|str>min:4>max:30", Translate::get("auth.inputs.username")],
-            "email" => ["required|is_valid>email|unique:users|str>max:100", Translate::get("auth.inputs.email")],
-            "password" => ["required|str>min:5", Translate::get("auth.inputs.password")],
+            "username" => ["required|alpha:num|unique:users|str>min:" . 
+                            Config::get("user/auth/username/length/min") . 
+                            ">max:" . 
+                            Config::get("user/auth/username/length/max"), Translate::get("auth.inputs.username")],
+            "email" => ["required|is_valid>email|unique:users|str>min:" . 
+                            Config::get("user/auth/email/length/min") .
+                            ">max:" . 
+                            Config::get("user/auth/email/length/min"), Translate::get("auth.inputs.email")],
+            "password" => ["required|str>min:" .
+                            Config::get("user/auth/password/length/min") .
+                            ">max:" .
+                            Config::get("user/auth/password/length/max"), Translate::get("auth.inputs.password")],
             "password_again" => ["same:password", Translate::get("auth.inputs.password_again")],
             "rule" => "accepted",
             "_token" => "token"

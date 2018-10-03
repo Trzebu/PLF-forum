@@ -8,6 +8,7 @@ use App\Models\User;
 use Libs\User as Auth;
 use Libs\Http\Request;
 use Libs\Session;
+use Libs\Config;
 
 final class ModerationNotesController extends Controller {
 
@@ -30,7 +31,10 @@ final class ModerationNotesController extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "post" => "required|str>min:10>max:65000",
+            "post" => "required|str>min:" .
+                        Config::get("moderation/moderation_notes/personal_notes/length/min") .
+                        ">max:" .
+                        Config::get("moderation/moderation_notes/personal_notes/length/max"),
             "post_token" => "token"
         ])) {
             Session::flash("alert_success", "Moderation note has benn added correctly.");

@@ -43,6 +43,11 @@ final class SystemRegistryController extends Controller {
 
     public function view () {
         $this->view->registry = $this->reg->getAllRegistry();
+        
+        usort($this->view->registry, function ($x, $y) { 
+            return strcasecmp($x->registry_name, $y->registry_name);
+        });
+        
         $this->view->reg = $this->reg;
         $this->view->render("admin.general.system_registry.view");
     }

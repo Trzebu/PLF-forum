@@ -9,11 +9,7 @@ require_once(__ROOT__ . '/libs/functions/trans.php');
 
 //Loading system registry
 
-$configs = Libs\DataBase\DataBase::instance()->table("system_registry")->get()->results();
-
-foreach ($configs as $conf) {
-    $GLOBALS['constants'] = array_merge($GLOBALS['constants'], [$conf->registry_name => $conf->value]);
-}
+Libs\Config::loadRegistry();
 
 $app = new Libs\App;
 
