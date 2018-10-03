@@ -28,7 +28,6 @@
                     @if (is_object($this->thread)):
                         <?php $unreaded_line = false; ?>
                         @foreach ($this->thread as $data):
-                            <?php $this->bb->parse($data->contents, false); ?>
 
                             @if ($data->readed == 0 && !$unreaded_line):
                                 <?php $unreaded_line = true; ?>
@@ -43,7 +42,14 @@
                                         <img class="mx-auto d-block media-object mr-3 rounded-circle avatar_mini_thumb" src="{{ $this->user->getAvatar($data->user_id, 50) }}">
                                     </div>
                                 </div>
-                                <div class="col-11">{{ $this->bb->getHtml() }}</div>
+                                <div class="col-11">
+                                    @if (Libs\Config::get("private_message/contents/bbcode")):
+                                        {? $this->bb->parse($data->contents, false); ?}
+                                        {{ $this->bb->getHtml() }}
+                                    @else
+                                        {{ $data->contents }}
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     @else

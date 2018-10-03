@@ -8,6 +8,7 @@ use App\Models\Post;
 use Libs\Token;
 use Libs\User as Auth;
 use Libs\Session;
+use Libs\Config;
 
 final class VoteController extends Controller {
 
@@ -38,6 +39,18 @@ final class VoteController extends Controller {
         }
 
         $vote = new Vote();  
+        $postHasVotes = $vote->calcVotes($postId);
+
+        if ($postHasVotes == Config::get("posting/voting/max_votes_per_post") 
+            || $postHasVotes == Config::get("posting/voting/min_votes_per_post")) {
+            Session::flash("alert_error", "This post has maximum possible votes.");
+            return $this->redirect("post.to_post_index", [
+                "sectionName" => $sectionId,
+                "categoryId" => $categoryId,
+                "postId" => $parentPostId,
+                "answerId" => "#post_{$postId}"
+            ]);
+        }
 
         if (!$vote->checkThatVoteIsGiven($postId)) {
 

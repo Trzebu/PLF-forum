@@ -8,6 +8,7 @@ use Libs\Validation\ValidationErrors;
 use Libs\Session;
 use Libs\Http\Redirect;
 use Libs\Translate;
+use Libs\Config;
 use Libs\Http\Request;
 
 class Controller {
@@ -17,7 +18,7 @@ class Controller {
         $this->view->token = new Token();
         $this->view->errors = new ValidationErrors();
         $this->view->translate = new Translate();
-        $this->view->title = "Forum";
+        $this->view->title = Config::get("page/contents/title");
         $this->view->theme = "bootstrap";
     }
 

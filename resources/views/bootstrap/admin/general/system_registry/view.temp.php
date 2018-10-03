@@ -9,7 +9,7 @@
     <table class="table-responsive">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Name/Edit</th>
                 <th>Type</th>
                 <th>Value</th>
                 <th>Reading</th>
@@ -23,7 +23,7 @@
                     {? $value = substr($reg->value, 0, Libs\Config::get("acp/general_settings/system_registry/view/table/value/length/max")) ?}
                     <td>{{ $reg->registry_name }}</td>
                     <td>{{ trans('acp.registry_types.' . $reg->type) }}</td>
-                    <td>{{ count($value) > 9 ? $value . "..." : $value }}</td>
+                    <td>{{ strlen($value) > 9 ? $value . "..." : $value }}</td>
                     <td>{{ $this->reg->permissions($reg->mode, "reading") ? trans('buttons.yes') : trans('buttons.no') }}</td>
                     <td>{{ $this->reg->permissions($reg->mode, "edit_value") ? trans('buttons.yes') : trans('buttons.no') }}</td>
                     <td>{{ $this->reg->permissions($reg->mode, "edit_reg") ? trans('buttons.yes') : trans('buttons.no') }}</td>

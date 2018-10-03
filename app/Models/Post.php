@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use Libs\Model;
+use Libs\Config;
 use Libs\User as Auth;
 
 final class Post extends Model {
@@ -85,39 +86,69 @@ final class Post extends Model {
     }
 
     public function getAnswer ($answerId) {
-        return $this->where("id", "=", $answerId)->get()->count() > 0 ? $this->first() : null;
+        return $this->where("id", "=", $answerId)
+                    ->get()
+                    ->count() > 0 ? $this->first() : null;
     }
 
     public function getAnswers ($postId) {
-        return $this->where("parent", "=", $postId)->paginate(10)->get()->count() > 0 ? $this->results() : null;
+        return $this->where("parent", "=", $postId)
+                    ->paginate(Config::get("post/answers/per_page"))
+                    ->get()
+                    ->count() > 0 ? $this->results() : null;
     }
 
     public function getSubjectData ($postId, $categoryId) {
-        return $this->where("id", "=", $postId)->and("category", "=", $categoryId)->and("parent", "null")->get()->count() > 0 ? $this->first() : null;
+        return $this->where("id", "=", $postId)
+                    ->and("category", "=", $categoryId)
+                    ->and("parent", "null")
+                    ->get()
+                    ->count() > 0 ? $this->first() : null;
     }
 
     public function getAnswersCount ($subjectId, $categoryId) {
-        return $this->where("parent", "=", $subjectId)->and("category", "=", $categoryId)->numRow();
+        return $this->where("parent", "=", $subjectId)
+                    ->and("category", "=", $categoryId)
+                    ->numRow();
     }
 
     public function getLastPost ($subjectId, $categoryId) {
-        return $this->where("parent", "=", $subjectId)->and("category", "=", $categoryId)->orderBy(["id"])->rowsLimit(1)->get()->count() > 0 ? $this->first() : null;
+        return $this->where("parent", "=", $subjectId)
+                    ->and("category", "=", $categoryId)
+                    ->orderBy(["id"])
+                    ->rowsLimit(1)
+                    ->get()
+                    ->count() > 0 ? $this->first() : null;
     }
 
     public function getLastSubject ($categoryId) {
-        return $this->where("parent", "null")->and("category", "=", $categoryId)->orderBy(["id"])->rowsLimit(1)->get()->count() > 0 ? $this->first() : null;
+        return $this->where("parent", "null")
+                    ->and("category", "=", $categoryId)
+                    ->orderBy(["id"])
+                    ->rowsLimit(1)
+                    ->get()
+                    ->count() > 0 ? $this->first() : null;
     }
 
     public function getSubjectsCount ($categoryId) {
-        return $this->where("parent", "null")->and("category", "=", $categoryId)->numRow();
+        return $this->where("parent", "null")
+                ->and("category", "=", $categoryId)
+                ->numRow();
     }
 
     public function getPostsCount ($categoryId) {
-        return $this->where("parent", "not_null")->and("category", "=", $categoryId)->numRow();
+        return $this->where("parent", "not_null")
+                    ->and("category", "=", $categoryId)
+                    ->numRow();
     }
 
     public function getPosts ($categoryId) {
-        return $this->where("parent", "null")->and("category", "=", $categoryId)->orderBy(["id"])->paginate(10)->get()->count() > 0 ? $this : null;
+        return $this->where("parent", "null")
+                    ->and("category", "=", $categoryId)
+                    ->orderBy(["id"])
+                    ->paginate(Config::get("category/view/post/per_page"))
+                    ->get()
+                    ->count() > 0 ? $this : null;
     }
 
 }

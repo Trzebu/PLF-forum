@@ -36,7 +36,7 @@
                 @foreach ($this->files as $file):
                     <tr>
                         <td>{{ $file->id }}</td>
-                        <td><a href="{{ route('/') . Libs\Config::get('upload_dir') . $file->path }}">{{ $file->path }}</a></td>
+                        <td><a href="{{ route('/') . Libs\Config::get('uploading/upload_dir') . $file->path }}">{{ $file->path }}</a></td>
                         <td>{{ $file->original_name }}</td>
                         <td>{{ Libs\Tools\HumanFileSize::get($file->size, true) }}</td>
                         <td>{{ pathinfo($file->path, PATHINFO_EXTENSION) }}</td>

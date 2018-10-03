@@ -10,12 +10,12 @@ final class Files extends Model {
     protected $_table = "users_files";
 
     public function remove ($id) {
-        unlink(__ROOT__ . Config::get("upload_dir") . $this->getFile($id)->path);
+        unlink(__ROOT__ . Config::get("uploading/upload_dir") . $this->getFile($id)->path);
         $this->where("id", "=", $id)->delete();
     }
 
     public function getImageSize ($fileId) {
-        $data = getimagesize(__ROOT__ . Config::get("upload_dir") . $this->getFile($fileId)->path);
+        $data = getimagesize(__ROOT__ . Config::get("uploading/upload_dir") . $this->getFile($fileId)->path);
         return $data == null ? false : (object) [
             "width" => $data[0],
             "height" => $data[1]
@@ -26,7 +26,7 @@ final class Files extends Model {
         $source_file = $this->getFile($fileId);
         $newFileName = uniqid(true);
         $ext = pathinfo($source_file->path, PATHINFO_EXTENSION);
-        $path = __ROOT__ . Config::get("upload_dir");
+        $path = __ROOT__ . Config::get("uploading/upload_dir");
 
         if (copy($path . $source_file->path, "{$path}{$newFileName}.{$ext}")) {
             return $this->insert([
@@ -59,7 +59,7 @@ final class Files extends Model {
         $file = (object) $file;
         $ext = pathinfo($file->name, PATHINFO_EXTENSION);
 
-        move_uploaded_file($file->tmp_name, __ROOT__ . Config::get("upload_dir") . "/{$name}.{$ext}");
+        move_uploaded_file($file->tmp_name, __ROOT__ . Config::get("uploading/upload_dir") . "/{$name}.{$ext}");
 
         return (int) $this->insert([
             "user_id" => Auth::data()->id,

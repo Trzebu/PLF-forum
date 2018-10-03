@@ -57,8 +57,11 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
+        $min = $postData->parent > 0 ? Config::get("posting/answers/contents/length/min") : Config::get("posting/contents/length/min");
+        $max = $postData->parent > 0 ? Config::get("posting/answers/contents/length/max") : Config::get("posting/contents/length/max");
+
         if ($this->validation(Request::input(), [
-            "post" => "required|str>min:10|str>max:65500",
+            "post" => "required|str>min:{$min}|str>max:{$max}",
             "post_token" => "token"
         ])) {
             $this->notes->editPostNote($postData->id, $postData->contents, Request::input("post"));
@@ -236,7 +239,7 @@ final class PostController extends Controller {
 
         if (($this->section->getCategory($categoryId)->status == 1 
             || $this->section->getCategory($categoryId)->status == 2) 
-            && !$this->section->checkPermissions($section->getCategory($categoryId)->id)) {
+            && !$this->section->checkPermissions($this->section->getCategory($categoryId)->id)) {
             Session::flash("alert_error", "You can not write anything because this category is closed.");
             return $this->redirect("home.index");
         }

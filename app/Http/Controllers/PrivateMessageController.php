@@ -7,6 +7,7 @@ use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Models\Friends;
 use Libs\Session;
+use Libs\Config;
 use Libs\Http\Request;
 include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
@@ -28,7 +29,10 @@ final class PrivateMessageController extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "post" => "str>max:65000|str>min:1",
+            "post" => "str>min:" .
+                        Config::get("private_message/contents/length/min") .
+                        "|str>max:" .
+                        Config::get("private_message/contents/length/max"),
             "post_token" => "token"
         ])) {
             $message->send($userId, Request::input("post"));

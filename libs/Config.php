@@ -24,7 +24,7 @@ class Config {
                 } else if ($type == "str") {
                     return (string) $val;
                 } else if ($type == "bool") {
-                    return (boolean) $val;
+                    return $val === "true" ? true : false;
                 } else if ($type == "arr") {
                     return (object) $val;
                 } else if ($type == "unset") {

@@ -11,6 +11,7 @@ use App\Models\Section;
 use Libs\User as Auth;
 use Libs\Token;
 use Libs\Session;
+use Libs\Config;
 use Libs\Http\Request;
 include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
@@ -141,7 +142,10 @@ final class ReportController extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "post" => ["required|str>min:10>max:2000", "message"],
+            "post" => ["required|str>min:" .
+                        Config::get("report/case/response/contents/length/min") .
+                        ">max:" .
+                        Config::get("report/case/response/contents/length/max"), "message"],
             "post_token" => "token"
         ])) {
             $this->report->sendResponse($id, Request::input("post"));
@@ -349,7 +353,10 @@ final class ReportController extends Controller {
             Session::flash("alert_info", "This contents is already reported.");
         } else {
             if ($this->validation(Request::input(), [
-                "post" => "required|str>min:10>max:2000",
+                "post" => "required|str>min:" .
+                Config::get("report/report_contents/contents/length/min") .
+                ">max:" .
+                Config::get("report/report_contents/contents/length/max"),
                 "post_token" => "token"
             ])) {
                 Session::flash("alert_success", "Your report has been sent to verification. You can see report status in your profile.");

@@ -7,6 +7,7 @@ use App\Models\Files;
 use App\Models\User;
 use Libs\Http\Request;
 use Libs\Session;
+use Libs\Config;
 use Libs\User as Auth;
 use Libs\Token;
 
@@ -14,6 +15,7 @@ final class UserFiles extends Controller {
 
     public function __construct () {
         parent::__construct();
+        $this->user = new User();
         $this->file = new Files();
     }
 
@@ -29,6 +31,13 @@ final class UserFiles extends Controller {
         if (Auth()->data()->id != $this->file->getFile($fileId)->user_id 
             && !Auth()->permissions("file_managing")) {
             return $this->redirect("user_files.view_file", ["fileId" => $fileId]);
+        }
+
+        if (Auth::data()->avatar == $fileId) {
+            $this->user->changeUserSettings([
+                "avatar" => 0
+            ]);
+            Session::flash("alert_info", "Because this file it was setted as your avatar, your avatar has been set to default.");
         }
 
         $this->file->remove($fileId);
@@ -52,10 +61,10 @@ final class UserFiles extends Controller {
 
         $resol = $this->file->getImageSize($fileId);
 
-        if ($resol->width > 300 
-            || $resol->height > 300 
-            || $resol->width < 200 
-            || $resol->height < 200) {
+        if ($resol->width > Config::get("avatar/width/max") 
+            || $resol->height > Config::get("avatar/height/max") 
+            || $resol->width < Config::get("avatar/width/min") 
+            || $resol->height < Config::get("avatar/height/min")) {
             return $this->redirect("user_files.view_file", ["fileId" => $fileId]);
         }
 
@@ -103,10 +112,10 @@ final class UserFiles extends Controller {
         if ($this->view->data !== null) {
             if ($this->file->isValidImage($this->view->data->path)) {
                 $resol = $this->file->getImageSize($fileId);
-                if ($resol->width <= 300 
-                    && $resol->height <= 300 
-                    && $resol->width >= 200 
-                    && $resol->height >= 200) {
+                if ($resol->width <= Config::get("avatar/width/max") 
+                    && $resol->height <= Config::get("avatar/height/max") 
+                    && $resol->width >= Config::get("avatar/width/min") 
+                    && $resol->height >= Config::get("avatar/height/min")) {
                     $this->view->isValidImage = true;
                 }
             }
@@ -140,7 +149,13 @@ final class UserFiles extends Controller {
         }
         
         if ($this->validation(Request::input(), [
-            "image" => "required|file>image:gif,x-icon,bmp>max_size:256000>min_resolution:200,200>max_resolution:300,300",
+            "image" => "required|file>image:gif,x-icon,bmp>max_size:" .
+                        Config::get("avatar/size/max") . ">min_resolution:" .
+                        Config::get("avatar/width/min") . "," .
+                        Config::get("avatar/height/min") .
+                        ">max_resolution:" . 
+                        Config::get("avatar/width/max") . "," .
+                        Config::get("avatar/height/max"),
             "avatar_change_token" => "token"
         ])) {
             $user = new User();
@@ -154,10 +169,8 @@ final class UserFiles extends Controller {
 
     public function index () {
         $this->view->file = $this->file;
-
         $this->view->files = $this->file->getMyFiles();
         $this->view->render("user_files.index");
-
     }
 
 }

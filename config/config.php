@@ -21,7 +21,5 @@ $GLOBALS = [
             "username" => "root",
             "password" => "",
         ],
-        "theme" => "bootstrap",
-        "upload_dir" => "/public/app/uploaded/",
     ]
 ];

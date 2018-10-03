@@ -40,9 +40,9 @@
                     <td class="w-10 text-center">{{ $this->postObj->getPostsCount($category->id) }}</td>
                     <td style="width: 20%;">
                         @if ($this->postObj->getLastSubject($category->id) !== null):
-                            <a href="{{ route('post.slug_index', ['sectionName' => $this->section_details->url_name, 'categoryId' => $category->url_name, 'postId' => $this->postObj->getLastSubject($category->id)->id, 'postSlugUrl' => Libs\Tools\SlugUrl::generate($this->postObj->getLastSubject($category->id)->subject)]) }}">{{ substr($this->postObj->getLastSubject($category->id)->subject, 0, 21) }}...</a>
+                            <a href="{{ route('post.slug_index', ['sectionName' => $this->section_details->url_name, 'categoryId' => $category->url_name, 'postId' => $this->postObj->getLastSubject($category->id)->id, 'postSlugUrl' => Libs\Tools\SlugUrl::generate($this->postObj->getLastSubject($category->id)->subject)]) }}">{{ substr($this->postObj->getLastSubject($category->id)->subject, 0, Libs\Config::get('forum/section_view/last_thread/subject/length/max')) }}...</a>
                             <p class="small-grey-text">Author: <a href="{{ route('profile.index_by_id', ['id' => $this->postObj->getLastSubject($category->id)->user_id]) }}">{{ $this->user->username($this->postObj->getLastSubject($category->id)->user_id) }}</a></p>
-                            <p class="small-grey-text">{{ $this->postObj->dateTimeAlphaMonth($this->postObj->getLastSubject($category->id)->created_at) }}</p>
+                            <p class="small-grey-text">{{ $this->postObj->dateTimeAlphaMonth($this->postObj->getLastSubject($category->id)->created_at, Libs\Config::get('section/categorys/last_thread/date/short_notation')) }}</p>
                         @else
                             This category is empty.
                         @endif

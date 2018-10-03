@@ -8,9 +8,13 @@
         <div id="post_{{ $this->parent_post->id }}" class="row border border-primary rounded mt-10 mb-10" style="background-color: #cccccc">
             <div class="col-10">
                 <h6 style="color: blue">{{ $this->parent_post->subject }}</h6>
-                <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($this->parent_post->created_at) }}</p>
-                <?php $this->bb->parse($this->parent_post->contents, false) ?>
-                {{ $this->bb->getHtml() }}
+                <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($this->parent_post->created_at, Libs\Config::get('post/contents/date/short_notation')) }}</p>
+                @if (Libs\Config::get("posting/bbcode")):
+                    {? $this->bb->parse($this->parent_post->contents, false) ?}
+                    {{ $this->bb->getHtml() }}
+                @else
+                    {{ $this->parent_post->contents }}
+                @endif
                 @if ($this->parent_post->status == 2):
                     <p class="small-grey-text">Edited at: {{ $this->parent_post->updated_at }}</p>
                 @endif
@@ -102,15 +106,23 @@
                 <div id="post_{{ $answer->id }}" class="row border border-primary rounded mt-10 mb-10">
                     <div class="col-10">
                         <h6 style="color: blue">Re: {{ $this->parent_post->subject }}</h6>
-                        <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($answer->created_at) }}</p>
-                        <?php $this->bb->parse($answer->contents, false) ?>
+                        <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($answer->created_at, Libs\Config::get('post/contents/date/short_notation')) }}</p>
+                        {? $this->bb->parse($answer->contents, false) ?}
                         @if ($answer->status == 1):
                             <font  color="red"><h4>This answer has been deleted by moderator!</h4></font>
                             @if ($this->hasPermissions):
-                                {{ $this->bb->getHtml() }}
+                                @if (Libs\Config::get("posting/answers/bbcode")):
+                                    {{ $this->bb->getHtml() }}
+                                @else
+                                    {{ $answer->contents }}
+                                @endif
                             @endif
                         @else
-                            {{ $this->bb->getHtml() }}
+                            @if (Libs\Config::get("posting/answers/bbcode")):
+                                {{ $this->bb->getHtml() }}
+                            @else
+                                {{ $answer->contents }}
+                            @endif
                             @if ($answer->status == 2):
                                 <p class="small-grey-text">Edited at: {{ $answer->updated_at }}</p>
                             @endif

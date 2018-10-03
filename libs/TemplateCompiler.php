@@ -16,7 +16,7 @@ class TemplateCompiler {
     }
 
     private function startCompile ($path) {
-        if($file = file_get_contents(__ROOT__ . Config::get("dirs/view") . "/" . Config::get("theme") . "/" . $path . ".temp.php")) {
+        if($file = file_get_contents(__ROOT__ . Config::get("dirs/view") . "/" . Config::get("forum/theme/default_theme") . "/" . $path . ".temp.php")) {
             $this->_code = explode("\n", $file);
             $this->cleareCode();
             $this->compile();
@@ -35,7 +35,7 @@ class TemplateCompiler {
     }
 
     private function templateSave ($path) {
-        $path = __ROOT__ . Config::get("dirs/compiled_templates") . "/" . Str::replace(Config::get("theme") . "/" . $path, ["/" => "."]) . ".ctemp.php";
+        $path = __ROOT__ . Config::get("dirs/compiled_templates") . "/" . Str::replace(Config::get("forum/theme/default_theme") . "/" . $path, ["/" => "."]) . ".ctemp.php";
         if (!is_dir(__ROOT__ . "/storage/views")) {
             mkdir(__ROOT__ . "/storage/views", 0700, true);
         }
@@ -172,7 +172,7 @@ class TemplateCompiler {
         }
 
         $params = trim(Str::replace($params[0], ["/" => "."]));
-        $theme = Config::get("theme");
+        $theme = Config::get("forum/theme/default_theme");
         $this->_code[$this->_line] = "<?php include(\"{$theme}.{$params}\" . \".ctemp.php\"); ?>";
         array_push($this->_includes, $params);
     }

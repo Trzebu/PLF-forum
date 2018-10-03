@@ -109,7 +109,7 @@ final class User extends Model {
                     ->get(["path"]);
         $path = $path->count() > 0 ? $path->first()->path : null;
 
-        return  $path !== null ? route("/") . Config::get("upload_dir") . "/" . $path : "https://www.gravatar.com/avatar/{$md}?s={$size}";
+        return  $path !== null ? route("/") . Config::get("uploading/upload_dir") . "/" . $path : "https://www.gravatar.com/avatar/{$md}?s={$size}";
     }
 
     public function allPermissions ($id) {
