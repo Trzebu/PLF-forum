@@ -15,7 +15,7 @@
     <i class="fas fa-images" title="{{ trans('bbcode.image') }}" onclick="replace('image')"></i>
     <i class="fas fa-list-ul" title="{{ trans('bbcode.list-ul') }}" onclick="replace('list-ul')"></i>
     <i class="fas fa-list-ol" title="{{ trans('bbcode.list-ol') }}" onclick="replace('list-ol')"></i>
-    <i class="fas fa-palette" title="{{ trans('bbcode.color') }}" onclick="replace('')"></i>
+    <i class="fas fa-palette" title="{{ trans('bbcode.color') }}" onclick="replace('color')"></i>
     <i class="fab fa-youtube" title="{{ trans('bbcode.youtube') }}" onclick="replace('youtube')"></i>
 </div>
 

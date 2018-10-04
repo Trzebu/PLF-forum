@@ -66,7 +66,7 @@ class BbCodeFilterImage {
 				),
 				'alt' => array(
 					'attr' => 'alt',
-					'default_value' => ''
+					'default_value' => 'post image'
 				)
 			)
 		)
@@ -229,7 +229,7 @@ class BbCodeFilterImage {
 
 		$cNode['text'] = '';
 		$openNode = BbCode::rebuildNode($tag, $openNode, $settings);
-		$openNode['text'] = substr($openNode['text'], 0, -1).'/>'; // domykamy img :)
+		$openNode['text'] = substr($openNode['text'], 0, -1).' class="img_bbcode"/>'; // domykamy img :)
 	}
 }
 

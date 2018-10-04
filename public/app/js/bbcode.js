@@ -3,7 +3,7 @@ var bbTags = {
     "italic": "[i][/i]",
     "underline": "[u][/u]",
     "strikethrough": "[s][/s]",
-    "size": "[size][/size]",
+    "size": "[size=13][/size]",
     "center": "[center][/center]",
     "link": '[url="http://example.com"][/url]',
     "quote": "[quote][/quote]",
@@ -12,6 +12,7 @@ var bbTags = {
     "list-ul": "[ul][li]First element[/li][li]next element[/li][/ul]",
     "list-ol": "[ol][li]First element[/li][li]next element[/li][/ol]",
     "youtube": "[youtube]Youtube link[/youtube]",
+    "color": "[color=blue]or in hex[/color]",
 }
 
 function replace (tagName) {

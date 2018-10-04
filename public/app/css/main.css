@@ -95,3 +95,15 @@
 .bbcode > i {
     cursor: pointer;
 }
+
+.img_bbcode {
+    width: 100%;
+}
+
+.quote_wrapper {
+    width: 100%;
+    padding: 10px;
+    background: white;
+    border: 1px solid black;
+    font-style: italic;
+}

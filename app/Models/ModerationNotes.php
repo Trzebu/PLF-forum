@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Post;
 use App\Models\Section;
 use Libs\Model;
+use Libs\Config;
 use Libs\User as Auth;
 
 final class ModerationNotes extends Model {
@@ -73,7 +74,11 @@ final class ModerationNotes extends Model {
     }
 
     public function getNotes ($userId) {
-        return $this->where("user_id", "=", $userId)->orderBy(["id"])->get()->results();
+        return $this->where("user_id", "=", $userId)
+                    ->orderBy(["id"])
+                    ->rowsLimit(Config::get("moderation/moderation_notes/personal_notes/results/max"))
+                    ->get()
+                    ->results();
     }
 
     public function add ($userId, $contents) {
