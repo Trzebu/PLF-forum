@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Section;
 use Libs\Model;
+use Libs\Config;
 use Libs\DataBase\DataBase as DB;
 use Libs\User as Auth;
 
@@ -37,7 +38,10 @@ final class Report extends Model {
     }
 
     public function getReport ($id) {
-        return $this->where("id", "=", $id)->or("parent", "=", $id)->get()->count() > 0 ? $this->results() : null;
+        return $this->where("id", "=", $id)
+                    ->or("parent", "=", $id)
+                    ->get()
+                    ->count() > 0 ? $this->results() : null;
     }
 
     public function modHasPermissions ($type, $id) {
@@ -55,10 +59,13 @@ final class Report extends Model {
 
     public function getAll () {
         return $this->where("status", "=", 0)
+                    ->and("parent", "null")
                     ->or("status", "=", 1)
+                    ->and("parent", "null")
                     ->or("mod_id", "=", Auth::data()->id)
                     ->and("parent", "null")
-                    ->orderBy(["status"], "ASC")
+                    ->orderBy(["status"])
+                    ->paginate(Config::get("report/view/per_page"))
                     ->get()
                     ->count() > 0 ? $this->results() : (unset) null;
     }

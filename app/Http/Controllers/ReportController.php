@@ -306,6 +306,7 @@ final class ReportController extends Controller {
             return $this->redirect("home.index");
         }
 
+        $this->view->report = $this->report;
         $this->view->reports = $this->report->getAll();
         $j = count($this->view->reports);
 

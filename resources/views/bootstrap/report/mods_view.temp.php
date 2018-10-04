@@ -30,6 +30,7 @@
                 @endforeach
             </tbody>
         </table>
+        <center>{{ $this->report->paginateRender() }}</center>
     @else
         <h5>Currently you don't have new reports to moderate.</h5>
     @endif

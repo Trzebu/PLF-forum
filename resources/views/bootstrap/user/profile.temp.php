@@ -115,11 +115,10 @@
                     <form method="post" action="{{ route('moderation_notes.add_personal_note', ['userId' => $this->data->id]) }}">
                         <div class="form-group">
                             <label for="post">Add presonal note for {{ $this->data->username }}:</label>
-                            <textarea name="post" id="post" class="form-control {{ $this->errors->has('post') ? 'is-invalid' : '' }} w-100 mb-10" style="height: 300px" placeholder="Type something..."></textarea>
-                            @if ($this->errors->has("post")):
-                                <div class="invalid-feedback">
-                                    {{ $this->errors->get("post")->first() }}
-                                </div>
+                            @if (Libs\Config::get("moderation/moderation_notes/personal_notes/contents/bbcode")):
+                                @include partials/post_bbcode_block
+                            @else
+                                @include partials/post_default_block
                             @endif
                         </div>
                         <input type="hidden" name="post_token" value="{{ $this->token->generate('post_token') }}">
@@ -137,12 +136,16 @@
             </div>
             <div class="col-12 mb-10 border-top">
                 @foreach ($this->notes->getNotes($this->data->id) as $note):
-                    <?php $this->bb->parse($note->contents, false) ?>
                     <div class="col mt-10 border">
                         <p class="small-grey-text">Created by <a href="{{ route('profile.index_by_id', ['id' => $note->mod_id]) }}">{{ $this->user->username($note->mod_id) }}</a></p>
                         <p class="small-grey-text">Created at: {{ $this->user->dateTimeAlphaMonth($note->created_at) }}</p>
                         <div class="col border-top">
-                            {{ $this->bb->getHtml() }}
+                            @if (Libs\Config::get("moderation/moderation_notes/personal_notes/contents/bbcode")):
+                                {? $this->bb->parse($note->contents, false) ?}
+                                {{ $this->bb->getHtml() }}
+                            @else
+                                {{ $note->contents }}
+                            @endif
                         </div>
                     </div>
                 @endforeach

@@ -14,7 +14,10 @@ class User {
     public function __construct () {
         if (!Session::exists("u_id")) {
             if (Cookie::exists("remember_token")) {
-                $token = DataBase::instance()->table("users")->where("remember_me", "=", Cookie::get("remember_token"))->get(["id"]);
+                $token = DataBase::instance()
+                                    ->table("users")
+                                    ->where("remember_me", "=", Cookie::get("remember_token"))
+                                    ->get(["id"]);
                 if ($token->count() > 0) {
                     Session::set("u_id", $token->first()->id);
                 }
@@ -101,8 +104,7 @@ class User {
                 "remember_me" => $token
             ]);
 
-            Cookie::put("remember_token", $token, 2592000);
-
+            Cookie::put("remember_token", $token, Config::get("user/auth/remember_me/cookie_expiry"));
         }
 
         Session::set("u_id", $db->id);
