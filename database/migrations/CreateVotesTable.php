@@ -36,6 +36,7 @@ class CreateVotesTable extends TableCreator {
 
         $this->increments("id");
         $this->int("user_id");
+        $this->int("rated_user_id");
         $this->int("post_id");
         $this->int("type", 1);
 

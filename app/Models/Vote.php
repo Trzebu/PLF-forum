@@ -14,11 +14,18 @@ final class Vote extends Model {
     }
 
     public function calcVotes ($postId) {
+        $amount = 0;
+        $votes = $this->where("post_id", "=", $postId)->get()->results();
 
-        $votesPositive = $this->where("post_id", "=", $postId)->and("type", "=", 1)->numRow();
-        $votesNegative = $this->where("post_id", "=", $postId)->and("type", "=", 0)->numRow();
+        foreach ($votes as $vote) {
+            if ($vote->type == 1) {
+                $amount++;
+            } else {
+                $amount--;
+            }
+        }
 
-        return $votesPositive - $votesNegative;
+        return $amount;
     }
 
     public function changeVote ($type, $postId) {
@@ -35,13 +42,14 @@ final class Vote extends Model {
         return $this->where("user_id", "=", Auth::data()->id)->and("post_id", "=", $postId)->get(["type"])->count() > 0 ? $this->first()->type : null;
     }
 
-    public function give ($type, $postId) {
+    public function give ($type, $postId, $userId) {
         $type = $type == "up" ? 1 : 0;
 
         $this->insert([
             "user_id" => Auth::data()->id,
             "post_id" => $postId,
-            "type" => $type
+            "type" => $type,
+            "rated_user_id" => $userId
         ]);
     }
 

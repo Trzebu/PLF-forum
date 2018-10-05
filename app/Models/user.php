@@ -103,17 +103,13 @@ final class User extends Model {
 
     public function calcReputation ($id) {
         $amount = 0;
-        $posts = DB::instance()->table("posts")->where("user_id", "=", $id)->get(["id"]);
-        $posts = $posts->count() > 0 ? $posts->results() : null;
+        $votes = DB::instance()->table("votes")->where("rated_user_id", "=", $id)->get(["type"])->results();
 
-        if ($posts !== null) {
-            foreach ($posts as $post) {
-
-                $votesPositive = DB::instance()->table("votes")->where("post_id", "=", $post->id)->and("type", "=", 1)->numRow();
-                $votesNegative = DB::instance()->table("votes")->where("post_id", "=", $post->id)->and("type", "=", 0)->numRow();
-
-                $amount = $amount + ($votesPositive - $votesNegative);
-
+        foreach ($votes as $vote) {
+            if ($vote->type == 1) {
+                $amount++;
+            } else {
+                $amount--;
             }
         }
 

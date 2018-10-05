@@ -54,7 +54,7 @@ final class VoteController extends Controller {
 
         if (!$vote->checkThatVoteIsGiven($postId)) {
 
-            $vote->give($type, $postId);
+            $vote->give($type, $postId, $post->getAnswer($postId)->user_id);
 
         } else {
             
