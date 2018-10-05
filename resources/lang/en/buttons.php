@@ -11,4 +11,5 @@ return [
     "choose_image" => "Choose image",
     "yes" => "Yes",
     "no" => "No",
+    "find" => "Find"
 ];

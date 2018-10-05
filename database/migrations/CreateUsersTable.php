@@ -46,6 +46,7 @@ class CreateUsersTable extends TableCreator {
         $this->string("www", 255)->nullable();
         $this->text("about");
         $this->string("remember_me", 255)->nullable();
+        $this->string("ip", 20)->notNullable();
         $this->time();
 
         /**

@@ -8,6 +8,22 @@ final class SystemRegistry extends Model {
 
     protected $_table = "system_registry";
 
+    public function registerRemove ($id) {
+        $this->where("id", "=", $id)
+            ->delete();
+    }
+
+    public function editRegistry ($id, $fields) {
+        $this->where("id", "=", $id)
+            ->update($fields);
+    }
+
+    public function getRegistry ($id) {
+        return $this->where("id", "=", $id)
+                    ->get()
+                    ->count() > 0 ? $this->first() : (unset) null;
+    }
+
     public function addNew ($fields) {
         return $this->insert($fields)->lastInsertedID();
     }

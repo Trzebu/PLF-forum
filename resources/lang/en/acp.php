@@ -4,7 +4,7 @@ return [
         "int" => "Integer",
         "str" => "String",
         "bool" => "Boolean",
-        "arr" => "Array",
+        "json" => "JSON",
         "uns" => "Unset",
     ],
 ];

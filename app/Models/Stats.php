@@ -34,11 +34,11 @@ final class Stats {
     }
 
     public static function getGroups () {
-        $groups = DB::instance()->table("permissions")->get(["name", "color"])->results();
+        $groups = DB::instance()->table("permissions")->get(["id", "name", "color"])->results();
         $groups_to_implode = [];
 
         foreach ($groups as $group) {
-            array_push($groups_to_implode, "<font color='{$group->color}'>{$group->name}</font>");
+            array_push($groups_to_implode, "<a href='" . route('profile.users_list.by_group', ['id' => $group->id]) . "'><font color='{$group->color}'>{$group->name}</font></a>");
 
         }
 

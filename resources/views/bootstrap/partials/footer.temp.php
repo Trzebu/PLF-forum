@@ -33,6 +33,9 @@
             <div class="container">
                 <a href="https://github.com/Trzebu">{{ date('Y') }} by Trzebu</a>
             </div>
+            <div class="container">
+                <p class="small-grey-text">(Bootstrap responsive theme by Trzebu)</p>
+            </div>
         </footer>        
     </body>
 </html>

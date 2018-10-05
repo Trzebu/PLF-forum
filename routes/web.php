@@ -18,6 +18,11 @@ Route::get("/", [
     "as" => "home.index"
 ]);
 
+Route::post("/language/chang", [
+    "uses" => "App\Http\Controllers\HomeController@languageChange",
+    "as" => "home.language.change"
+]);
+
 //Auth
 
 Route::get("/login", [
@@ -161,6 +166,11 @@ Route::get("/profile/{id}", [
 Route::get("/profile", [
     "uses" => "App\Http\Controllers\ProfileController@usersList",
     "as" => "profile.users_list"
+]);
+
+Route::get("/profile/search/by_group/{id}", [
+    "uses" => "App\Http\Controllers\ProfileController@usersListByGroup",
+    "as" => "profile.users_list.by_group"
 ]);
 
 //Friend actions
@@ -342,4 +352,11 @@ Route::get("/reconsideration/{id}/{token}", [ //user view
     "uses" => "App\Http\Controllers\ReportController@reconsideration",
     "as" => "report.reconsideration",
     "middleware" => ["auth"]
+]);
+
+//Forum general options
+
+Route::get("/forum_general_options", [
+    "uses" => "App\Http\Controllers\HomeController@viewForumOptions",
+    "as" => "forum_general_options.view",
 ]);

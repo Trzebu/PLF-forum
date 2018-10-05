@@ -21,7 +21,7 @@
             @foreach ($this->registry as $reg):
                 <tr>
                     {? $value = substr($reg->value, 0, Libs\Config::get("acp/general_settings/system_registry/view/table/value/length/max")) ?}
-                    <td>{{ $reg->registry_name }}</td>
+                    <td><a href="{{ route('admin.general_settings.system_registry.edit', ['id' => $reg->id]) }}">{{ $reg->registry_name }}</a></td>
                     <td>{{ trans('acp.registry_types.' . $reg->type) }}</td>
                     <td>{{ strlen($value) > 9 ? $value . "..." : $value }}</td>
                     <td>{{ $this->reg->permissions($reg->mode, "reading") ? trans('buttons.yes') : trans('buttons.no') }}</td>

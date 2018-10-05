@@ -5,9 +5,18 @@ use Libs\Model;
 use Libs\User as Auth;
 use Libs\DataBase\DataBase as DB;
 use Libs\Config;
+use Libs\Http\Request;
 
 final class User extends Model {
     protected $_table = "users";
+
+    public function getUsersByGroup ($id) {
+        return $this->where("permissions", "=", $id)
+                    ->orderBy(["created_at"])
+                    ->paginate(Config::get("profile/users_list/pera_page"))
+                    ->get(["id", "username"])
+                    ->count() > 0 ? $this->results() : null;
+    }
 
     public function getByPermission ($permission) {
         $groups = DB::instance()->table("permissions")->get()->results();
@@ -48,7 +57,10 @@ final class User extends Model {
     }
 
     public function getUsers () {
-        return $this->orderBy(["created_at"])->paginate(20)->get(["id", "username"])->count() > 0 ? $this->results() : null;
+        return $this->orderBy(["created_at"])
+                    ->paginate(Config::get("profile/users_list/pera_page"))
+                    ->get(["id", "username"])
+                    ->count() > 0 ? $this->results() : null;
     }
 
     public function calcGivenVotes ($id) {
@@ -56,12 +68,19 @@ final class User extends Model {
     }
 
     public function data ($id) {
-        return $this->where("id", "=", $id)->get()->count() > 0 ? $this->first() : null;
+        return $this->where("id", "=", $id)
+                    ->or("username", "=", $id)
+                    ->or("email", "=", $id)
+                    ->get()
+                    ->count() > 0 ? $this->first() : null;
     }
 
     public function getLastTenRegisteredAccounts () {
         $usernameColor = [];
-        $users = $this->orderBy(["id"])->rowsLimit(10)->get(["id"])->count() > 0 ? $this->results() : null;
+        $users = $this->orderBy(["id"])
+                    ->rowsLimit(Config::get("stats/last_ten_registered_accounts"))
+                    ->get(["id"])
+                    ->count() > 0 ? $this->results() : null;
 
         foreach ($users as $user) {
             array_push($usernameColor, [
@@ -151,7 +170,8 @@ final class User extends Model {
         $this->insert([
             "username" => $inputs["username"],
             "email" => $inputs["email"],
-            "password" => password_hash($inputs["password"], PASSWORD_DEFAULT)
+            "password" => password_hash($inputs["password"], PASSWORD_DEFAULT),
+            "ip" => Request::clientIP()
         ]);
 
     }

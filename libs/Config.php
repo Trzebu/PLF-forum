@@ -25,8 +25,8 @@ class Config {
                     return (string) $val;
                 } else if ($type == "bool") {
                     return $val === "true" ? true : false;
-                } else if ($type == "arr") {
-                    return (object) $val;
+                } else if ($type == "json") {
+                    return json_decode($val);
                 } else if ($type == "unset") {
                     return (unset) null;
                 } else {

@@ -74,7 +74,13 @@ class Request {
     }
 
     public static function clientIP () {
-        return $_SERVER['REMOTE_ADDR'];
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            return $_SERVER['REMOTE_ADDR'];
+        }
     }
 
     public static function userAgent () {

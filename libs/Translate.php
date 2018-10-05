@@ -10,22 +10,19 @@ class Translate {
     private static $_file = null;
 
     public static function changeLang ($lang) {
-        foreach (Config::get("langs", true) as $key => $value) {
-            if ($key == $lang) {
-                Cookie::put("language", $lang, 2592000);
-                return true;
-            }
+        if (in_array($lang, scandir(__ROOT__ . "/resources/lang"))) {
+            Cookie::put("language", $lang, Config::get("page/language/cookie_expiry"));
+            return true;
         }
 
         return false;
-
     }
 
     public static function getUserLanguage () {
         if (Cookie::exists("language")) {
             return Cookie::get("language");
         } else {
-            return Config::get("default_lang");
+            return Config::get("page/language/default");
         }
     }
 
@@ -43,7 +40,7 @@ class Translate {
 
     public static function get ($path) {
         $path = explode(".", $path);
-        $file = __ROOT__ . Config::get("langs/" . self::getUserLanguage(), true)[0] . "/" . $path[0] . ".php";
+        $file = __ROOT__ . "/resources/lang/" . self::getUserLanguage() . "/" . $path[0] . ".php";
         if (file_exists($file)) {
             $file = self::openFile($file);
             array_shift($path);

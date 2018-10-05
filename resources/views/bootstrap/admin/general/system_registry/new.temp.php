@@ -35,7 +35,7 @@
                     @endif
                 </dt>
                 <dd>
-                    <input id="registry_value" type="text" name="value">
+                    <textarea id="registry_value" name="value" style="width:300px;height:150px;"></textarea>
                 </dd>
             </dl>
             <dl>

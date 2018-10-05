@@ -2,7 +2,7 @@
 <html lang="en">
 
     <head>
-        <title>Administration Controll Panel</title>
+        <title>{{ $this->title }}</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="{{ route('/') }}/public/framework/css/normalize.css">
         <link rel="stylesheet" href="{{ route('/') }}/public/app/css/admin/main.css">

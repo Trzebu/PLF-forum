@@ -2,7 +2,7 @@
     <div class="navigation-block">
         <div class="header">Quick access</div>
         <ul>
-            <li><a href="">Manage users</a></li>
+            <li class="{{ !Libs\Http\Request::inUrl('manage_users') ?: 'left-navigation-active' }}"><a href="{{ route('admin.general_settings.manage_users') }}">Manage users</a></li>
             <li><a href="">Manage groups</a></li>
             <li><a href="">Manage forums</a></li>
             <li><a href="">Moderator log</a></li>

@@ -134,7 +134,7 @@ final class AuthController extends Controller {
             "email" => ["required|is_valid>email|unique:users|str>min:" . 
                             Config::get("user/auth/email/length/min") .
                             ">max:" . 
-                            Config::get("user/auth/email/length/min"), Translate::get("auth.inputs.email")],
+                            Config::get("user/auth/email/length/max"), Translate::get("auth.inputs.email")],
             "password" => ["required|str>min:" .
                             Config::get("user/auth/password/length/min") .
                             ">max:" .

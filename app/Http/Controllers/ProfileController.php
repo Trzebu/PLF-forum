@@ -14,8 +14,20 @@ include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
 final class ProfileController extends Controller {
 
+    public function __construct () {
+        parent::__construct();
+        $this->user = new User();
+    }
+
+    public function usersListByGroup ($id) {
+        $this->view->user = $this->user;
+        $this->view->list = $this->user->getUsersByGroup($id);
+        $this->view->render("user.users_list");
+    }
+
     public function usersList () {
-        $this->view->user = new User();
+        $this->view->user = $this->user;
+        $this->view->list = $this->user->getUsers();
         $this->view->render("user.users_list");
     }
 

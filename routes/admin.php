@@ -47,3 +47,45 @@ Route::post("/admin/general_settings/system_registry/new/post", [
     "as" => "admin.general_settings.system_registry.new.post",
     "middleware" => ["permissions"]
 ]);
+
+Route::get("/admin/general_settings/system_registry/edit/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\SystemRegistryController@editRegistry",
+    "as" => "admin.general_settings.system_registry.edit",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/system_registry/edit/edit_value/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\SystemRegistryController@editRegistryValue",
+    "as" => "admin.general_settings.system_registry.edit.edit_value",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/system_registry/edit/edit_register/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\SystemRegistryController@editRegistryParams",
+    "as" => "admin.general_settings.system_registry.edit.edit_register",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/system_registry/edit/remove/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\SystemRegistryController@removeRegistry",
+    "as" => "admin.general_settings.system_registry.edit.remove",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@view",
+    "as" => "admin.general_settings.manage_users",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/manage_users/find", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@find",
+    "as" => "admin.general_settings.manage_users.find",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/view/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@viewUser",
+    "as" => "admin.general_settings.manage_users.view_user",
+    "middleware" => ["permissions"]
+]);

@@ -3,6 +3,11 @@
         <a class="navbar-brand" href="{{ route('/') }}">Forum</a>
         <div class="my-2 my-lg-0">
             <ul class="navbar-nav mr-auto">
+                @if (!Libs\Config::get("page/general_options/hidden")):
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('forum_general_options.view') }}">Forum options</a>
+                    </li>
+                @endif
                 @if (Auth()->check()):
                     @if (Auth()->permissions("moderator")):
                         <li class="nav-item">
