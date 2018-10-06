@@ -78,6 +78,15 @@ Route::get("/admin/general_settings/manage_users", [
     "middleware" => ["permissions"]
 ]);
 
+/*
+|--------------------------------------------------------------------------
+| Users Manage
+|--------------------------------------------------------------------------
+|
+| Here is where are located all routes to managing users.
+|
+*/
+
 Route::post("/admin/general_settings/manage_users/find", [
     "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@find",
     "as" => "admin.general_settings.manage_users.find",
@@ -87,5 +96,47 @@ Route::post("/admin/general_settings/manage_users/find", [
 Route::get("/admin/general_settings/manage_users/view/{id}", [
     "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@viewUser",
     "as" => "admin.general_settings.manage_users.view_user",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/manage_users/edit/base/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@editBase",
+    "as" => "admin.general_settings.manage_users.edit.base",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/manage_users/edit/new_password/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@newPassword",
+    "as" => "admin.general_settings.manage_users.edit.new_password",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/manage_users/manage/ban_ip/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@banIp",
+    "as" => "admin.general_settings.manage_users.manage.ban_ip",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/manage_users/manage/move_threads/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@moveThreads",
+    "as" => "admin.general_settings.manage_users.manage.move_threads",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/manage_users/manage/change_rank/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@changeRank",
+    "as" => "admin.general_settings.manage_users.manage.change_rank",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/manage_users/manage/add_warnings/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@addWarnings",
+    "as" => "admin.general_settings.manage_users.manage.add_warnings",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/reset/warnings/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@resetWarnings",
+    "as" => "admin.general_settings.manage_users.reset.warnings",
     "middleware" => ["permissions"]
 ]);

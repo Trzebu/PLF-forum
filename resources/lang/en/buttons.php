@@ -11,5 +11,13 @@ return [
     "choose_image" => "Choose image",
     "yes" => "Yes",
     "no" => "No",
-    "find" => "Find"
+    "find" => "Find",
+    "edit" => "Edit",
+    "delete" => "Delete",
+    "move" => "Move",
+    "reset" => "Reset",
+    "empty" => "Empty",
+    "clear" => "Clear",
+    "add" => "Add",
+    "lock" => "Lock",
 ];

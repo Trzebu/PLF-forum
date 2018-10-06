@@ -10,6 +10,21 @@ use Libs\Http\Request;
 final class User extends Model {
     protected $_table = "users";
 
+    public function warnings ($userId, $quantity) {
+        $quantity = $this->data($userId)->warnings + $quantity;
+        $this->where("id", "=", $userId)->update([
+            "warnings" => $quantity
+        ]);
+    }
+
+    public function ipBanDetails () {
+        $results = DB::instance()
+                            ->table("ip_bans")
+                            ->where("ip", "=", Request::clientIP())
+                            ->get();
+        return $results->count() > 0 ? $results->first() : (unset) null;
+    }
+
     public function getUsersByGroup ($id) {
         return $this->where("permissions", "=", $id)
                     ->orderBy(["created_at"])
@@ -42,8 +57,9 @@ final class User extends Model {
         return $this->get(["id"])->results();
     }
 
-    public function changeUserSettings ($fields) {
-        $this->where("id", "=", Auth::data()->id)
+    public function changeUserSettings ($id = null, $fields) {
+        $id = $id === null ? Auth::data()->id : $id;
+        $this->where("id", "=", $id)
             ->update($fields);
     }
 

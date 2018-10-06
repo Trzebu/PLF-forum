@@ -39,7 +39,6 @@ final class Stats {
 
         foreach ($groups as $group) {
             array_push($groups_to_implode, "<a href='" . route('profile.users_list.by_group', ['id' => $group->id]) . "'><font color='{$group->color}'>{$group->name}</font></a>");
-
         }
 
         return $groups_to_implode;

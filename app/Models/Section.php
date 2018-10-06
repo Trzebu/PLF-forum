@@ -55,7 +55,12 @@ final class Section extends Model {
     }
 
     public function getCategory ($category_id) {
-        return $this->where("id", "=", $category_id)->and("parent", "not_null")->or("url_name", "=", $category_id)->and("parent", "not_null")->get()->count() > 0 ? $this->first() : null;
+        return $this->where("id", "=", $category_id)
+                    ->and("parent", "not_null")
+                    ->or("url_name", "=", $category_id)
+                    ->and("parent", "not_null")
+                    ->get()
+                    ->count() > 0 ? $this->first() : null;
     }
 
     public function getSectionCategories ($section_id) {

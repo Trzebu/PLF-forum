@@ -11,5 +11,13 @@ return [
     "choose_image" => "Wybierz obraz",
     "yes" => "Tak",
     "no" => "Nie",
-    "find" => "Odnajdź"
+    "find" => "Odnajdź",
+    "edit" => "Edytuj",
+    "delete" => "Usuń",
+    "move" => "Przenieś",
+    "reset" => "Resetuj",
+    "empty" => "Opróżnij",
+    "clear" => "Wyczyść",
+    "add" => "Dodaj",
+    "lock" => "Blokuj",
 ];

@@ -18,6 +18,11 @@ Route::get("/", [
     "as" => "home.index"
 ]);
 
+Route::get("/ip_ban", [
+    "uses" => "App\Http\Controllers\HomeController@ipBan",
+    "as" => "home.ip_ban"
+]);
+
 Route::post("/language/chang", [
     "uses" => "App\Http\Controllers\HomeController@languageChange",
     "as" => "home.language.change"

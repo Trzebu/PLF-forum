@@ -9,8 +9,21 @@ use Libs\Config;
 use Libs\Http\Request;
 use Libs\Translate;
 use Libs\Session;
+use Libs\User as Auth;
 
 final class HomeController extends Controller {
+    
+    public function ipBan () {
+
+        if (!Auth::hasIpBan()) {
+            return $this->redirect("home.index");
+        }
+
+        $user = new User();
+        $this->view->data = $user->ipBanDetails();
+        $this->view->user = $user;
+        $this->view->render("home.ip_ban");
+    }
 
     public function languageChange () {
 

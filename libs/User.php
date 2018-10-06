@@ -5,6 +5,8 @@ use Libs\Session;
 use Libs\DataBase\DataBase;
 use Libs\Cookie;
 use Libs\Config;
+use Libs\Http\Request;
+use Libs\Http\Redirect;
 use App\Models\PrivateMessage;
 
 class User {
@@ -12,6 +14,7 @@ class User {
     private static $_data = null;
 
     public function __construct () {
+        self::hasIpBan();
         if (!Session::exists("u_id")) {
             if (Cookie::exists("remember_token")) {
                 $token = DataBase::instance()
@@ -21,6 +24,15 @@ class User {
                 if ($token->count() > 0) {
                     Session::set("u_id", $token->first()->id);
                 }
+            }
+        }
+    }
+
+    public function hasIpBan () {
+        if (DataBase::instance()->table("ip_bans")->where("ip", "=", Request::clientIP())->numRow() > 0) {
+            if (!Request::inUrl("ip_ban")) {
+                Redirect::to("home.ip_ban");
+                exit();
             }
         }
     }
