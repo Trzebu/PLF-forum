@@ -3,12 +3,66 @@
 namespace App\Models\AdminModels;
 
 use App\Models\Post;
+use App\Models\Files;
+use App\Models\Permissions;
 use Libs\Model;
 use Libs\DataBase\DataBase as DB;
 
 final class UserOptions extends Model {
 
     protected $_table = "users";
+
+    public function deleteFiles ($userId) {
+        $file = new Files();
+        $amount = 0;
+        $files = DB::instance()
+                    ->table("users_files")
+                    ->where("user_id", "=", $userId)
+                    ->get(["id"])
+                    ->results();
+
+        foreach ($files as $fil) {
+            $amount = $amount + $file->remove($fil->id);
+        }
+
+        return $amount;
+    }
+
+    public function deletePosts ($userId) {
+        $post = new Post();
+        $amount = 0;
+
+        $posts = DB::instance()
+                        ->table("posts")
+                        ->where("user_id", "=", $userId)
+                        ->and("parent", "not_null")
+                        ->get(["id"])
+                        ->results();
+
+        foreach ($posts as $pos) {
+            $amount = $amount + $post->deletePost($pos->id);
+        }
+
+        return $amount;
+    }
+
+    public function deleteThreads ($userId) {
+        $post = new Post();
+        $amount = 0;
+
+        $threads = DB::instance()
+                        ->table("posts")
+                        ->where("user_id", "=", $userId)
+                        ->and("parent", "null")
+                        ->get(["id"])
+                        ->results();
+
+        foreach ($threads as $thread) {
+            $amount = $amount + $post->deleteThread($thread->id);
+        }
+
+        return $amount;
+    }
 
     public function moveThreads ($userId, $categoryId) {
         $post = new Post();
@@ -49,7 +103,8 @@ final class UserOptions extends Model {
     }
 
     public function getRanks () {
-        return DB::instance()->table("permissions")->get(["id", "name"])->results();
+        $permissions = new Permissions();
+        return $permissions->getRank();
     }
 
 }

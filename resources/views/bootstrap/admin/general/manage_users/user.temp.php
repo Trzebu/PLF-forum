@@ -29,6 +29,20 @@
 
             <dl>
                 <dt>
+                    <label for="email">E-mail:</label>
+                    @if ($this->errors->has("email")):
+                        <br><span class="error">
+                            {{ $this->errors->get("email")->first() }}
+                        </span>
+                    @endif
+                </dt>
+                <dd>
+                    <input id="email" type="email" name="email" value="{{ $this->data->email }}">
+                </dd>
+            </dl>
+
+            <dl>
+                <dt>
                     <label for="">Registered at:</label>
                 </dt>
                 <dd>
@@ -96,20 +110,6 @@
                 </dt>
                 <dd>
                     {{ $this->user->calcGivenVotes($this->data->id) }} posts
-                </dd>
-            </dl>
-
-            <dl>
-                <dt>
-                    <label for="email">E-mail:</label>
-                    @if ($this->errors->has("email")):
-                        <br><span class="error">
-                            {{ $this->errors->get("email")->first() }}
-                        </span>
-                    @endif
-                </dt>
-                <dd>
-                    <input id="email" type="email" name="email" value="{{ $this->data->email }}">
                 </dd>
             </dl>
 
@@ -269,7 +269,7 @@
                 <span>This option delete all threads created by this user.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.delete") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.delete.threads', ['id' => $this->data->id, 'token' => token('delete_threads_token')]) }}">{{ trans("buttons.delete") }}</a>
             </dd>
         </dl>
 
@@ -280,7 +280,7 @@
                 <span>This option delete all posts created by this user.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.delete") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.delete.posts', ['id' => $this->data->id, 'token' => token('delete_posts_token')]) }}">{{ trans("buttons.delete") }}</a>
             </dd>
         </dl>
 
@@ -291,7 +291,7 @@
                 <span>This option delete all posts and threads created by this user.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.delete") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.delete.posts_and_threads', ['id' => $this->data->id, 'token' => token('delete_posts_and_threads_token')]) }}">{{ trans("buttons.delete") }}</a>
             </dd>
         </dl>
 
@@ -302,7 +302,7 @@
                 <span>This option delete all files uploaded by this user.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.delete") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.delete.files', ['id' => $this->data->id, 'token' => token('delete_files_token')]) }}">{{ trans("buttons.delete") }}</a>
             </dd>
         </dl>
 
@@ -313,7 +313,7 @@
                 <span>This option reset all given votes by this user.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.reset") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.reset.given_votes', ['id' => $this->data->id, 'token' => token('reset_given_votes_token')]) }}">{{ trans("buttons.reset") }}</a>
             </dd>
         </dl>
 
@@ -324,7 +324,7 @@
                 <span>This option reset user reputation.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.reset") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.reset.reputation', ['id' => $this->data->id, 'token' => token('reset_reputation_token')]) }}">{{ trans("buttons.reset") }}</a>
             </dd>
         </dl>
 
@@ -346,7 +346,7 @@
                 <span>Remove all private messages of this user.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.empty") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.delete.pm_box', ['id' => $this->data->id, 'token' => token('empty_pm_box_token')]) }}">{{ trans("buttons.empty") }}</a>
             </dd>
         </dl>
 
@@ -357,7 +357,7 @@
                 <span>Full name, City, Country adn WWW.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.delete") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.delete.additional_info', ['id' => $this->data->id, 'token' => token('delete_additional_info_token')]) }}">{{ trans("buttons.delete") }}</a>
             </dd>
         </dl>
 
@@ -368,7 +368,7 @@
                 <span>Clear personal about area.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.clear") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.clear.about', ['id' => $this->data->id, 'token' => token('clear_about_token')]) }}">{{ trans("buttons.clear") }}</a>
             </dd>
         </dl>
 
@@ -379,7 +379,7 @@
                 <span>Remove avatar and delete avatar file.</span>
             </dt>
             <dd>
-                <a href="">{{ trans("buttons.delete") }}</a>
+                <a href="{{ route('admin.general_settings.manage_users.delete.avatar', ['id' => $this->data->id, 'token' => token('delete_avatar_token')]) }}">{{ trans("buttons.delete") }}</a>
             </dd>
         </dl>
 
@@ -388,15 +388,30 @@
     <div class="fieldset">
         <div class="legend">Delete user</div>
 
-        <dl>
-            <dt>
-                <label for="">Delete user:</label><br>
-                <span>Please note that deleting a user is final, they cannot be recovered.</span>
-            </dt>
-            <dd>
-                <a href="sds">{{ trans("buttons.delete") }}</a>
-            </dd>
-        </dl>
+        <form method="post" action="{{ route('admin.general_settings.manage_users.delete.account', ['id' => $this->data->id]) }}">
+            <dl>
+                <dt>
+                    <label for="option">Delete user:</label>
+                    <br>
+                    <span>Please note that deleting a user is final, they cannot be recovered.</span>
+                    @if ($this->errors->has("option")):
+                        <br><span class="error">
+                            {{ $this->errors->get("option")->first() }}
+                        </span>
+                    @endif
+                </dt>
+                <dd>
+                    <select id="option" name="option">
+                        <option value="0">Account</option>
+                        <option value="1">Account and all data</option>
+                    </select>
+                </dd>
+                <dd>
+                    <input type="hidden" name="delete_account_token" value="{{ token('delete_account_token') }}">
+                    <input type="submit" class="button" value="{{ trans('buttons.delete') }}">
+                </dd>
+            </dl>
+        </form>
     </div>
 
 </div>

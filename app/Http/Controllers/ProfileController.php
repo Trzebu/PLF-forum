@@ -9,6 +9,7 @@ use App\Models\Friends;
 use App\Models\ModerationNotes;
 use Libs\Tools\SlugUrl;
 use Libs\Token;
+use Libs\Session;
 use Libs\User as Auth;
 include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
@@ -32,12 +33,16 @@ final class ProfileController extends Controller {
     }
 
     public function index ($id, $username = null) {
-        $user = new User();
         $post = new Post();
-        $this->view->data = $user->data($id);
+        $this->view->data = $this->user->data($id);
 
         if ($this->view->data === null) {
             return $this->redirect("home.index");
+        }
+
+        if ($this->user->accountDeleted($id)) {
+            Session::flash("alert_info", "User you are search has deleted account.");
+            return $this->redirect("profile.users_list");
         }
 
         if (strlen($this->view->data->about) > 0) {
@@ -49,7 +54,7 @@ final class ProfileController extends Controller {
         }
 
         $this->view->title = "Forum - {$this->view->data->username} profile";
-        $this->view->user = $user;
+        $this->view->user = $this->user;
         $this->view->friend = new Friends();
         $this->view->notes = new ModerationNotes();
         $this->view->bb = new \BbCode();

@@ -13,5 +13,7 @@ return [
     "banning" => "Banowanie",
     "file_uploading" => "Przesyłanie plików",
     "file_managing" => "Zarządzanie plikami",
-    "reporting" => "Reportowanie treści"
+    "reporting" => "Reportowanie treści",
+    "account_deleted" => "Konto usunięte",
+    "log_in" => "Logowanie się",
 ];

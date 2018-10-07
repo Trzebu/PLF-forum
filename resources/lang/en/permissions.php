@@ -13,5 +13,7 @@ return [
     "banning" => "Banning",
     "file_uploading" => "Uploading files",
     "file_managing" => "File managing",
-    "reporting" => "Contents reporting"
+    "reporting" => "Contents reporting",
+    "account_deleted" => "Account deleted",
+    "log_in" => "Logging in",
 ];

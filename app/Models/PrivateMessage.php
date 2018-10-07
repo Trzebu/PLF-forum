@@ -10,6 +10,13 @@ final class PrivateMessage extends Model {
 
     protected $_table = "private_messages";
 
+    public function removeUserMessages ($userId) {
+        return $this->where("user_id", "=", $userId)
+                    ->or("to_user_id", "=", $userId)
+                    ->delete()
+                    ->count();
+    }
+
     public function getUnreadedMessagesAmount () {
         return (int) $this->where("to_user_id", "=", Auth::data()->id)
                     ->and("readed", "=", 0)

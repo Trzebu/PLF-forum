@@ -11,7 +11,9 @@ final class Files extends Model {
 
     public function remove ($id) {
         unlink(__ROOT__ . Config::get("uploading/upload_dir") . $this->getFile($id)->path);
-        $this->where("id", "=", $id)->delete();
+        return $this->where("id", "=", $id)
+                    ->delete()
+                    ->count();
     }
 
     public function getImageSize ($fileId) {

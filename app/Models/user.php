@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+
+use App\Models\Permissions;
 use Libs\Model;
 use Libs\User as Auth;
 use Libs\DataBase\DataBase as DB;
@@ -9,6 +11,24 @@ use Libs\Http\Request;
 
 final class User extends Model {
     protected $_table = "users";
+
+    public function accountDeleted ($id) {
+        $permissions = new Permissions();
+        if ($permissions->has($id, "account_deleted")) {
+            return true;
+        }
+        return false;
+    }
+
+    public function clearData ($id) {
+        foreach ($this->data($id) as $key => $value) {
+            if ($key != "id") {
+                $this->changeUserSettings([
+                    $key => 0
+                ], $id);
+            }
+        }
+    }
 
     public function warnings ($userId, $quantity) {
         $quantity = $this->data($userId)->warnings + $quantity;
@@ -57,7 +77,7 @@ final class User extends Model {
         return $this->get(["id"])->results();
     }
 
-    public function changeUserSettings ($id = null, $fields) {
+    public function changeUserSettings ($fields, $id = null) {
         $id = $id === null ? Auth::data()->id : $id;
         $this->where("id", "=", $id)
             ->update($fields);
@@ -73,7 +93,10 @@ final class User extends Model {
     }
 
     public function getUsers () {
-        return $this->orderBy(["created_at"])
+        $deleted = new Permissions();
+        $deleted = $deleted->getRankByPermission("account_deleted")->id;
+        return $this->where("permissions", "!=", $deleted)
+                    ->orderBy(["created_at"])
                     ->paginate(Config::get("profile/users_list/pera_page"))
                     ->get(["id", "username"])
                     ->count() > 0 ? $this->results() : null;
@@ -92,8 +115,11 @@ final class User extends Model {
     }
 
     public function getLastTenRegisteredAccounts () {
+        $deleted = new Permissions();
+        $deleted = $deleted->getRankByPermission("account_deleted")->id;
         $usernameColor = [];
-        $users = $this->orderBy(["id"])
+        $users = $this->where("permissions", "!=", $deleted)
+                    ->orderBy(["id"])
                     ->rowsLimit(Config::get("stats/last_ten_registered_accounts"))
                     ->get(["id"])
                     ->count() > 0 ? $this->results() : null;
@@ -139,8 +165,9 @@ final class User extends Model {
                     ->where("id", "=", $this->where("id", "=", $id)->get(["avatar"])->first()->avatar)
                     ->get(["path"]);
         $path = $path->count() > 0 ? $path->first()->path : null;
+        $gravatar = Config::get("avatar/use_gravatar") ? "https://www.gravatar.com/avatar/{$md}?s={$size}" : route('/') . Config::get("avatar/default");
 
-        return  $path !== null ? route("/") . Config::get("uploading/upload_dir") . "/" . $path : "https://www.gravatar.com/avatar/{$md}?s={$size}";
+        return  $path !== null ? route("/") . Config::get("uploading/upload_dir") . "/" . $path : $gravatar;
     }
 
     public function allPermissions ($id) {
@@ -172,7 +199,8 @@ final class User extends Model {
 
     public function username ($id = null) {
         if ($id !== null) {
-            return "<font color='{$this->permissions($id)->color}' title='{$this->permissions($id)->name}'>" . $this->where("id", "=", $id)->get(["username"])->first()->username . "</font>";
+            $username = $this->accountDeleted($id) ? trans("permissions.account_deleted") : $this->where("id", "=", $id)->get(["username"])->first()->username;
+            return "<font color='{$this->permissions($id)->color}' title='{$this->permissions($id)->name}'>" . $username . "</font>";
         }
         return Auth::data()->nick;
     }

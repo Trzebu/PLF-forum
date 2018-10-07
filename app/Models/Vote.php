@@ -9,6 +9,24 @@ final class Vote extends Model {
 
     protected $_table = "votes";
     
+    public function deleteVotesRatedOnUser ($userId) {
+        return $this->where("rated_user_id", "=", $userId)
+                    ->delete()
+                    ->count();
+    }
+
+    public function deleteRatedVotes ($userId) {
+        return $this->where("user_id", "=", $userId)
+                    ->delete()
+                    ->count();
+    }
+
+    public function deleteVoteByPost ($postId) {
+        return $this->where("post_id", "=", $postId)
+                    ->delete()
+                    ->count();
+    }
+
     public function allGivenVotes() {
         return $this->numRow();
     }

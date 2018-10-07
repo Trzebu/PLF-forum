@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+
+use App\Models\Vote;
 use Libs\Model;
 use Libs\Config;
 use Libs\User as Auth;
@@ -9,19 +11,41 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function deletePost ($postId) {
+        $vote = new Vote();
+        $vote->deleteVoteByPost($postId);
+        return $this->where("id", "=", $postId)
+                    ->delete()
+                    ->count();
+    }
+
+    public function deleteThread ($threadId) {
+        $vote = new Vote();
+        $vote->deleteVoteByPost($threadId);
+        return $this->where("id", "=", $threadId)
+                    ->or("parent", "=", $threadId)
+                    ->delete()
+                    ->count();
+    }
+
     public function calcAnswersCreatedByUser ($id) {
-        return $this->where("user_id", "=", $id)->and("parent", "not_null")->numRow();
+        return $this->where("user_id", "=", $id)
+                    ->and("parent", "not_null")
+                    ->numRow();
     }
 
     public function calcThreadsCreatedByUser ($id) {
-        return $this->where("user_id", "=", $id)->and("parent", "null")->numRow();
+        return $this->where("user_id", "=", $id)
+                    ->and("parent", "null")
+                    ->numRow();
     }
 
     public function editPost ($id, $content) {
-        $this->where("id", "=", $id)->update([
-            "status" => 2,
-            "contents" => $content
-        ]);
+        $this->where("id", "=", $id)
+            ->update([
+                "status" => 2,
+                "contents" => $content
+            ]);
     }
 
     public function changeAnswerStatus ($id, $action) {

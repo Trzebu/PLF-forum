@@ -1,6 +1,8 @@
 <?php
 
 namespace Libs;
+
+use App\Models\Permissions;
 use Libs\Session;
 use Libs\DataBase\DataBase;
 use Libs\Cookie;
@@ -15,7 +17,7 @@ class User {
 
     public function __construct () {
         self::hasIpBan();
-        if (!Session::exists("u_id")) {
+        if (!self::check()) {
             if (Cookie::exists("remember_token")) {
                 $token = DataBase::instance()
                                     ->table("users")
@@ -24,6 +26,11 @@ class User {
                 if ($token->count() > 0) {
                     Session::set("u_id", $token->first()->id);
                 }
+            }
+        } else {
+            if (!self::permissions("log_in")) {
+                Session::flash("alert_info", "You have no permission to logged in.");
+                self::logout();
             }
         }
     }
@@ -49,33 +56,18 @@ class User {
                     ->where("id", "=", self::data()->avatar)
                     ->get(["path"]);
         $path = $path->count() > 0 ? $path->first()->path : null;
-        
-        return $path !== null ? route("/") . Config::get("uploading/upload_dir") . "/" . $path : "https://www.gravatar.com/avatar/{$md}?s={$size}";
+        $gravatar = Config::get("avatar/use_gravatar") ? "https://www.gravatar.com/avatar/{$md}?s={$size}" : route('/') . Config::get("avatar/default");
+
+        return $path !== null ? route("/") . Config::get("uploading/upload_dir") . "/" . $path : $gravatar;
     }
 
     public function permissions ($key = null) {
-
         if (!self::check()) {
             return false;
         }
-
-        $groups = DataBase::instance()->table("permissions")->where("id", "=", self::data()->permissions)->get()->first();
-
-        if ($key !== null) {
-            $groups = json_decode($groups->permissions, true);
-            
-            foreach ($groups as $group => $value) {
-                if ($group == $key) {
-                    if ($value) {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        return $groups->name;
+        
+        $permission = new Permissions();
+        return $permission->has(self::data()->id, $key);
     }
 
     public function logout () {

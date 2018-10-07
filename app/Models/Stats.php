@@ -4,6 +4,7 @@ namespace App\Models;
 use App\Models\Post;
 use App\Models\Vote;
 use App\Models\User;
+use App\Models\Permissions;
 use Libs\DataBase\DataBase as DB;
 
 final class Stats {
@@ -34,7 +35,8 @@ final class Stats {
     }
 
     public static function getGroups () {
-        $groups = DB::instance()->table("permissions")->get(["id", "name", "color"])->results();
+        $permissions = new Permissions();
+        $groups = $permissions->getRank();
         $groups_to_implode = [];
 
         foreach ($groups as $group) {

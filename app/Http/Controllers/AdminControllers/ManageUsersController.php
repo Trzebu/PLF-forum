@@ -5,6 +5,10 @@ namespace App\Http\Controllers\AdminControllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Section;
+use App\Models\Vote;
+use App\Models\Files;
+use App\Models\PrivateMessage;
+use App\Models\Permissions;
 use App\Models\AdminModels\UserOptions;
 use Libs\Http\Request;
 use Libs\Session;
@@ -19,6 +23,273 @@ final class ManageUsersController extends Controller {
         $this->user = new User();
         $this->section = new Section();
         $this->userOptions = new UserOptions();
+    }
+
+    public function deleteAccount ($id) {
+        $data = $this->user->data($id);
+        $permissions = new Permissions();
+
+        if ($data === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if ($this->validation(Request::input(), [
+            "option" => "num>min:0>max:1",
+            "delete_account_token" => "token"
+        ])) {
+            Session::flash("alert_success", "This account has been cleared!");
+
+            if (Request::input("option") == 1) {
+                $this->userOptions->deleteThreads($id);
+                $this->userOptions->deletePosts($id);
+                $this->userOptions->deleteFiles($id);
+                $pm_box = new PrivateMessage();
+                $pm_box->removeUserMessages($id);
+            }
+
+            $this->user->clearData($id);
+            $this->user->changeUserSettings([
+                "permissions" => $permissions->getRankByPermission("account_deleted")->id
+            ], $id);
+        }
+
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);
+    }
+
+    public function deleteAvatar ($id, $token) {
+        $data = $this->user->data($id);
+        $file = new Files();
+
+        if ($data === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("delete_avatar_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $file->remove($data->avatar);
+        $this->user->changeUserSettings([
+            "avatar" => 0
+        ], $id);
+
+        Session::flash("alert_success", "Avatar has been unseted and removed from uploaded files!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);
+    }
+
+    public function clearAbout ($id, $token) {
+        if ($this->user->data($id) === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("clear_about_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $this->user->changeUserSettings([
+            "about" => ""
+        ], $id);
+
+        Session::flash("alert_success", "User about area has been cleared!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);
+    }
+
+    public function deleteAdditionalInfo ($id, $token) {
+        if ($this->user->data($id) === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("delete_additional_info_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $this->user->changeUserSettings([
+            "full_name" => "",
+            "city" => "",
+            "country" => "",
+            "www" => ""
+        ], $id);
+
+        Session::flash("alert_success", "User aditional info were removed!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);
+    }
+
+    public function deletePmBox ($id, $token) {
+        if ($this->user->data($id) === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("empty_pm_box_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $pm_box = new PrivateMessage();
+        $amount = $pm_box->removeUserMessages($id);
+
+        Session::flash("alert_success", "Deleted {$amount} user PM!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);
+    }
+
+    public function resetReputation ($id, $token) {
+        if ($this->user->data($id) === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("reset_reputation_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $vote = new Vote();
+        $amount = $vote->deleteVotesRatedOnUser($id);
+
+        Session::flash("alert_success", "Deleted {$amount} user reputation points!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);
+    }
+
+    public function resetGivenVotes ($id, $token) {
+        if ($this->user->data($id) === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("reset_given_votes_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $vote = new Vote();
+        $amount = $vote->deleteRatedVotes($id);
+
+        Session::flash("alert_success", "Deleted {$amount} user rated votes!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);
+    }
+
+    public function deleteFiles ($id, $token) {
+        if ($this->user->data($id) === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("delete_files_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $amount = $this->userOptions->deleteFiles($id);
+
+        Session::flash("alert_success", "Deleted {$amount} user files!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);
+    }
+
+    public function deletePostsAndThreads ($id, $token) {
+        $data = $this->user->data($id);
+
+        if ($data === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("delete_posts_and_threads_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $amount = $this->userOptions->deleteThreads($id);
+        $amount = $amount + $this->userOptions->deletePosts($id);
+
+        Session::flash("alert_success", "Deleted {$amount} user posts and threads!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]); 
+    }
+
+    public function deletePosts ($id, $token) {
+        $data = $this->user->data($id);
+
+        if ($data === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("delete_posts_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $amount = $this->userOptions->deletePosts($id);
+
+        Session::flash("alert_success", "Deleted {$amount} user posts!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);   
+    }
+
+    public function deleteThreads ($id, $token) {
+        $data = $this->user->data($id);
+
+        if ($data === null) {
+            Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if (!Token::check("delete_threads_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.general_settings.manage_users.view_user", [
+                "id" => $id
+            ]);
+        }
+
+        $amount = $this->userOptions->deleteThreads($id);
+
+        Session::flash("alert_success", "Deleted {$amount} user threads!");
+        return $this->redirect("admin.general_settings.manage_users.view_user", [
+            "id" => $id
+        ]);   
     }
 
     public function resetWarnings ($id, $token) {
@@ -86,9 +357,9 @@ final class ManageUsersController extends Controller {
             ]);
         }
 
-        $this->user->changeUserSettings($id, [
+        $this->user->changeUserSettings([
             "permissions" => Request::input("change_rank")
-        ]);
+        ], $id);
 
         Session::flash("alert_success", "User rank has been changed.");
         return $this->redirect("admin.general_settings.manage_users.view_user", [
@@ -178,9 +449,9 @@ final class ManageUsersController extends Controller {
             "new_user_password_token" => "token"
         ])) {
             Session::flash("alert_success", "{$data->username} password has been changed.");
-            $this->user->changeUserSettings($id, [
+            $this->user->changeUserSettings([
                 "password" => password_hash(Request::input("password"), PASSWORD_DEFAULT)
-            ]);
+            ], $id);
         } else {
             Session::flash("alert_info", "Nothing has been changed.");
         }
@@ -223,7 +494,7 @@ final class ManageUsersController extends Controller {
         if ($this->validation(Request::input(), $rules)) {
             if (count($fields) > 0) {
                 Session::flash("alert_success", "Data has been changed!");
-                $this->user->changeUserSettings($id, $fields);
+                $this->user->changeUserSettings($fields, $id);
             } else {
                 Session::flash("alert_info", "Nothing has been changed.");
             }
@@ -239,6 +510,11 @@ final class ManageUsersController extends Controller {
 
         if ($user === null) {
             Session::flash("alert_error", "The requested user does not exist.");
+            return $this->redirect("admin.general_settings.manage_users");
+        }
+
+        if ($this->user->accountDeleted($id)) {
+            Session::flash("alert_info", "User you are search has deleted account.");
             return $this->redirect("admin.general_settings.manage_users");
         }
 

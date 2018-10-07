@@ -135,8 +135,74 @@ Route::post("/admin/general_settings/manage_users/manage/add_warnings/{id}", [
     "middleware" => ["permissions"]
 ]);
 
+Route::post("/admin/general_settings/manage_users/delete/account/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@deleteAccount",
+    "as" => "admin.general_settings.manage_users.delete.account",
+    "middleware" => ["permissions"]
+]);
+
 Route::get("/admin/general_settings/manage_users/reset/warnings/{id}/{token}", [
     "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@resetWarnings",
     "as" => "admin.general_settings.manage_users.reset.warnings",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/delete/threads/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@deleteThreads",
+    "as" => "admin.general_settings.manage_users.delete.threads",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/delete/posts/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@deletePosts",
+    "as" => "admin.general_settings.manage_users.delete.posts",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/delete/posts_and_threads/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@deletePostsAndThreads",
+    "as" => "admin.general_settings.manage_users.delete.posts_and_threads",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/delete/files/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@deleteFiles",
+    "as" => "admin.general_settings.manage_users.delete.files",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/delete/pm_box/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@deletePmBox",
+    "as" => "admin.general_settings.manage_users.delete.pm_box",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/reset/given_votes/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@resetGivenVotes",
+    "as" => "admin.general_settings.manage_users.reset.given_votes",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/reset/reputation/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@resetReputation",
+    "as" => "admin.general_settings.manage_users.reset.reputation",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/delete/additional_info/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@deleteAdditionalInfo",
+    "as" => "admin.general_settings.manage_users.delete.additional_info",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/clear/about/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@clearAbout",
+    "as" => "admin.general_settings.manage_users.clear.about",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/manage_users/delete/avatar/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@deleteAvatar",
+    "as" => "admin.general_settings.manage_users.delete.avatar",
     "middleware" => ["permissions"]
 ]);
