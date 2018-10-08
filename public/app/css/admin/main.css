@@ -354,3 +354,37 @@ input.radio, input.checkbox, input.permissions-checkbox {
     background: #ffb3b3;
     color: #cc0000;
 }
+
+.small-grey-text {
+    font-size: 12px;
+    color: #4C5D77;
+    font-style: italic;
+    margin: 0;
+    padding: 0;
+}
+
+.big-text {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.i_blue {
+    color: blue;
+}
+
+.i_red {
+    color: red;
+}
+
+.i_green {
+    color: green;
+}
+
+.forums_table {
+    width: 100%;
+}
+
+.forums_table > td {
+    background: lightgreen!important;
+}

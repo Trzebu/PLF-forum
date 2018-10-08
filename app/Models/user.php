@@ -9,8 +9,27 @@ use Libs\DataBase\DataBase as DB;
 use Libs\Config;
 use Libs\Http\Request;
 
+
 final class User extends Model {
     protected $_table = "users";
+
+    public function signature ($id) {
+        $perm = new Permissions();
+        if (!$perm->has($id, "signature")) {
+            return false;
+        }
+
+        $signature = $this->data($id)->signature;
+        if (strlen($signature) > 0) {
+            if (Config::get("user/auth/signature/contents/bbcode")) {
+                $bb = new \BbCode();
+                $bb->parse($signature, false);
+                return $bb->getHtml();
+            }
+            return $signature;
+        }
+        return false;
+    }
 
     public function accountDeleted ($id) {
         $permissions = new Permissions();

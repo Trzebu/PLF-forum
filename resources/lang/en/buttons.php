@@ -20,4 +20,5 @@ return [
     "clear" => "Clear",
     "add" => "Add",
     "lock" => "Lock",
+    "create" => "Create",
 ];

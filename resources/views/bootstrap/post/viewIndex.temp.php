@@ -18,6 +18,10 @@
                 @if ($this->parent_post->status == 2):
                     <p class="small-grey-text">Edited at: {{ $this->parent_post->updated_at }}</p>
                 @endif
+                @if ($this->user->signature($this->parent_post->user_id)):
+                    <hr>
+                    {{ $this->user->signature($this->parent_post->user_id) }}
+                @endif
             </div>
             <div class="col-2 mt-10 mb-10">
                 <div class="media">
@@ -126,6 +130,10 @@
                             @if ($answer->status == 2):
                                 <p class="small-grey-text">Edited at: {{ $answer->updated_at }}</p>
                             @endif
+                        @endif
+                        @if ($this->user->signature($answer->user_id)):
+                            <hr>
+                            {{ $this->user->signature($answer->user_id) }}
                         @endif
                     </div>
                     <div class="col-2 mt-10 mb-10">

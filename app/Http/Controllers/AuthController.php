@@ -16,6 +16,47 @@ final class AuthController extends Controller {
         $this->user = new User();
     }
 
+    public function signature () {
+
+        if (!Auth::permissions("signature")) {
+            Session::flash("alert_error", "You have no permissions to use signature.");
+            return $this->redirect("auth.options");
+        }
+
+        if ($this->validation(Request::input(), [
+            "post" => ["required|str>min:" .
+                        Config::get("user/auth/signature/length/min") .
+                        ">max:" .
+                        Config::get("user/auth/signature/length/max"), "signature"],
+            "signature_user_token" => "token"
+        ])) {
+            Session::flash("alert_success", "Your signature was saved.");
+            $this->user->changeUserSettings([
+                "signature" => Request::input("post")
+            ]);
+        }
+
+        return $this->redirect("auth.options");
+    }
+
+    public function aboutUser () {
+
+        if ($this->validation(Request::input(), [
+            "post" => ["required|str>min:" .
+                        Config::get("user/auth/about/contents/length/min") .
+                        ">max:" .
+                        Config::get("user/auth/about/contents/length/max"), "about"],
+            "about_user_token" => "token"
+        ])) {
+            Session::flash("alert_success", "Your about information was saved.");
+            $this->user->changeUserSettings([
+                "about" => Request::input("post")
+            ]);
+        }
+
+        return $this->redirect("auth.options");
+    }
+
     public function disableAvatar ($token) {
 
         if (!Token::check("disable_avatar", $token)) {
@@ -32,10 +73,10 @@ final class AuthController extends Controller {
 
     public function changeGeneralSettings () {
         if ($this->validation(Request::input(), [
-            "full_name" => ["str>max:250", "full name"],
-            "city" => "str>max:250",
-            "country" => "str>max:250",
-            "www" => "str>max:250|is_valid>url",
+            "full_name" => ["str>max:" . Config::get("user/auth/additional/full_name/length/max"), "full name"],
+            "city" => "str>max:" . Config::get("user/auth/additional/city/length/max"),
+            "country" => "str>max:" . Config::get("user/auth/additional/country/length/max"),
+            "www" => "str>max:" . Config::get("user/auth/additional/www/length/max") . "|is_valid>url",
             "general_settings_token" => "token"
         ])) {
             Session::flash("alert_success", "Your general settings has been successfully changed");
@@ -55,7 +96,10 @@ final class AuthController extends Controller {
         if (Request::input("email") != Auth::data()->email && !empty(Request::input("email"))) {
             if ($this->validation(Request::input(), [
                 "old_password" => ["required", "old password"],
-                "email" => ["required|is_valid>email|str>max:100|unique:users", trans("auth.inputs.email")],
+                "email" => ["required|is_valid>email|unique:users|str>min:" . 
+                            Config::get("user/auth/email/length/min") .
+                            ">max:" . 
+                            Config::get("user/auth/email/length/max"), trans("auth.inputs.email")],
                 "base_settings_token" => "token"
             ])) {
                 if (password_verify(Request::input("old_password"), Auth::data()->password)) {
@@ -71,7 +115,10 @@ final class AuthController extends Controller {
         if (!empty(Request::input("new_password"))) {
             if ($this->validation(Request::input(), [
                 "old_password" => ["required", "old password"],
-                "new_password" => ["required|str>min:5", "new password"],
+                "new_password" => ["required|str>min:" .
+                                    Config::get("user/auth/password/length/min") .
+                                    ">max:" .
+                                    Config::get("user/auth/password/length/max"), trans("auth.inputs.password")],
                 "new_password_again" => ["same:new_password", "new password again"],
                 "base_settings_token" => "token"
             ])) {

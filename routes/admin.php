@@ -24,6 +24,12 @@ Route::get("/admin/general_settings", [
     "middleware" => ["permissions"]
 ]);
 
+Route::get("/admin/forums", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@redirectToManageForums",
+    "as" => "admin.forums",
+    "middleware" => ["permissions"]
+]);
+
 Route::get("/admin/general_settings/system_registry", [
     "uses" => "App\Http\Controllers\AdminControllers\SystemRegistryController@view",
     "as" => "admin.general_settings.system_registry",
@@ -204,5 +210,32 @@ Route::get("/admin/general_settings/manage_users/clear/about/{id}/{token}", [
 Route::get("/admin/general_settings/manage_users/delete/avatar/{id}/{token}", [
     "uses" => "App\Http\Controllers\AdminControllers\ManageUsersController@deleteAvatar",
     "as" => "admin.general_settings.manage_users.delete.avatar",
+    "middleware" => ["permissions"]
+]);
+
+/*
+|--------------------------------------------------------------------------
+| Manage Forums
+|--------------------------------------------------------------------------
+|
+| Here is where are located all routes to managing forums.
+|
+*/
+
+Route::get("/admin/forums/manage_forums", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@manageForums",
+    "as" => "admin.forums.manage_forums",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/forums/manage_forums/queue/{dir}/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@sectionQueue",
+    "as" => "admin.forums.manage_forums.queue",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/forums/new_forum", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@newForum",
+    "as" => "admin.forums.new_forum",
     "middleware" => ["permissions"]
 ]);

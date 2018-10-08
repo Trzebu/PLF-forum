@@ -376,7 +376,7 @@
             <dt>
                 <label for="">Remove avatar:</label>
                 <br>
-                <span>Remove avatar and delete avatar file.</span>
+                <span>Disable avatar and delete avatar file.</span>
             </dt>
             <dd>
                 <a href="{{ route('admin.general_settings.manage_users.delete.avatar', ['id' => $this->data->id, 'token' => token('delete_avatar_token')]) }}">{{ trans("buttons.delete") }}</a>

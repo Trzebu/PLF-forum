@@ -20,4 +20,5 @@ return [
     "clear" => "Wyczyść",
     "add" => "Dodaj",
     "lock" => "Blokuj",
+    "create" => "Stwórz",
 ];

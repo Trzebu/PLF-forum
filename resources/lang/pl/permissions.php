@@ -16,4 +16,5 @@ return [
     "reporting" => "Reportowanie treści",
     "account_deleted" => "Konto usunięte",
     "log_in" => "Logowanie się",
+    "signature" => "Podpis",
 ];

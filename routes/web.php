@@ -245,6 +245,18 @@ Route::post("/user/options/general_settings", [
     "middleware" => ["auth"]
 ]);
 
+Route::post("/user/options/about_user", [
+    "uses" => "App\Http\Controllers\AuthController@aboutUser",
+    "as" => "auth.options.about_user",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/user/options/signature", [
+    "uses" => "App\Http\Controllers\AuthController@signature",
+    "as" => "auth.options.signature",
+    "middleware" => ["auth"]
+]);
+
 Route::post("/upload/upload_avatar", [
     "uses" => "App\Http\Controllers\UserFiles@uploadAvatar",
     "as" => "auth.change_avatar",

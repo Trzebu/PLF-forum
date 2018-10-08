@@ -4,6 +4,7 @@
     <head>
         <title>{{ $this->title }}</title>
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ route('/') }}/public/framework/css/normalize.css">
         <link rel="stylesheet" href="{{ route('/') }}/public/app/css/admin/main.css">
     </head>
@@ -17,7 +18,7 @@
             <div class="tabs">
                 <ul>
                     <li class="tab {{ !Libs\Http\Request::inUrl('general_settings') ?: 'tab-active' }}"><a href="{{ route('admin.general_settings') }}">General</a></li>
-                    <li class="tab"><a href="">Forums</a></li>
+                    <li class="tab {{ !Libs\Http\Request::inUrl('forums') ?: 'tab-active' }}"><a href="{{ route('admin.forums') }}">Forums</a></li>
                     <li class="tab"><a href="">Posting</a></li>
                     <li class="tab"><a href="">Usera and Groups</a></li>
                     <li class="tab"><a href="">Permissions</a></li>

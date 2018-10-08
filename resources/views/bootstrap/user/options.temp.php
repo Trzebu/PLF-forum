@@ -49,6 +49,46 @@
         </form>
     </div>
     <div class="col-12 text-center">
+        Your signature:
+    </div>
+    <div class="col-12 border-bottom">
+        @if (Auth()->permissions("signature")):
+            <form method="post" action="{{ route('auth.options.signature') }}">
+                <div class="form-group">
+                    <label for="post">Write something nice:</label>
+                    {? $textareaContent = $this->data->signature ?}
+                    @if (Libs\Config::get("user/auth/signature/contents/bbcode")):
+                        @include partials/post_bbcode_block
+                    @else
+                        @include partials/post_default_block
+                    @endif
+                </div>
+                <input type="hidden" name="signature_user_token" value="{{ token('signature_user_token') }}">
+                <input type="submit" class="btn btn-success btn-lg w-100 mb-10" value="{{ trans('buttons.save') }}">
+            </form>
+        @else
+            <p class="small-grey-text">You have no permissions to use signature.</p>
+        @endif
+    </div>
+    <div class="col-12 text-center">
+        About You:
+    </div>
+    <div class="col-12 border-bottom">
+        <form method="post" action="{{ route('auth.options.about_user') }}">
+            <div class="form-group">
+                <label for="post">Write something nice:</label>
+                {? $textareaContent = $this->data->about ?}
+                @if (Libs\Config::get("user/auth/about/contents/bbcode")):
+                    @include partials/post_bbcode_block
+                @else
+                    @include partials/post_default_block
+                @endif
+            </div>
+            <input type="hidden" name="about_user_token" value="{{ token('about_user_token') }}">
+            <input type="submit" class="btn btn-success btn-lg w-100 mb-10" value="{{ trans('buttons.save') }}">
+        </form>
+    </div>
+    <div class="col-12 text-center">
         <h4>General settings:</h4>
     </div>
     <div class="col-12 border-bottom">

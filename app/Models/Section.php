@@ -9,6 +9,36 @@ final class Section extends Model {
 
     protected $_table = "sections";
 
+    public function changeQueue ($id, $dir) {
+        $dir = $dir == "up" ? -1 : 1;
+        $move = $this->where("id", "=", $id)->get(["id", "parent", "queue"])->first();
+        $other = is_null($move->parent) ?
+                 $this->where("parent", "null") :
+                 $this->where("parent", "=", $move->parent);
+        $other = $this->get(["id", "parent", "queue"])->results();
+        
+        usort($other, function ($x, $y) {
+            return $x->queue <=> $y->queue;
+        });
+
+        $new_position = $move->queue + $dir;
+        $new_position = $new_position < 1 ? 1 : $new_position;
+        $new_position = $new_position > count($other) ? count($other) : $new_position;
+        $other = $other[$new_position - 1];
+
+        if ($new_position == $move->queue) {
+            return false;
+        }
+
+        $this->where("id", "=", $move->id)->update([
+            "queue" => $new_position
+        ]);
+
+        $this->where("id", "=", $other->id)->update([
+            "queue" => $dir < 0 ? $other->queue + 1 : $other->queue - 1
+        ]);
+    }
+
     public function getAllCategories () {
         return $this->where("parent", "not_null")->get(["id", "name"])->results();
     }
@@ -64,11 +94,13 @@ final class Section extends Model {
     }
 
     public function getSectionCategories ($section_id) {
-
         $section_id = !is_numeric($section_id) ? $this->getSection($section_id) ? $this->getSection($section_id)->id : 0 : $section_id;
 
-        return $this->where("parent", "=", $section_id)->or("url_name", "=", $section_id)->get()->count() > 0 ? $this->results() : null;
-
+        return $this->where("parent", "=", $section_id)
+                    ->or("url_name", "=", $section_id)
+                    ->orderBy(["queue"], "ASC")
+                    ->get()
+                    ->count() > 0 ? $this->results() : null;
     }
 
     public function getSectionByCategory ($id) {
@@ -77,14 +109,18 @@ final class Section extends Model {
     }
 
     public function getSection ($section_id) {
-
-        return $this->where("id", "=", $section_id)->or("url_name", "=", $section_id)->get()->count() > 0 ? $this->first() : null;
-
+        return $this->where("id", "=", $section_id)
+                    ->or("url_name", "=", $section_id)
+                    ->get()
+                    ->count() > 0 ? $this->first() : null;
     }
 
     public function getSections () {
 
-        return $this->where("parent", "null")->get()->count() > 0 ? $this->results() : null;
+        return $this->where("parent", "null")
+                    ->orderBy(["queue"], "ASC")
+                    ->get()
+                    ->count() > 0 ? $this->results() : null;
 
     }
 

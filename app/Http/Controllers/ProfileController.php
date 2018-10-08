@@ -10,6 +10,7 @@ use App\Models\ModerationNotes;
 use Libs\Tools\SlugUrl;
 use Libs\Token;
 use Libs\Session;
+use Libs\Config;
 use Libs\User as Auth;
 include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
@@ -46,9 +47,13 @@ final class ProfileController extends Controller {
         }
 
         if (strlen($this->view->data->about) > 0) {
-            $bb = new \BbCode();
-            $bb->parse($this->view->data->about, false);
-            $this->view->about = $bb->getHtml(); 
+            if (Config::get("user/auth/about/contents/bbcode")) {
+                $bb = new \BbCode();
+                $bb->parse($this->view->data->about, false);
+                $this->view->about = $bb->getHtml();
+            } else {
+                $this->view->about = $this->view->data->about;
+            }
         } else {
             $this->view->about = null;
         }
