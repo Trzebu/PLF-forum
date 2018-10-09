@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+
+use App\Models\Permissions;
 use Libs\Model;
 use Libs\User as Auth;
 use Libs\DataBase\DataBase as DB;
@@ -44,19 +46,28 @@ final class Section extends Model {
     }
 
     public function getSectionModerators ($sectionId) {
+        $permits = explode(",", $this->where("id", "=", $sectionId)->get(["permissions"])->first()->permissions);
 
-        $permits = $this->where("id", "=", $sectionId)->get(["permissions"])->count() > 0 ? $this->first() : null;
+        if ($this->getSectionByCategory($sectionId) !== null) {
+            $permits = array_merge($permits, explode(",", $this->where("id", "=", $this->getSectionByCategory($sectionId)->id)->get(["permissions"])->first()->permissions));
+        }
+
         $moderators = [];
+        $permits = array_unique($permits);
+        $permissionsObject = new Permissions();
 
         if ($permits !== null) {
-            $permissions = DB::instance()->table("permissions")->get(["id", "permissions", "color"])->results();
-            $permits = explode(",", $permits->permissions);
+            $permissions = $permissionsObject->getRank();
 
             foreach ($permits as $permit) {
                 foreach ($permissions as $permission) {
                     foreach (json_decode($permission->permissions) as $key => $value) {
-                        if ($permit == $key && $value == 1) {
-                            $mods = DB::instance()->table("users")->where("permissions", "=", $permission->id)->get(["id", "username"])->results();
+                        if ($permit == $key && $value) {
+                            $mods = DB::instance()
+                                        ->table("users")
+                                        ->where("permissions", "=", $permission->id)
+                                        ->get(["id", "username"])
+                                        ->results();
                             foreach ($mods as $user) {
                                 array_push($moderators, "<a href='" . route('profile.index_by_id', ["id" => $user->id]) . "'><font color='{$permission->color}'>{$user->username}</font></a>");
                             }
@@ -70,15 +81,17 @@ final class Section extends Model {
     }
 
     public function checkPermissions ($id) {
-        $permissions = $this->where("id", "=", $id)->get(["permissions"])->count() > 0 ? $this->first()->permissions : [];
-        $permissions = explode(",", $permissions);
+        $permissions = explode(",", $this->where("id", "=", $id)->get(["permissions"])->first()->permissions);
+
+        if ($this->getSectionByCategory($id) !== null) {
+            $permissions = array_merge($permissions, explode(",", $this->where("id", "=", $this->getSectionByCategory($id)->id)->get(["permissions"])->first()->permissions));
+        }
 
         foreach ($permissions as $permission) {
 
             if (Auth::permissions($permission)) {
                 return true;
             }
-
         }
 
         return false;

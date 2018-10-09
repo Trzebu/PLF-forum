@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminControllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Section;
+use App\Models\Permissions;
 use Libs\Session;
 use Libs\Token;
 use Libs\Http\Request;
@@ -22,6 +23,7 @@ final class ForumsController extends Controller {
             $this->view->name = Request::urlVar("name");
         }
 
+        $this->view->permissions = new Permissions();
         $this->view->section = $this->section;
         $this->view->render("admin.forums.new_forum.index");
     }

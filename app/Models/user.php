@@ -190,20 +190,9 @@ final class User extends Model {
     }
 
     public function allPermissions ($id) {
-        $permissions = $this->where("id", "=", $id)->get(["permissions"])->first()->permissions;
-        $hasPermissions = [];
-        $groups = DB::instance()->table("permissions")->where("id", "=", $permissions)->get(["permissions"])->first()->permissions;
-        $groups = json_decode($groups);
+        $permissions = new Permissions();
 
-        foreach ($groups as $key => $value) {
-
-            if ($value == 1) {
-                array_push($hasPermissions, $key);
-            }
-
-        }
-
-        return $hasPermissions;
+        return $permissions->translated($id);
     }
 
     public function permissions ($id) {

@@ -23,7 +23,7 @@
         <div class="col">
             <h4>Permissions</h4>
             @foreach ($this->user->allPermissions($this->data->id) as $perm):
-                <p class="small-grey-text">{{ $this->translate->get("permissions." . $perm) }}</p>
+                <p class="small-grey-text">{{ $perm }}</p>
             @endforeach
         </div>
         <div class="col">

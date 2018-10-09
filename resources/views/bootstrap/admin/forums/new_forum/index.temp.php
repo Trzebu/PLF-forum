@@ -3,16 +3,16 @@
 
 <div class="main">
     
-    <h1>New forum :: {{ $this->name }}</h1>
-    <p class="grey-text">Here you can create new forum.</p>    
+    <h1>{{ trans("acp.new_forum") }} :: {{ $this->name }}</h1>
+    <p class="grey-text">{{ trans("acp.new_forum_description") }}.</p>    
 
     <form method="" action="">
 
         <div class="fieldset">
-            <div class="legend">Forum settings</div>
+            <div class="legend">{{ trans("general.forum_settings") }}</div>
             <dl>
                 <dt>
-                    <label for="parent">Parent forum</label>
+                    <label for="parent">{{ trans("acp.parent_forum") }}:</label>
                     @if ($this->errors->has("parent")):
                         <br><span class="error">
                             {{ $this->errors->get("parent")->first() }}
@@ -21,7 +21,7 @@
                 </dt>
                 <dd>
                     <select id="parent" name="parent">
-                        <option value="0">No parent</option>
+                        <option value="0">{{ trans("acp.no_parent") }}</option>
                         @foreach ($this->section->getSections() as $section):
                             <option value="{{ $section->id }}">{{ $section->name }}</option>
                         @endforeach
@@ -30,7 +30,7 @@
             </dl>
             <dl>
                 <dt>
-                    <label for="forum_name">Forum name:</label>
+                    <label for="forum_name">{{ trans("general.forum_name") }}:</label>
                     @if ($this->errors->has("forum_name")):
                         <br><span class="error">
                             {{ $this->errors->get("forum_name")->first() }}
@@ -43,9 +43,9 @@
             </dl>
             <dl>
                 <dt>
-                    <label for="forum_description">Forum description:</label>
+                    <label for="forum_description">{{ trans('general.forum_description') }}:</label>
                     <br>
-                    <span>Any HTML markup entered here will be displayed as is.</span>
+                    <span>{{ trans("acp.forum_description") }}</span>
                     @if ($this->errors->has("forum_description")):
                         <br><span class="error">
                             {{ $this->errors->get("forum_description")->first() }}
@@ -58,8 +58,8 @@
             </dl>
             <dl>
                 <dt>
-                    <label for="password">Forum password:</label>
-                    <br><span>Defines a password for this forum, use the permission system in preference.</span>
+                    <label for="password">{{ trans("general.forum_password") }}:</label>
+                    <br><span>{{ trans("acp.forum_password") }}</span>
                     @if ($this->errors->has("password")):
                         <br><span class="error">
                             {{ $this->errors->get("password")->first() }}
@@ -72,8 +72,8 @@
             </dl>
             <dl>
                 <dt>
-                    <label for="password_again">Password again:</label>
-                    <br><span>Only needs to be set if a forum password is entered.</span>
+                    <label for="password_again">{{ trans("auth.password_again") }}:</label>
+                    <br><span>{{ trans("acp.forum_password_again") }}</span>
                     @if ($this->errors->has("password_again")):
                         <br><span class="error">
                             {{ $this->errors->get("password_again")->first() }}
@@ -84,6 +84,48 @@
                     <input id="password_again" type="password" name="password_again">
                 </dd>
             </dl>
+        </div>
+
+        <div class="fieldset">
+            <div class="legend">{{ trans("general.forum_settings_generel") }}</div>
+            <dl>
+                <dt>
+                    <label for="status">Status</label>
+                    @if ($this->errors->has("status")):
+                        <br><span class="error">
+                            {{ $this->errors->get("status")->first() }}
+                        </span>
+                    @endif
+                </dt>
+                <dd>
+                    <select id="status" name="status">
+                        @foreach (trans("acp.forum_status") as $key => $value):
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </dd>
+            </dl>
+        </div>
+
+        <div class="fieldset">
+            <div class="legend">{{ trans("general.permissions") }}</div>
+            @foreach ($this->permissions->translated() as $key => $value):
+                <dl>
+                    <dt>
+                        <label for="">{{ $value }}</label>
+                    </dt>
+                    <dd>
+                        <label>
+                            <input type="radio" name="permissions[{{ $key }}]" class="radio" value="1">
+                            {{ trans('buttons.yes') }}
+                        </label>
+                        <label>
+                            <input type="radio" name="permissions[{{ $key }}]" class="radio" value="0" checked="checked">
+                            {{ trans('buttons.no') }}
+                        </label>
+                    </dd>
+                </dl>
+            @endforeach
         </div>
 
     </form>

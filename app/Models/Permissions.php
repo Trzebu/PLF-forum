@@ -9,6 +9,30 @@ final class Permissions extends Model {
 
     protected $_table = "permissions";
 
+    public function translated ($userId = null, $search = null) {
+        $user = new User();
+        $perms = $userId !== null ?
+                 $this->where("id", "=", $user->data($userId)->permissions)->get(["permissions"])->first() :
+                 $this->rowsLimit(1)->get(["permissions"])->first();
+        $translated = [];         
+
+        foreach (json_decode($perms->permissions) as $key => $value) {
+            if ($userId !== null) {
+                if (!$value) {
+                    continue;
+                }
+            }
+
+            $translated = array_merge($translated, [$key => is_array(trans("permissions." . $key)) ?: trans("permissions." . $key)]);
+
+            if ($key == $search) {
+                return [$key => is_array(trans("permissions." . $key)) ?: trans("permissions." . $key)];
+            }
+        }
+
+        return $translated;
+    }
+
     public function getRankByPermission ($search) {
         $groups = $this->get()->results();
 
