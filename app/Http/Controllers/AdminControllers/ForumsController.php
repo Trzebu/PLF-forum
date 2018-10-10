@@ -17,8 +17,17 @@ final class ForumsController extends Controller {
         $this->section = new Section();
     }
 
+    public function newForumPost () {
+        if (!$this->validation(Request::input(), [
+            "name" => "required|unique:sections",
+            "create_forum_token" => "token"
+        ])) {
+            return $this->redirect("admin.forums.new_forum");
+        }
+    }
+
     public function newForum () {
-        $this->view->name = "without name";
+        $this->view->name = trans("general.without_name");
         if (!empty(Request::urlVar("name"))) {
             $this->view->name = Request::urlVar("name");
         }

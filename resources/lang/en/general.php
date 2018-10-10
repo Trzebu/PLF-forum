@@ -7,4 +7,8 @@ return [
     "forum_password" => "Forum password",
     "forum_description" => "Forum description",
     "permissions" => "Permissions",
+    "forum_type" => "Forum type",
+    "category" => "Category",
+    "global_category" => "Global category",
+    "without_name" => "Without name",
 ];

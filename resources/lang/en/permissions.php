@@ -1,6 +1,7 @@
 <?php
 
 return [
+    "user" => "User",
     "admin" => "Administrator",
     "moderator" => "Moderator",
     "banned" => "Banned",

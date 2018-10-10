@@ -6,10 +6,26 @@
     <h1>{{ trans("acp.new_forum") }} :: {{ $this->name }}</h1>
     <p class="grey-text">{{ trans("acp.new_forum_description") }}.</p>    
 
-    <form method="" action="">
+    <form method="post" action="{{ route('admin.forums.new_forum.create') }}">
 
         <div class="fieldset">
             <div class="legend">{{ trans("general.forum_settings") }}</div>
+            <dl>
+                <dt>
+                    <label for="forum_type">{{ trans("general.forum_type") }}:</label>
+                    @if ($this->errors->has("forum_type")):
+                        <br><span class="error">
+                            {{ $this->errors->get("forum_type")->first() }}
+                        </span>
+                    @endif
+                </dt>
+                <dd>
+                    <select id="forum_type" name="forum_type">
+                        <option value="0">Formu/{{ trans("general.category") }}</option>
+                        <option value="glob">{{ trans("general.global_category") }}</option>
+                    </select>
+                </dd>
+            </dl>
             <dl>
                 <dt>
                     <label for="parent">{{ trans("acp.parent_forum") }}:</label>
@@ -30,15 +46,15 @@
             </dl>
             <dl>
                 <dt>
-                    <label for="forum_name">{{ trans("general.forum_name") }}:</label>
-                    @if ($this->errors->has("forum_name")):
+                    <label for="name">{{ trans("general.forum_name") }}:</label>
+                    @if ($this->errors->has("name")):
                         <br><span class="error">
-                            {{ $this->errors->get("forum_name")->first() }}
+                            {{ $this->errors->get("name")->first() }}
                         </span>
                     @endif
                 </dt>
                 <dd>
-                    <input id="forum_name" type="text" name="forum_name">
+                    <input id="name" type="text" name="name">
                 </dd>
             </dl>
             <dl>
@@ -126,6 +142,15 @@
                     </dd>
                 </dl>
             @endforeach
+        </div>
+
+        <div class="fieldset">
+            <div class="legend">{{ trans('buttons.create') }}</div>
+            <p class="buttons">
+                <input type="hidden" name="create_forum_token" value="{{ $this->token->generate('create_forum_token') }}">
+                <input type="submit" class="button" value="{{ trans('buttons.create') }}">
+                <input type="reset" class="button" value="Reset">
+            </p>
         </div>
 
     </form>

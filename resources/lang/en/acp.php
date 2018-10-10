@@ -10,7 +10,7 @@ return [
     "forum_status" => [
         0 => "Unlocked",
         1 => "Locked",
-        2 => "Permitted only" 
+        2 => "Only authorized" 
     ],
     "new_forum" => "New forum",
     "new_forum_description" => "Here you can create new forum",

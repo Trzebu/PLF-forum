@@ -37,9 +37,9 @@
                                     <p class="small-grey-text">{{ $category->description }}</p>
                                     <p  class="small-grey-text">
                                         Moderators:
-
-                                        {{ implode(", ", $this->section->getSectionModerators($category->id)) }}
-
+                                        @foreach ($this->section->getSectionModerators($category->id) as $key => $value):
+                                            <a href="{{ route('profile.index_by_id', ['id' => $value['id']]) }}"><font color="{{ $value['color'] }}">{{ $key }}</font></a>
+                                        @endforeach
                                     </p>
                                 </td>
                                 <td class="w-10 text-center">{{ $this->postObj->getSubjectsCount($category->id) }}</td>

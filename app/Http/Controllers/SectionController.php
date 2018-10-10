@@ -41,6 +41,7 @@ final class SectionController extends Controller {
         $this->view->section_details = $section->getSection($sectionId);
         $this->view->category = $section->getCategory($categoryId);
         $this->view->posts = null;
+        $this->view->section = $section;
 
         if ($this->view->category->status == 2 && !$section->checkPermissions($this->view->category->id)) {
             $this->view->category = null;

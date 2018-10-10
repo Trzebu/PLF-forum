@@ -69,7 +69,10 @@ final class Section extends Model {
                                         ->get(["id", "username"])
                                         ->results();
                             foreach ($mods as $user) {
-                                array_push($moderators, "<a href='" . route('profile.index_by_id', ["id" => $user->id]) . "'><font color='{$permission->color}'>{$user->username}</font></a>");
+                                $moderators = array_merge($moderators, [$user->username => [
+                                    "id" => $user->id,
+                                    "color" => $permission->color
+                                ]]);
                             }
                         }
                     }

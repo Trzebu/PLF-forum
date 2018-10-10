@@ -239,3 +239,9 @@ Route::get("/admin/forums/new_forum", [
     "as" => "admin.forums.new_forum",
     "middleware" => ["permissions"]
 ]);
+
+Route::post("/admin/forums/new_forum/create", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@newForumPost",
+    "as" => "admin.forums.new_forum.create",
+    "middleware" => ["permissions"]
+]);

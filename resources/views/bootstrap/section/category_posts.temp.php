@@ -16,6 +16,12 @@
                         @endif
                     @endif
                     <p class="small-grey-text">{{ $this->section_details->name }}/{{ $this->category->name }}</p>
+                    <p  class="small-grey-text">
+                        Moderators:
+                        @foreach ($this->section->getSectionModerators($this->category->id) as $key => $value):
+                            <a href="{{ route('profile.index_by_id', ['id' => $value['id']]) }}"><font color="{{ $value['color'] }}">{{ $key }}</font></a>
+                        @endforeach
+                    </p>
                     Subjects
                 @else
                     This category dosn't exists.

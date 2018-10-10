@@ -35,6 +35,12 @@
                     <td style="width: 60%; padding-left: 25px">
                         <a href="{{ route('section.category_posts', ['sectionName' => $this->section_details->url_name, 'categoryId' => $category->url_name]) }}">{{ $category->status == 1 ? '<i class="fas fa-lock"></i>' : '<i class="fab fa-wpforms"></i>' }} {{ $category->name }}</a>
                         <p class="small-grey-text">{{ $category->description }}</p>
+                        <p  class="small-grey-text">
+                            Moderators:
+                            @foreach ($this->section->getSectionModerators($category->id) as $key => $value):
+                                <a href="{{ route('profile.index_by_id', ['id' => $value['id']]) }}"><font color="{{ $value['color'] }}">{{ $key }}</font></a>
+                            @endforeach
+                        </p>
                     </td>
                     <td class="w-10 text-center">{{ $this->postObj->getSubjectsCount($category->id) }}</td>
                     <td class="w-10 text-center">{{ $this->postObj->getPostsCount($category->id) }}</td>
