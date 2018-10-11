@@ -15,7 +15,7 @@
                 @else
                     {{ $this->parent_post->contents }}
                 @endif
-                @if ($this->parent_post->status == 2):
+                @if ($this->parent_post->created_at != $this->parent_post->updated_at):
                     <p class="small-grey-text">Edited at: {{ $this->parent_post->updated_at }}</p>
                 @endif
                 @if ($this->user->signature($this->parent_post->user_id)):
@@ -36,7 +36,7 @@
 
                         @if ($this->hasPermissions || ($this->parent_post->user_id == Auth()->data()->id && $this->parent_post->status != 1)):
                             <div class="col">
-                                <a href="{{ route('post.edit', ['postId' => $this->parent_post->id, 'token' => $this->urlToken]) }}">Edit</a>
+                                <a href="{{ route('post.edit.answer', ['postId' => $this->parent_post->id, 'token' => $this->urlToken]) }}">Edit</a>
                             </div>
                         @endif
 
@@ -80,21 +80,9 @@
 
                 @if (Auth()->check()):
                     @if (($this->hasPermissions || $this->parent_post->user_id == Auth()->data()->id) && $this->parent_post->status != 1):
-                        <div class="col">
-                            <form method="post" action="{{ route('post.close_thread', ['postId' => $this->parent_post->id, 'categoryId' => $this->parent_post->category]) }}">
-                                <div class="form-group">
-                                    <input type="hidden" name="close_thread_token" value="{{ $this->token->generate('close_thread_token') }}">
-                                    <input type="submit" class="btn btn-success w-100" name="" value="Close">
-                                </div>
-                            </form>
-                        </div>
+                        <a href="{{ route('post.open_close_post', ['section' => $this->section_id, 'category' => $this->category_id, 'postId' => $this->parent_post->id, 'type' => 'close','token' => token('open_close_thread_token')]) }}" class="btn btn-success w-100">Close</a>
                     @elseif ($this->hasPermissions && $this->parent_post->status == 1):
-                        <form method="post" action="{{ route('post.open_thread', ['postId' => $this->parent_post->id, 'categoryId' => $this->parent_post->category]) }}">
-                            <div class="form-group">
-                                <input type="hidden" name="open_thread_token" value="{{ $this->token->generate('open_thread_token') }}">
-                                <input type="submit" class="btn btn-success w-100" name="" value="Open">
-                            </div>
-                        </form>
+                        <a href="{{ route('post.open_close_post', ['section' => $this->section_id, 'category' => $this->category_id, 'postId' => $this->parent_post->id, 'type' => 'open','token' => token('open_close_thread_token')]) }}" class="btn btn-success w-100">Open</a>
                     @else
                         <a href="{{ route('report.contents', ['id' => $this->parent_post->id, 'contents' => 'post', 'token' => $this->reportToken]) }}">Report this thread!</a>
                     @endif
@@ -127,7 +115,7 @@
                             @else
                                 {{ $answer->contents }}
                             @endif
-                            @if ($answer->status == 2):
+                            @if ($answer->created_at != $answer->updated_at):
                                 <p class="small-grey-text">Edited at: {{ $answer->updated_at }}</p>
                             @endif
                         @endif
@@ -150,7 +138,7 @@
                             @if (Auth()->check()):
                                 <div class="col">
                                     @if ($this->hasPermissions || ($answer->user_id == Auth()->data()->id && $this->parent_post->status != 1)):
-                                        <a href="{{ route('post.edit', ['postId' => $answer->id, 'token' => $this->urlToken]) }}">Edit</a>
+                                        <a href="{{ route('post.edit.answer', ['section' => $this->section_id, 'category' => $this->category_id, 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Edit</a>
                                     @else
                                         <a href="{{ route('report.contents', ['id' => $answer->id, 'contents' => 'post', 'token' => $this->reportToken]) }}">Report this answer!</a>
                                     @endif
@@ -175,9 +163,9 @@
                             </p>
                             @if ($this->hasPermissions):
                                 @if ($answer->status == 1):
-                                    <a href="{{ route('post.remove_or_restore', ['action' => 'restore', 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Restore</a>
+                                    <a href="{{ route('post.remove_or_restore', ['section' => $this->section_id, 'categoryId' => $this->category_id, 'action' => 'restore', 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Restore</a>
                                 @else
-                                    <a href="{{ route('post.remove_or_restore', ['action' => 'remove', 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Remove</a>
+                                    <a href="{{ route('post.remove_or_restore', ['section' => $this->section_id, 'categoryId' => $this->category_id,'action' => 'remove', 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Remove</a>
                                 @endif
                             @endif
                         </div>

@@ -11,6 +11,24 @@ final class Section extends Model {
 
     protected $_table = "sections";
 
+    public function highestValueAsQueue ($parent = null) {
+        $sections = $parent === null ?
+                    $this->where("parent", "null") :
+                    $this->where("parent", "=", $parent);
+        $sections = $this->get(["queue"])->results();
+
+        usort($sections, function ($x, $y) {
+            return $x->queue <=> $y->queue;
+        });
+
+        return end($sections)->queue;
+    }
+
+    public function newRecord ($fields) {
+        return $this->insert($fields)
+                    ->lastInsertedID();
+    }
+
     public function changeQueue ($id, $dir) {
         $dir = $dir == "up" ? -1 : 1;
         $move = $this->where("id", "=", $id)->get(["id", "parent", "queue"])->first();
@@ -42,7 +60,9 @@ final class Section extends Model {
     }
 
     public function getAllCategories () {
-        return $this->where("parent", "not_null")->get(["id", "name"])->results();
+        return $this->where("parent", "not_null")
+                    ->get()
+                    ->results();
     }
 
     public function getSectionModerators ($sectionId) {
@@ -84,6 +104,10 @@ final class Section extends Model {
     }
 
     public function checkPermissions ($id) {
+        if ($id == 0 && Auth::permissions("global_moderator")) {
+            return true;
+        }
+
         $permissions = explode(",", $this->where("id", "=", $id)->get(["permissions"])->first()->permissions);
 
         if ($this->getSectionByCategory($id) !== null) {

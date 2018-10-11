@@ -3,15 +3,36 @@
 namespace App\Models;
 
 use App\Models\Permissions;
+use App\Models\Section;
 use Libs\Model;
 use Libs\User as Auth;
 use Libs\DataBase\DataBase as DB;
 use Libs\Config;
+use Libs\Session;
 use Libs\Http\Request;
 
 
 final class User extends Model {
     protected $_table = "users";
+
+    public function loginToCategory ($category) {
+        Session::set("category_access_{$category}", true);
+    }
+
+    public function isLoggedToCategory ($category) {
+        $section = new Section();
+        $id =  $section->getCategory($category)->id;
+
+        if ($section->checkPermissions($id)) {
+            return true;
+        }
+
+        if (!Session::exists("category_access_{$id}")) {
+            return false;
+        }
+
+        return true;
+    }
 
     public function signature ($id) {
         $perm = new Permissions();

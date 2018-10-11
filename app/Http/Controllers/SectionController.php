@@ -6,6 +6,7 @@ use App\Models\Section;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Vote;
+use Libs\Session;
 
 final class SectionController extends Controller {
 
@@ -42,16 +43,24 @@ final class SectionController extends Controller {
         $this->view->category = $section->getCategory($categoryId);
         $this->view->posts = null;
         $this->view->section = $section;
+        $this->view->user = new User();
+
+        if (!is_null($this->view->category->password) &&
+            !$this->view->user->isLoggedToCategory($this->view->category->id)) {
+            Session::flash("alert_info", trans("auth.category_auth"));
+            return $this->redirect("section.login", [
+                "sectionName" => $this->view->section_details->url_name,
+                "categoryId" => $this->view->category->url_name
+            ]);
+        }
 
         if ($this->view->category->status == 2 && !$section->checkPermissions($this->view->category->id)) {
             $this->view->category = null;
         }
 
         if ($this->view->category !== null) {
-            $this->view->posts = $post->getPosts($this->view->category->id);
             $this->view->vote = new Vote();
             $this->view->postObj = $post;
-            $this->view->user = new User();
             $this->view->hasPermissions = $section->checkPermissions($this->view->category->id);
         }
 

@@ -77,6 +77,18 @@ Route::get("/section/{sectionName}/{categoryId}", [
     "as" => "section.category_posts"
 ]);
 
+Route::get("/section/login/{sectionName}/{categoryId}", [
+    "uses" => "App\Http\Controllers\AuthController@loginToCategory",
+    "as" => "section.login",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/section/login/{sectionName}/{categoryId}", [
+    "uses" => "App\Http\Controllers\AuthController@loginToCategoryPost",
+    "as" => "section.login.post",
+    "middleware" => ["auth"]
+]);
+
 //Post
 
 Route::get("/section/{sectionName}/{categoryId}/{postId}/{postSlugUrl}", [
@@ -106,6 +118,18 @@ Route::get("/addSubject/{sectionName}/{categoryId}", [
     "middleware" => ["auth"]
 ]);
 
+Route::get("/addSubject", [
+    "uses" => "App\Http\Controllers\PostController@addSubjectGlobal",
+    "as" => "post.add_subject",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/addSubject/send", [
+    "uses" => "App\Http\Controllers\PostController@addSubjectGlobalSend",
+    "as" => "post.add_subject.send",
+    "middleware" => ["auth"]
+]);
+
 Route::post("/addSubject/{categoryId}", [
     "uses" => "App\Http\Controllers\PostController@addSubjectPost",
     "as" => "post.add_subject_to_category_send",
@@ -118,33 +142,27 @@ Route::post("/moveTo/{postId}/{categoryId}", [
     "middleware" => ["auth"]
 ]);
 
-Route::post("/closeThread/{postId}/{categoryId}", [
-    "uses" => "App\Http\Controllers\PostController@closeThread",
-    "as" => "post.close_thread",
+Route::get("/openCloseThread/{section}/{category}/{postId}/{type}/{token}", [
+    "uses" => "App\Http\Controllers\PostController@openCloseThread",
+    "as" => "post.open_close_post",
     "middleware" => ["auth"]
 ]);
 
-Route::post("/openThread/{postId}/{categoryId}", [
-    "uses" => "App\Http\Controllers\PostController@openThread",
-    "as" => "post.open_thread",
-    "middleware" => ["auth"]
-]);
-
-Route::get("/answer/{action}/{postId}/{token}", [
+Route::get("/answer/{section}/{categoryId}/{action}/{postId}/{token}", [
     "uses" => "App\Http\Controllers\PostController@actionAnswer",
     "as" => "post.remove_or_restore",
     "middleware" => ["auth"]
 ]);
 
-Route::get("/post/edit/{postId}/{token}", [
-    "uses" => "App\Http\Controllers\PostController@editPost",
-    "as" => "post.edit",
+Route::get("/post/edit/answer/{section}/{category}/{postId}", [
+    "uses" => "App\Http\Controllers\PostController@editAnswer",
+    "as" => "post.edit.answer",
     "middleware" => ["auth"]
 ]);
 
-Route::post("/post/edit/{postId}", [
-    "uses" => "App\Http\Controllers\PostController@editPostSend",
-    "as" => "post.edit_send",
+Route::post("/post/edit/answer/{section}/{category}/{postId}", [
+    "uses" => "App\Http\Controllers\PostController@editAnswerSend",
+    "as" => "post.edit.answer.send",
     "middleware" => ["auth"]
 ]);
 

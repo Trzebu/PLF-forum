@@ -11,6 +11,21 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function getStickyThreads ($categoryId) {
+        return $this->where("parent", "null")
+                    ->and("sticky", "=", 1)
+                    ->and("category", "=", $categoryId)
+                    ->get()
+                    ->results();
+    }
+
+    public function getGlobalThreads () {
+        return $this->where("parent", "null")
+                    ->and("category", "=", 0)
+                    ->get()
+                    ->results();
+    }
+
     public function deletePost ($postId) {
         $vote = new Vote();
         $vote->deleteVoteByPost($postId);
@@ -40,14 +55,6 @@ final class Post extends Model {
                     ->numRow();
     }
 
-    public function editPost ($id, $content) {
-        $this->where("id", "=", $id)
-            ->update([
-                "status" => 2,
-                "contents" => $content
-            ]);
-    }
-
     public function changeAnswerStatus ($id, $action) {
         $this->where("id", "=", $id)->update([
             "status" => $action
@@ -62,16 +69,9 @@ final class Post extends Model {
         return $this->where("parent", "null")->numRow();
     }
 
-    public function openThread ($postId) {
-        $this->where("id", "=", $postId)->update([
-            "status" => 0
-        ]);
-    }
-
-    public function closeThread ($postId) {
-        $this->where("id", "=", $postId)->update([
-            "status" => 1
-        ]);
+    public function postUpdate ($postId, $fields) {
+        $this->where("id", "=", $postId)
+             ->update($fields);
     }
 
     public function moveTo ($postId, $categoryId) {
@@ -80,8 +80,12 @@ final class Post extends Model {
         ]);
     }
 
-    public function addNewSubject ($title, $content, $category) {
+    public function addNew ($fields) {
+        return $this->insert($fields)
+                    ->lastInsertedID();
+    }
 
+    public function addNewSubject ($title, $content, $category) {
         $this->insert([
             "category" => $category,
             "user_id" => Auth::data()->id,
@@ -90,16 +94,6 @@ final class Post extends Model {
         ]);
 
         return $this->lastInsertedID();
-
-    }
-
-    public function newAnswer ($postId, $categoryId, $content) {
-        $this->insert([
-            "parent" => $postId,
-            "category" => $categoryId,
-            "user_id" => Auth::data()->id,
-            "contents" => $content
-        ]);
     }
 
     public function visitIncrement ($postId) {
@@ -124,21 +118,24 @@ final class Post extends Model {
 
     public function getSubjectData ($postId, $categoryId) {
         return $this->where("id", "=", $postId)
-                    ->and("category", "=", $categoryId)
                     ->and("parent", "null")
                     ->get()
                     ->count() > 0 ? $this->first() : null;
     }
 
-    public function getAnswersCount ($subjectId, $categoryId) {
+    public function postGetter ($postId) {
+        return $this->where("id", "=", $postId)
+                    ->get()
+                    ->count() > 0 ? $this->first() : null;
+    }
+
+    public function getAnswersCount ($subjectId) {
         return $this->where("parent", "=", $subjectId)
-                    ->and("category", "=", $categoryId)
                     ->numRow();
     }
 
-    public function getLastPost ($subjectId, $categoryId) {
+    public function getLastPost ($subjectId) {
         return $this->where("parent", "=", $subjectId)
-                    ->and("category", "=", $categoryId)
                     ->orderBy(["id"])
                     ->rowsLimit(1)
                     ->get()
@@ -169,10 +166,11 @@ final class Post extends Model {
     public function getPosts ($categoryId) {
         return $this->where("parent", "null")
                     ->and("category", "=", $categoryId)
+                    ->and("sticky", "null")
                     ->orderBy(["id"])
                     ->paginate(Config::get("category/view/post/per_page"))
                     ->get()
-                    ->count() > 0 ? $this : null;
+                    ->count() > 0 ? $this->results() : null;
     }
 
 }

@@ -26,6 +26,12 @@ class Num extends Rule {
         }
     }
 
+    protected function equals ($value) {
+        if ($this->__fields[$this->__input] !== $value) {
+            $this->addError($value);
+        }
+    }
+
     private function addError ($value) {
         $this->error(Str::replace(trans("validation.integre.{$this->__currentMethod}"), [
             ":attribute" => $this->__attribute,

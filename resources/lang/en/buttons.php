@@ -21,4 +21,5 @@ return [
     "add" => "Add",
     "lock" => "Lock",
     "create" => "Create",
+    "send" => "Send",
 ];

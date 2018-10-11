@@ -21,4 +21,6 @@ return [
     "add" => "Dodaj",
     "lock" => "Blokuj",
     "create" => "Stwórz",
+    "send" => "Wyślij",
+    "settings" => "Ustawienia",
 ];

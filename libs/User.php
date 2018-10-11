@@ -71,7 +71,7 @@ class User {
     }
 
     public function logout () {
-        Session::unset("u_id");
+        Session::destroy();
         Cookie::delete("remember_token");
         return true;
     }

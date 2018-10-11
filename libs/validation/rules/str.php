@@ -26,6 +26,12 @@ class Str extends Rule {
         }
     }
 
+    protected function equals ($value) {
+        if ($this->__fields[$this->__input] != $value) {
+            $this->addError($value);
+        }
+    }
+
     private function addError ($value) {
         $this->error(Stri::replace(trans("validation.string.{$this->__currentMethod}"), [
             ":attribute" => $this->__attribute,

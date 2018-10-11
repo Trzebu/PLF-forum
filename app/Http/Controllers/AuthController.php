@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Section;
 use Libs\Http\Request;
+use Libs\Http\Response;
 use Libs\Session;
 use Libs\User as Auth;
 use Libs\Token;
@@ -14,6 +16,68 @@ final class AuthController extends Controller {
     public function __construct () {
         parent::__construct();
         $this->user = new User();
+    }
+
+    public function loginToCategoryPost ($sectionName, $categoryId) {
+        $section = new Section;
+        $data = $section->getCategory($categoryId);
+
+        if ($data === null) {
+            return $this->redirect("home.index");
+        }
+
+        if (is_null($data->password)) {
+            return $this->redirect("home.index");
+        }
+
+        if ($this->user->isLoggedToCategory($data->id)) {
+            return $this->redirect("home.index");
+        }
+
+        if (!$this->validation(Request::input(), [
+            "password" => ["required", trans("auth.inputs.password")],
+            "login_to_category_token" => "token"
+        ])) {
+            return $this->redirect("section.login", [
+                "sectionName" => $sectionName,
+                "categoryId" => $categoryId
+            ]);
+        }
+
+        if (!password_verify(Request::input("password"), $data->password)) {
+            Session::flash("alert_error", trans("auth.login_fail"));
+            return $this->redirect("section.login", [
+                "sectionName" => $sectionName,
+                "categoryId" => $categoryId
+            ]);
+        }
+
+        Session::flash("alert_success", trans("auth.login_success"));
+        $this->user->loginToCategory($data->id);
+
+        return $this->redirect("section.category_posts", [
+            "sectionName" => $sectionName,
+            "categoryId" => $categoryId
+        ]);
+    }
+
+    public function loginToCategory ($sectionName, $categoryId) {
+        $section = new Section;
+        $this->view->data = $section->getCategory($categoryId);
+
+        if ($this->view->data === null) {
+            return $this->redirect("home.index");
+        }
+
+        if (is_null($this->view->data->password)) {
+            return $this->redirect("home.index");
+        }
+
+        if ($this->user->isLoggedToCategory($this->view->data->id)) {
+            return $this->redirect("home.index");
+        }
+
+        $this->view->render("auth.login_to_category");
     }
 
     public function signature () {

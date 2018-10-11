@@ -12,22 +12,6 @@
             <div class="legend">{{ trans("general.forum_settings") }}</div>
             <dl>
                 <dt>
-                    <label for="forum_type">{{ trans("general.forum_type") }}:</label>
-                    @if ($this->errors->has("forum_type")):
-                        <br><span class="error">
-                            {{ $this->errors->get("forum_type")->first() }}
-                        </span>
-                    @endif
-                </dt>
-                <dd>
-                    <select id="forum_type" name="forum_type">
-                        <option value="0">Formu/{{ trans("general.category") }}</option>
-                        <option value="glob">{{ trans("general.global_category") }}</option>
-                    </select>
-                </dd>
-            </dl>
-            <dl>
-                <dt>
                     <label for="parent">{{ trans("acp.parent_forum") }}:</label>
                     @if ($this->errors->has("parent")):
                         <br><span class="error">
@@ -119,6 +103,20 @@
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
                     </select>
+                </dd>
+            </dl>
+            <dl>
+                <dt>
+                    <label for="url_name">URL name:</label>
+                    <br><span>This name will viewed in URL address. If you set nothing here this will be created automatically.</span>
+                    @if ($this->errors->has("url_name")):
+                        <br><span class="error">
+                            {{ $this->errors->get("url_name")->first() }}
+                        </span>
+                    @endif
+                </dt>
+                <dd>
+                    <input id="url_name" type="text" name="url_name">
                 </dd>
             </dl>
         </div>

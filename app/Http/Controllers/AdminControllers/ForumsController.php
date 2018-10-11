@@ -24,6 +24,43 @@ final class ForumsController extends Controller {
         ])) {
             return $this->redirect("admin.forums.new_forum");
         }
+
+        $password = null;
+        $permissions = [];
+        $parent = Request::input("parent") == 0 ? null :
+                  Request::input("parent");
+
+        if (!empty(Request::input("password"))) {
+            if (!$this->validation(Request::input(), [
+                "password" => "required",
+                "password_again" => ["same:password", "Password again"]
+            ])) {
+                return $this->redirect("admin.forums.new_forum");
+            }
+
+            $password = password_hash(Request::input("password"), PASSWORD_DEFAULT);
+        }
+
+        foreach (Request::input("permissions") as $key => $value) {
+            if ($value) {
+                array_push($permissions, $key);
+            }
+        }
+
+        $this->section->newRecord([
+            "parent" => $parent,
+            "queue" => $this->section->highestValueAsQueue($parent) + 1,
+            "status" => Request::input("status"),
+            "permissions" => implode(",", $permissions),
+            "password" => $password,
+            "name" => Request::input("name"),
+            "url_name" => empty(Request::input("url_name")) ? SlugUrl::generate(Request::input("name")) : Request::input("url_name"),
+            "description" => Request::input("forum_description")
+        ]);
+
+        Session::flash("alert_success", "Your forum has been created.");
+
+        $this->redirect("admin.forums.manage_forums");
     }
 
     public function newForum () {

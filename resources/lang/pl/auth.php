@@ -16,4 +16,5 @@ return [
     "login_fail" => "Nie możesz zalogować się z tymi danymi.",
     "username_or_email" => "Nazwa użytkownika lub e-mail",
     "remember" => "Zapamiętaj mnie",
+    "category_auth" => "Kategoria którą próbujesz zobaczyć jest zabezpieczona hasłem. Musisz podać poprawne hasło aby zobaczyć tą kategorię.",
 ];

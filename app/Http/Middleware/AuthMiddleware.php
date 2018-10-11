@@ -12,6 +12,7 @@
 namespace App\Http\Middleware;
 use Libs\User;
 use Libs\Http\Redirect;
+use Libs\Http\Response;
 
 class AuthMiddleware {
 

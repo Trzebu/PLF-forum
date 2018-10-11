@@ -4,12 +4,14 @@ return [
     "string" => [
         "str" => ":attribute musi być ciągiem znaków.",
         "min" => ":attribute nie może mieć mniej niż :min znaków.",
-        "max" => ":attribute nie może mieć więcej niż :max znaków."
+        "max" => ":attribute nie może mieć więcej niż :max znaków.",
+        "equals" => "Wartość :attribute nie może być inna niż :value."
     ],
     "integre" => [
         "num" => ":attribute musi być liczbą.",
         "min" => ":attribute nie może być mniejszy niż :min.",
-        "max" => ":attribute nie może być większy niż :max."
+        "max" => ":attribute nie może być większy niż :max.",
+        "equals" => ":attribute musi być równy :value."
     ],
     "alpha" => [
         "letters" => ":attribute może zawierać tylko litery.",

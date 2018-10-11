@@ -9,6 +9,11 @@ return [
     "permissions" => "Permissions",
     "forum_type" => "Forum type",
     "category" => "Category",
-    "global_category" => "Global category",
+    "global_thread" => "Global thread",
     "without_name" => "Without name",
+    "lock_topic" => "Lock topic",
+    "normal" => "Normally",
+    "sticky" => "Sticky",
+    "global" => "Globally",
+    "subject" => "Subject"
 ];

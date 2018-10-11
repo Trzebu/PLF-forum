@@ -39,6 +39,7 @@ class CreateSectionsTable extends TableCreator {
         $this->int("queue", 10)->notNullable();
         $this->int("status", 10)->nullable();
         $this->text("permissions")->nullable();
+        $this->string("password", 100)->nullable();
         $this->text("name");
         $this->text("url_name");
         $this->text("description");

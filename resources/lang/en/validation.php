@@ -4,12 +4,14 @@ return [
     "string" => [
         "str" => "The :attribute must be a string.",
         "min" => "The :attribute must be at least :min characters.",
-        "max" => "The :attribute may not be greater than :max characters."
+        "max" => "The :attribute may not be greater than :max characters.",
+        "equals" => "The :attribute must be equal :value.",
     ],
     "integre" => [
         "num" => "The :attribute must be a number.",
         "min" => "The :attribute must be at least :min.",
-        "max" => "The :attribute may not be greater than :max."
+        "max" => "The :attribute may not be greater than :max.",
+        "equals" => "The :attribute must be equal :value.",
     ],
     "alpha" => [
         "letters" => "The :attribute may only contain letters.",
