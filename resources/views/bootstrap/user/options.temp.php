@@ -57,7 +57,10 @@
                 <div class="form-group">
                     <label for="post">Write something nice:</label>
                     {? $textareaContent = $this->data->signature ?}
-                    @if (Libs\Config::get("user/auth/signature/contents/bbcode")):
+                    @if (config("user/auth/signature/contents/smilies")):
+                        @include partials/smilies_block
+                    @endif
+                    @if (config("user/auth/signature/contents/bbcode")):
                         @include partials/post_bbcode_block
                     @else
                         @include partials/post_default_block
@@ -78,7 +81,10 @@
             <div class="form-group">
                 <label for="post">Write something nice:</label>
                 {? $textareaContent = $this->data->about ?}
-                @if (Libs\Config::get("user/auth/about/contents/bbcode")):
+                @if (config("user/auth/about/contents/smilies")):
+                    @include partials/smilies_block
+                @endif
+                @if (config("user/auth/about/contents/bbcode")):
                     @include partials/post_bbcode_block
                 @else
                     @include partials/post_default_block

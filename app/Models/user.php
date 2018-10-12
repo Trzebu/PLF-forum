@@ -9,6 +9,7 @@ use Libs\User as Auth;
 use Libs\DataBase\DataBase as DB;
 use Libs\Config;
 use Libs\Session;
+use Libs\Smilies;
 use Libs\Http\Request;
 
 
@@ -42,10 +43,13 @@ final class User extends Model {
 
         $signature = $this->data($id)->signature;
         if (strlen($signature) > 0) {
-            if (Config::get("user/auth/signature/contents/bbcode")) {
+            if (config("user/auth/signature/contents/bbcode")) {
                 $bb = new \BbCode();
                 $bb->parse($signature, false);
-                return $bb->getHtml();
+                $signature = $bb->getHtml();
+            }
+            if (config("user/auth/signature/contents/smilies")) {
+                $signature = Smilies::parse($signature);
             }
             return $signature;
         }

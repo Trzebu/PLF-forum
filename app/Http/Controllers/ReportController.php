@@ -247,6 +247,7 @@ final class ReportController extends Controller {
     public function viewReportByID ($id) {
         $this->view->conversation = $this->report->getReport($id);
         $this->view->data = $this->view->conversation[0];
+        $this->view->bbcode = new \BbCode();
 
         if ($this->view->data === null) {
             Session::flash("alert_error", "This report dosen't exists.");

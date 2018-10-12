@@ -7,6 +7,8 @@ require_once(__ROOT__ . '/libs/functions/dd.php');
 require_once(__ROOT__ . '/libs/functions/auth.php');
 require_once(__ROOT__ . '/libs/functions/trans.php');
 require_once(__ROOT__ . '/libs/functions/token.php');
+require_once(__ROOT__ . '/libs/functions/stripBbCodeTags.php');
+require_once(__ROOT__ . '/libs/functions/config.php');
 
 //Loading system registry
 

@@ -11,6 +11,7 @@ use Libs\Tools\SlugUrl;
 use Libs\Token;
 use Libs\Session;
 use Libs\Config;
+use Libs\Smilies;
 use Libs\User as Auth;
 include __ROOT__ . "/libs/Bbcode/BbCode.php";
 
@@ -36,7 +37,8 @@ final class ProfileController extends Controller {
     public function index ($id, $username = null) {
         $post = new Post();
         $this->view->data = $this->user->data($id);
-
+        $this->view->about = null;
+        
         if ($this->view->data === null) {
             return $this->redirect("home.index");
         }
@@ -47,15 +49,15 @@ final class ProfileController extends Controller {
         }
 
         if (strlen($this->view->data->about) > 0) {
+            $this->view->about = $this->view->data->about;
             if (Config::get("user/auth/about/contents/bbcode")) {
                 $bb = new \BbCode();
-                $bb->parse($this->view->data->about, false);
+                $bb->parse($this->view->about, false);
                 $this->view->about = $bb->getHtml();
-            } else {
-                $this->view->about = $this->view->data->about;
             }
-        } else {
-            $this->view->about = null;
+            if (config("user/auth/about/contents/smilies")) {
+                $this->view->about = Smilies::parse($this->view->about);
+            }
         }
 
         $this->view->title = "Forum - {$this->view->data->username} profile";

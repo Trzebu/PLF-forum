@@ -27,7 +27,18 @@
                 <div class="col">
                     <b>#{{ $i }} {{ $this->user->username($this->conversation[$i]->user_id) }}:</b>
                     <div class="col">
-                        {{ $this->conversation[$i]->reason }}
+                        {? $content = $this->conversation[$i]->reason ?}
+            
+                        @if (config("report/case/response/contents/bbcode")):
+                            {? $this->bb->parse($content, false) ?}
+                            {? $content = $this->bb->getHtml() ?}
+                        @endif
+
+                        @if (config("report/case/response/contents/smilies")):
+                            {? $content = Libs\Smilies::parse($content) ?}
+                        @endif
+
+                        {{ $content }}
                     </div>
                 </div>
             @endfor
@@ -37,11 +48,13 @@
             <form method="post" action="{{ route('report.send_response', ['id' => $this->data->id]) }}">
                 <div class="form-group">
                     <label for="post"><b>More questions for {{ $this->user->username($this->data->user_id) }}:</b></label>
-                    <textarea name="post" id="post" class="form-control {{ $this->errors->has('post') ? 'is-invalid' : '' }} w-100 mb-10" style="height: 200px" placeholder="Type something..."></textarea>
-                    @if ($this->errors->has("post")):
-                        <div class="invalid-feedback">
-                            {{ $this->errors->get("post")->first() }}
-                        </div>
+                    @if (config("report/case/response/contents/smilies")):
+                        @include partials/smilies_block
+                    @endif
+                    @if (config("report/case/response/contents/bbcode")):
+                        @include partials/post_bbcode_block
+                    @else
+                        @include partials/post_default_block
                     @endif
                 </div>
                 <input type="hidden" name="post_token" value="{{ $this->token->generate('post_token') }}">

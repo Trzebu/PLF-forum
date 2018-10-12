@@ -1,7 +1,6 @@
 @include partials/top
 
 <div class="col border border-primary rounded border-5" style="background-color: #f2f2f2;">
-
     <h4>Create new thread in {{ $this->sectionName }}/{{ $this->section->name }}</h4>
 
     <form method="post" action="{{ route('post.add_subject_to_category_send', ['categoryId' => $this->section->id]) }}">
@@ -18,7 +17,10 @@
 
         <div class="form-group">
             <label for="post">Your contents:</label>
-            @if (Libs\Config::get("posting/bbcode")):
+            @if (config("posting/smilies")):
+                @include partials/smilies_block
+            @endif
+            @if (config("posting/bbcode")):
                 @include partials/post_bbcode_block
             @else
                 @include partials/post_default_block

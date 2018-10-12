@@ -5,7 +5,10 @@
         <div class="form-group">
             <label for="post">Edit your post:</label>
             {? $textareaContent = Libs\Http\Request::old("post") ? Libs\Http\Request::old("post") : $this->post->contents ?}
-            @if (Libs\Config::get("posting/answers/bbcode")):
+            @if (config("posting/answers/smilies")):
+                @include partials/smilies_block
+            @endif
+            @if (config("posting/answers/bbcode")):
                 @include partials/post_bbcode_block
             @else
                 @include partials/post_default_block

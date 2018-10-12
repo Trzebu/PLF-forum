@@ -43,12 +43,18 @@
                                     </div>
                                 </div>
                                 <div class="col-11">
-                                    @if (Libs\Config::get("private_message/contents/bbcode")):
+                                    {? $content = $data->contents ?}
+
+                                    @if (config("private_message/contents/bbcode")):
                                         {? $this->bb->parse($data->contents, false); ?}
-                                        {{ $this->bb->getHtml() }}
-                                    @else
-                                        {{ $data->contents }}
+                                        {? $content = $this->bb->getHtml() ?}
                                     @endif
+
+                                    @if (config("private_message/contents/smilies")):
+                                        {? $content = Libs\Smilies::parse($content) ?}
+                                    @endif
+
+                                    {{ $content }}
                                 </div>
                             </div>
                         @endforeach
@@ -62,7 +68,10 @@
                     <form method="post" action="{{ route('message.thread', ['userId' => $this->threadId]) }}">
                         <div class="form-group">
                             <label for="post">Write something nice:</label>
-                            @if (Libs\Config::get("private_message/contents/bbcode")):
+                            @if (config("private_message/contents/smilies")):
+                                @include partials/smilies_block
+                            @endif
+                            @if (config("private_message/contents/bbcode")):
                                 @include partials/post_bbcode_block
                             @else
                                 @include partials/post_default_block

@@ -23,4 +23,6 @@ return [
     "create" => "Stwórz",
     "send" => "Wyślij",
     "settings" => "Ustawienia",
+    "on" => "Włączony",
+    "off" => "Wyłączony",
 ];

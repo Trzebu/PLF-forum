@@ -22,4 +22,6 @@ return [
     "lock" => "Lock",
     "create" => "Create",
     "send" => "Send",
+    "on" => "On",
+    "off" => "Off",
 ];

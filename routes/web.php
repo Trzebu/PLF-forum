@@ -136,15 +136,9 @@ Route::post("/addSubject/{categoryId}", [
     "middleware" => ["auth"]
 ]);
 
-Route::post("/moveTo/{postId}/{categoryId}", [
+Route::post("/moveTo/{postId}", [
     "uses" => "App\Http\Controllers\PostController@moveTo",
     "as" => "post.move_to",
-    "middleware" => ["auth"]
-]);
-
-Route::get("/openCloseThread/{section}/{category}/{postId}/{type}/{token}", [
-    "uses" => "App\Http\Controllers\PostController@openCloseThread",
-    "as" => "post.open_close_post",
     "middleware" => ["auth"]
 ]);
 
@@ -163,6 +157,12 @@ Route::get("/post/edit/answer/{section}/{category}/{postId}", [
 Route::post("/post/edit/answer/{section}/{category}/{postId}", [
     "uses" => "App\Http\Controllers\PostController@editAnswerSend",
     "as" => "post.edit.answer.send",
+    "middleware" => ["auth"]
+]);
+
+Route::post("/post/edit/subject/{section}/{category}/{postId}", [
+    "uses" => "App\Http\Controllers\PostController@editSubjectSend",
+    "as" => "post.edit.subject.send",
     "middleware" => ["auth"]
 ]);
 

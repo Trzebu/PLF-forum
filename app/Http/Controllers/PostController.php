@@ -26,6 +26,86 @@ final class PostController extends Controller {
         $this->user = new User();
     }
 
+    public function editSubjectSend ($section, $category, $postId) {
+        $postData = $this->post->postGetter($postId);
+
+        if ($postData == null) {
+            return $this->redirect("home.index");
+        }
+
+        if (!is_null($this->section->getCategory($category)->password) &&
+            !$this->user->isLoggedToCategory($this->section->getCategory($category)->id)) {
+            Session::flash("alert_info", trans("auth.category_auth"));
+            return $this->redirect("section.login", [
+                "sectionName" => $sectionName,
+                "categoryId" => $categoryId
+            ]);
+        }
+
+        if ($this->section->getCategory($category) === null ||
+            $this->section->getSection($section) === null) {
+            return $this->redirect("home.index");
+        }
+
+        if ($postData->user_id != Auth()->data()->id &&
+            !$this->section->checkPermissions($postData->category)) {
+            return $this->redirect("home.index");
+        }
+
+        if (!Auth::permissions("creating_answers")) {
+            Session::flash("alert_error", "You can not edit this answer, because you have no permissions to creating answers.");
+            return $this->redirect("home.index");
+        }
+
+        if ($postData->status == 1 &&
+            !$this->section->checkPermissions($postData->category)) {
+            return $this->redirect("home.index");
+        }
+
+        if (!$this->validation(Request::input(), [
+            "title" => "required|str>min:" .
+                        Config::get("posting/title/length/min") .
+                        "|str>max:" .
+                        Config::get("posting/title/length/max"),
+            "post" => "required|str>min:" .
+                        Config::get("posting/contents/length/min") .
+                        "|str>max:" .
+                        Config::get("posting/contents/length/max"),
+            "post_edit_token" => "token"
+        ])) {
+            return $this->redirect("post.edit.answer", [
+                        "section" => $section,
+                        "category" => $category,
+                        "postId" => $postId
+                    ]);
+        }
+
+        $status = Request::input("lock") === "on" ? 1 : 0;
+        $sticky = $postData->sticky;
+        $color = null;
+
+        if ($this->section->checkPermissions($postData->category)) {
+            $sticky = Request::input("type") == 0 ? null : 1;
+            $color = Request::input("subject_color");
+        }
+
+        $this->post->postUpdate($postId, [
+            "status" => $status,
+            "sticky" => $sticky,
+            "subject_color" => $color,
+            "subject" => Request::input("title"),
+            "contents" => Request::input("post")
+        ]);
+
+        Session::flash("alert_info", "Thread updated!");
+        $this->redirect("post.slug_index", [
+            "sectionName" => $section,
+            "categoryId" => $category,
+            "postId" => $postId,
+            "postSlugUrl" => SlugUrl::generate(Request::input("title"))
+        ]);
+    }
+
     public function addSubjectGlobalSend () {
         if (!Auth::permissions("create_thread")) {
             Session::flash("alert_error", "You can not create new thrade, because you have no permissions to creating threads.");
@@ -63,6 +143,14 @@ final class PostController extends Controller {
             return $this->redirect("post.add_subject");
         } else {
             $category = $cat_data->id;
+            if (!is_null($this->section->getCategory($category)->password) &&
+                !$this->user->isLoggedToCategory($this->section->getCategory($category)->id)) {
+                Session::flash("alert_info", trans("auth.category_auth"));
+                return $this->redirect("section.login", [
+                    "sectionName" => $sectionName,
+                    "categoryId" => $categoryId
+                ]);
+            }
         }
 
         $hasPermissions = $cat_data === null &&
@@ -180,13 +268,25 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
-        $this->view->route = route("post.edit.answer.send", [
+        $this->view->post = $postData;
+
+        if (is_null($postData->parent)) {
+            $this->view->route = route("post.edit.subject.send", [
                                         "section" => $section,
                                         "category" => $category,
                                         "postId" => $postId
                                     ]);
-        $this->view->post = $postData;
-        $this->view->render("post.editAnswer");
+            $this->view->section = $this->section;
+            $this->view->categories = $this->section->getAllCategories();
+            $this->view->render("post.editSubject");
+        } else {
+            $this->view->route = route("post.edit.answer.send", [
+                                        "section" => $section,
+                                        "category" => $category,
+                                        "postId" => $postId
+                                    ]);
+            $this->view->render("post.editAnswer");
+        }
     }
 
     public function actionAnswer ($section, $categoryId, $action, $id, $token) {
@@ -215,41 +315,9 @@ final class PostController extends Controller {
             "answerId" => "#post_{$answer->id}"
         ]); 
 
-    } 
-
-    public function openCloseThread ($section, $category, $postId, $type, $token) {
-        $post = $this->post->postGetter($postId);
-
-        if ($post === null) {
-            return $this->redirect("home.index");
-        }
-
-        if ($this->section->getSection($section) === null) {
-            return $this->redirect("home.index");
-        }
-
-        if ($post->user_id != Auth::data()->id 
-            && !$this->section->checkPermissions($post->category)) {
-            return $this->redirect("home.index");
-        }
-
-        if (!Token::check("open_close_thread_token", $token)) {
-            return $this->redirect("home.index");
-        }
-
-        $this->post->postUpdate($postId, [
-            "status" => $type == "close" ? 1 : 0
-        ]);
-
-        return $this->redirect("post.slug_index", [
-            "sectionName" => $this->section->getSection($this->section->getCategory($category)->parent)->url_name,
-            "categoryId" => $category,
-            "postId" => $postId,
-            "postSlugUrl" => SlugUrl::generate($post->subject)
-        ]);
     }
 
-    public function moveTo ($postId, $categoryId) {
+    public function moveTo ($postId) {
         if ($this->post->postGetter($postId) === null) {
             return $this->redirect("home.index");
         }
@@ -265,10 +333,8 @@ final class PostController extends Controller {
         if ($this->validation(Request::input(), [
             "move_to_token" => "token"
         ])) {
-            $this->notes->moveToNote($postId, Request::input("category"));
             $this->post->moveTo($postId, Request::input("category"));
         }
-
 
         return $this->redirect("post.slug_index", [
             "sectionName" => $this->section->getSection($this->section->getCategory(Request::input('category'))->parent)->url_name,
@@ -463,7 +529,6 @@ final class PostController extends Controller {
 
             if ($this->section->checkPermissions($section->id)) {
                 $this->view->hasPermissions = true;
-                $this->view->categories = $this->section->getAllCategories();
             }
 
             /*Checking post status*/

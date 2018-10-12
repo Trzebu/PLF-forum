@@ -8,13 +8,20 @@
         <div id="post_{{ $this->parent_post->id }}" class="row border border-primary rounded mt-10 mb-10" style="background-color: #cccccc">
             <div class="col-10">
                 <h6 style="color: blue">{{ $this->parent_post->subject }}</h6>
-                <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($this->parent_post->created_at, Libs\Config::get('post/contents/date/short_notation')) }}</p>
-                @if (Libs\Config::get("posting/bbcode")):
-                    {? $this->bb->parse($this->parent_post->contents, false) ?}
-                    {{ $this->bb->getHtml() }}
-                @else
-                    {{ $this->parent_post->contents }}
+                <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($this->parent_post->created_at, config('post/contents/date/short_notation')) }}</p>
+                {? $content = $this->parent_post->contents ?}
+            
+                @if (config("posting/bbcode")):
+                    {? $this->bb->parse($content, false) ?}
+                    {? $content = $this->bb->getHtml() ?}
                 @endif
+
+                @if (config("posting/smilies")):
+                    {? $content = Libs\Smilies::parse($content) ?}
+                @endif
+
+                {{ $content }}
+
                 @if ($this->parent_post->created_at != $this->parent_post->updated_at):
                     <p class="small-grey-text">Edited at: {{ $this->parent_post->updated_at }}</p>
                 @endif
@@ -36,7 +43,7 @@
 
                         @if ($this->hasPermissions || ($this->parent_post->user_id == Auth()->data()->id && $this->parent_post->status != 1)):
                             <div class="col">
-                                <a href="{{ route('post.edit.answer', ['postId' => $this->parent_post->id, 'token' => $this->urlToken]) }}">Edit</a>
+                                <a href="{{ route('post.edit.answer', ['section' => $this->section_id, 'category' => $this->category_id, 'postId' => $this->parent_post->id, 'postId' => $this->parent_post->id]) }}">Edit</a>
                             </div>
                         @endif
 
@@ -59,33 +66,8 @@
                     </p>
                 </div>
 
-                @if ($this->hasPermissions):
-                    <div class="col">
-                        <form method="post" action="{{ route('post.move_to', ['postId' => $this->parent_post->id, 'categoryId' => $this->parent_post->category]) }}">
-                            <div class="form-group">
-                                <label for="move_to">Move to:</label>
-                                <select class="form-control" name="category">
-                                    @foreach ($this->categories as $category):
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <input type="hidden" name="move_to_token" value="{{ $this->token->generate('move_to_token') }}">
-                                <input type="submit" class="btn btn-success w-100" name="" value="Move">
-                            </div>
-                        </form>
-                    </div>
-                @endif
-
                 @if (Auth()->check()):
-                    @if (($this->hasPermissions || $this->parent_post->user_id == Auth()->data()->id) && $this->parent_post->status != 1):
-                        <a href="{{ route('post.open_close_post', ['section' => $this->section_id, 'category' => $this->category_id, 'postId' => $this->parent_post->id, 'type' => 'close','token' => token('open_close_thread_token')]) }}" class="btn btn-success w-100">Close</a>
-                    @elseif ($this->hasPermissions && $this->parent_post->status == 1):
-                        <a href="{{ route('post.open_close_post', ['section' => $this->section_id, 'category' => $this->category_id, 'postId' => $this->parent_post->id, 'type' => 'open','token' => token('open_close_thread_token')]) }}" class="btn btn-success w-100">Open</a>
-                    @else
-                        <a href="{{ route('report.contents', ['id' => $this->parent_post->id, 'contents' => 'post', 'token' => $this->reportToken]) }}">Report this thread!</a>
-                    @endif
+                    <a href="{{ route('report.contents', ['id' => $this->parent_post->id, 'contents' => 'post', 'token' => $this->reportToken]) }}">Report this thread!</a>
                 @endif
 
             </div>
@@ -98,23 +80,30 @@
                 <div id="post_{{ $answer->id }}" class="row border border-primary rounded mt-10 mb-10">
                     <div class="col-10">
                         <h6 style="color: blue">Re: {{ $this->parent_post->subject }}</h6>
-                        <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($answer->created_at, Libs\Config::get('post/contents/date/short_notation')) }}</p>
+                        <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($answer->created_at, config('post/contents/date/short_notation')) }}</p>
                         {? $this->bb->parse($answer->contents, false) ?}
                         @if ($answer->status == 1):
                             <font  color="red"><h4>This answer has been deleted by moderator!</h4></font>
                             @if ($this->hasPermissions):
-                                @if (Libs\Config::get("posting/answers/bbcode")):
+                                @if (config("posting/answers/bbcode")):
                                     {{ $this->bb->getHtml() }}
                                 @else
                                     {{ $answer->contents }}
                                 @endif
                             @endif
                         @else
-                            @if (Libs\Config::get("posting/answers/bbcode")):
-                                {{ $this->bb->getHtml() }}
-                            @else
-                                {{ $answer->contents }}
+                            {? $content = $answer->contents ?}
+            
+                            @if (config("posting/answer/bbcode")):
+                                {? $this->bb->parse($content, false) ?}
+                                {? $content = $this->bb->getHtml() ?}
                             @endif
+
+                            @if (config("posting/answers/smilies")):
+                                {? $content = Libs\Smilies::parse($content) ?}
+                            @endif
+
+                            {{ $content }}
                             @if ($answer->created_at != $answer->updated_at):
                                 <p class="small-grey-text">Edited at: {{ $answer->updated_at }}</p>
                             @endif
@@ -184,7 +173,10 @@
             <form method="post" action="{{ route('post.add_answer', ['sectionName' => $this->section_id, 'categoryId' => $this->category_id, 'postId' => $this->parent_post->id]) }}">
                 <div class="form-group">
                     <label for="post">Your answer:</label>
-                    @if (Libs\Config::get("posting/answers/bbcode")):
+                    @if (config("posting/answers/smilies")):
+                        @include partials/smilies_block
+                    @endif
+                    @if (config("posting/answers/bbcode")):
                         @include partials/post_bbcode_block
                     @else
                         @include partials/post_default_block

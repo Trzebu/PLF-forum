@@ -1,7 +1,5 @@
 <script type="text/javascript" src="{{ route('/') }}/public/app/js/bbcode.js"></script>
 
-<p class="small-grey-text">BbCode: On</p>
-
 <div class="col border rounded mb-10 bbcode" style="background-color: white">
     <i class="fas fa-bold" title="{{ trans('bbcode.bold') }}" onclick="replace('bold')"></i>
     <i class="fas fa-italic" title="{{ trans('bbcode.italica') }}" onclick="replace('italic')"></i>

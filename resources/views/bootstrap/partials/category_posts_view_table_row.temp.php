@@ -1,16 +1,31 @@
 <tr class="w-100">
     <td style="width: 50%; padding-left: 25px">
-        <a href="{{ route('post.slug_index', ['sectionName' => $this->section_details->url_name, 'categoryId' => $this->category->url_name, 'postId' => $post->id, 'postSlugUrl' => Libs\Tools\SlugUrl::generate($post->subject)]) }}">{{ $post->status == 1 ? '<i class="fas fa-lock"></i>' : '<i class="fab fa-wpforms"></i>' }} {{ $post->subject }}</a>
-        <p class="small-grey-text">{{ substr(strip_tags($post->contents), 0, Libs\Config::get('category/posts/contents/short_descript/length/max')) }}...</p>
+        <a href="{{ route('post.slug_index', ['sectionName' => $this->section_details->url_name, 'categoryId' => $this->category->url_name, 'postId' => $post->id, 'postSlugUrl' => Libs\Tools\SlugUrl::generate($post->subject)]) }}">
+            @if ($post->category == 0):
+                <i class="fas fa-globe-americas"></i>
+            @endif
+            @if ($post->sticky == 1):
+                <i class="fas fa-bullhorn"></i>
+            @endif
+            @if ($post->status == 1):
+                <i class="fas fa-lock"></i>
+            @else
+                <i class="fab fa-wpforms"></i>
+            @endif
+            <font color="{{ $post->subject_color }}">
+                {{ $post->subject }}
+            </font>
+        </a>
+        <p class="small-grey-text">{{ substr(stripBbCodeTags($post->contents), 0, Libs\Config::get('category/posts/contents/short_descript/length/max')) }}...</p>
     </td>
     <td class="w-10 text-center">
         @if ($this->vote->calcVotes($post->id) == 0):
             0
-            @elseif ($this->vote->calcVotes($post->id) > 0):
-                <font color="green">+{{ $this->vote->calcVotes($post->id) }}</font>
-            @else
-                <font color="red">{{ $this->vote->calcVotes($post->id) }}</font>
-            @endif
+        @elseif ($this->vote->calcVotes($post->id) > 0):
+            <font color="green">+{{ $this->vote->calcVotes($post->id) }}</font>
+        @else
+            <font color="red">{{ $this->vote->calcVotes($post->id) }}</font>
+        @endif
     </td> 
     <td class="w-10 text-center">{{ $this->postObj->getAnswersCount($post->id) }}</td>
     <td class="w-10 text-center">{{ $post->visits }}</td>

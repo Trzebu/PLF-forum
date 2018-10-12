@@ -75,9 +75,11 @@ final class Post extends Model {
     }
 
     public function moveTo ($postId, $categoryId) {
-        $this->where("id", "=", $postId)->or("parent", "=", $postId)->update([
-            "category" => $categoryId
-        ]);
+        $this->where("id", "=", $postId)
+            ->or("parent", "=", $postId)
+            ->update([
+                "category" => $categoryId
+            ]);
     }
 
     public function addNew ($fields) {
@@ -114,13 +116,6 @@ final class Post extends Model {
                     ->paginate(Config::get("post/answers/per_page"))
                     ->get()
                     ->count() > 0 ? $this->results() : null;
-    }
-
-    public function getSubjectData ($postId, $categoryId) {
-        return $this->where("id", "=", $postId)
-                    ->and("parent", "null")
-                    ->get()
-                    ->count() > 0 ? $this->first() : null;
     }
 
     public function postGetter ($postId) {
