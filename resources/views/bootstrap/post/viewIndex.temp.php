@@ -9,6 +9,9 @@
             <div class="col-10">
                 <h6 style="color: blue">{{ $this->parent_post->subject }}</h6>
                 <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($this->parent_post->created_at, config('post/contents/date/short_notation')) }}</p>
+                @if ($this->parent_post->created_at != $this->parent_post->updated_at):
+                    <p class="small-grey-text">Edited at: {{ $this->parent_post->updated_at }}</p>
+                @endif
                 {? $content = $this->parent_post->contents ?}
             
                 @if (config("posting/bbcode")):
@@ -22,9 +25,6 @@
 
                 {{ $content }}
 
-                @if ($this->parent_post->created_at != $this->parent_post->updated_at):
-                    <p class="small-grey-text">Edited at: {{ $this->parent_post->updated_at }}</p>
-                @endif
                 @if ($this->user->signature($this->parent_post->user_id)):
                     <hr>
                     {{ $this->user->signature($this->parent_post->user_id) }}
@@ -81,6 +81,9 @@
                     <div class="col-10">
                         <h6 style="color: blue">Re: {{ $this->parent_post->subject }}</h6>
                         <p class="small-grey-text">Created at: {{ $this->postObj->dateTimeAlphaMonth($answer->created_at, config('post/contents/date/short_notation')) }}</p>
+                        @if ($answer->created_at != $answer->updated_at):
+                            <p class="small-grey-text">Edited at: {{ $answer->updated_at }}</p>
+                        @endif
                         {? $this->bb->parse($answer->contents, false) ?}
                         @if ($answer->status == 1):
                             <font  color="red"><h4>This answer has been deleted by moderator!</h4></font>
@@ -104,9 +107,6 @@
                             @endif
 
                             {{ $content }}
-                            @if ($answer->created_at != $answer->updated_at):
-                                <p class="small-grey-text">Edited at: {{ $answer->updated_at }}</p>
-                            @endif
                         @endif
                         @if ($this->user->signature($answer->user_id)):
                             <hr>
@@ -150,13 +150,6 @@
                                     <font color="red">{{ $voteAmount }}</font>
                                 @endif
                             </p>
-                            @if ($this->hasPermissions):
-                                @if ($answer->status == 1):
-                                    <a href="{{ route('post.remove_or_restore', ['section' => $this->section_id, 'categoryId' => $this->category_id, 'action' => 'restore', 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Restore</a>
-                                @else
-                                    <a href="{{ route('post.remove_or_restore', ['section' => $this->section_id, 'categoryId' => $this->category_id,'action' => 'remove', 'postId' => $answer->id, 'token' => $this->urlToken]) }}">Remove</a>
-                                @endif
-                            @endif
                         </div>
                     </div>
                 </div>

@@ -25,4 +25,7 @@ return [
     "settings" => "Ustawienia",
     "on" => "Włączony",
     "off" => "Wyłączony",
+    "hide" => "Ukryj",
+    "restore" => "Przywróć",
+    "options" => "Opcje",
 ];

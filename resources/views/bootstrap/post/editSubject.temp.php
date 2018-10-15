@@ -33,6 +33,9 @@
 
         @if ($this->post->status == 0 || $this->section->checkPermissions($this->post->category)):
             <label>{{ trans('buttons.settings') }}:</label>
+            @if (Auth()->permissions("global_moderator")):
+                <p><a href="{{ route('post.delete.thread', ['postId' => $this->post->id, 'token' => token('delete_thread_token')]) }}">{{ trans("general.delete_thread") }}</a></p>
+            @endif
             <div class="checkbox">
                 <label>
                     <input type="checkbox" name="lock" {{ $this->post->status == 0 ?: 'checked="checked"' }}> {{ trans("general.lock_topic") }}

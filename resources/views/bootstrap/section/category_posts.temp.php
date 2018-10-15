@@ -36,15 +36,15 @@
 
         @if ($this->category !== NULL):
         
-            @foreach ($this->postObj->getGlobalThreads() as $post):
+            @foreach ((array) $this->postObj->getGlobalThreads() as $post):
                 @include partials/category_posts_view_table_row
             @endforeach
             
-            @foreach ($this->postObj->getStickyThreads($this->category->id) as $post):
+            @foreach ((array) $this->postObj->getStickyThreads($this->category->id) as $post):
                 @include partials/category_posts_view_table_row
             @endforeach
 
-            @foreach ($this->postObj->getPosts($this->category->id) as $post):
+            @foreach ((array) $this->postObj->getPosts($this->category->id) as $post):
                 @include partials/category_posts_view_table_row
             @endforeach
 

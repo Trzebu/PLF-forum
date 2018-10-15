@@ -17,6 +17,13 @@
         <input type="hidden" name="post_token" value="{{ $this->token->generate('post_token') }}">
         <input type="submit" class="btn btn-success btn-lg w-100 mb-10" value="Send">
     </form>
+
+    @if (Auth()->permissions("global_moderator")):
+        <p>{{ trans("buttons.options") }}:</p>
+        <p><a href="{{ $this->hideAnsRoute }}">{{ $this->post->status == 1 ? trans("buttons.restore")  : trans("buttons.hide") }}</a></p>
+        <p><a href="{{ $this->deleteRoute }}">{{ trans("buttons.delete") }}</a></p>
+    @endif
+
 </div>
 
 @include partials/footer

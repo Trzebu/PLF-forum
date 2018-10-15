@@ -142,8 +142,8 @@ Route::post("/moveTo/{postId}", [
     "middleware" => ["auth"]
 ]);
 
-Route::get("/answer/{section}/{categoryId}/{action}/{postId}/{token}", [
-    "uses" => "App\Http\Controllers\PostController@actionAnswer",
+Route::get("/post/answer/hide_restore/{section}/{categoryId}/{postId}/{token}", [
+    "uses" => "App\Http\Controllers\PostController@hideRestoreAnswer",
     "as" => "post.remove_or_restore",
     "middleware" => ["auth"]
 ]);
@@ -163,6 +163,18 @@ Route::post("/post/edit/answer/{section}/{category}/{postId}", [
 Route::post("/post/edit/subject/{section}/{category}/{postId}", [
     "uses" => "App\Http\Controllers\PostController@editSubjectSend",
     "as" => "post.edit.subject.send",
+    "middleware" => ["auth"]
+]);
+
+Route::get("/post/delete/thread/{postId}/{token}", [
+    "uses" => "App\Http\Controllers\PostController@deleteThread",
+    "as" => "post.delete.thread",
+    "middleware" => ["auth"]
+]);
+
+Route::get("/post/delete/answer/{section}/{category}/{postId}/{token}", [
+    "uses" => "App\Http\Controllers\PostController@deleteAnswer",
+    "as" => "post.delete.answer",
     "middleware" => ["auth"]
 ]);
 
@@ -320,6 +332,12 @@ Route::post("/user_files/upload_new", [
 ]);
 
 //Moderation notes
+
+Route::get("/moderation_notes/add_personal_note/{userId}", [
+    "uses" => "App\Http\Controllers\ModerationNotesController@personalNote",
+    "as" => "moderation_notes.personal_note",
+    "middleware" => ["auth"]
+]);
 
 Route::post("/moderation_notes/add_personal_note/{userId}", [
     "uses" => "App\Http\Controllers\ModerationNotesController@addPersonalNote",

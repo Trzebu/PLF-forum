@@ -112,18 +112,7 @@
         @if (Auth()->data()->id == $this->data->id || Auth()->permissions("moderator")):
             @if (Auth()->permissions("moderator")):
                 <div class="col-12 text-center mb-10 border-top">
-                    <form method="post" action="{{ route('moderation_notes.add_personal_note', ['userId' => $this->data->id]) }}">
-                        <div class="form-group">
-                            <label for="post">Add presonal note for {{ $this->data->username }}:</label>
-                            @if (Libs\Config::get("moderation/moderation_notes/personal_notes/contents/bbcode")):
-                                @include partials/post_bbcode_block
-                            @else
-                                @include partials/post_default_block
-                            @endif
-                        </div>
-                        <input type="hidden" name="post_token" value="{{ $this->token->generate('post_token') }}">
-                        <input type="submit" class="btn btn-success btn-lg w-100 mb-10" value="Send">
-                    </form>
+                    <a href="{{ route('moderation_notes.personal_note', ['userId' => $this->data->id]) }}" class="btn btn-info btn-lg w-100 mt-10">Add presonal note</a>
                 </div>
             @endif
             @if (Auth()->data()->id == $this->data->id):

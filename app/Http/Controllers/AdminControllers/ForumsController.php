@@ -17,6 +17,40 @@ final class ForumsController extends Controller {
         $this->section = new Section();
     }
 
+    public function deleteCategory ($id, $token) {
+        if ($this->section->getSection($id) === null) {
+            Session::flash("alert_error", "This forum dosen't exists!");
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        if (!Token::check("url_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        $this->section->deleteCategory($id);
+
+        Session::flash("alert_success", "Categroy has been deleted.");
+        $this->redirect("admin.forums.manage_forums");
+    }
+
+    public function deleteSection ($id, $token) {
+        if ($this->section->getSection($id) === null) {
+            Session::flash("alert_error", "This forum dosen't exists!");
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        if (!Token::check("url_token", $token)) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        $this->section->deleteSection($id);
+
+        Session::flash("alert_success", "Section has been deleted.");
+        $this->redirect("admin.forums.manage_forums");
+    }
+
     public function newForumPost () {
         if (!$this->validation(Request::input(), [
             "name" => "required|unique:sections",

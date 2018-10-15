@@ -18,8 +18,23 @@ final class ModerationNotesController extends Controller {
         $this->user = new User();
     }
 
-    public function addPersonalNote ($userId) {
+    public function personalNote ($userId) {
+        $this->view->data = $this->user->data($userId);
 
+        if ($this->view->data === null) {
+            return $this->redirect("home.index");
+        }
+
+        if (!Auth::permissions("moderator")) {
+            return $this->redirect("profile.index_by_id", [
+                "id" => $userId
+            ]);
+        }
+
+        $this->view->render("user.personal_note");
+    }
+
+    public function addPersonalNote ($userId) {
         if ($this->user->data($userId) === null) {
             return $this->redirect("home.index");
         }
@@ -30,16 +45,20 @@ final class ModerationNotesController extends Controller {
             ]);
         }
 
-        if ($this->validation(Request::input(), [
+        if (!$this->validation(Request::input(), [
             "post" => "required|str>min:" .
                         Config::get("moderation/moderation_notes/personal_notes/length/min") .
                         ">max:" .
                         Config::get("moderation/moderation_notes/personal_notes/length/max"),
-            "post_token" => "token"
+            "personal_note_token" => "token"
         ])) {
-            Session::flash("alert_success", "Moderation note has benn added correctly.");
-            $this->notes->add($userId, Request::input('post'));
+            return $this->redirect("moderation_notes.personal_note", [
+                                    "userId" => $userId
+                                ]);
         }
+
+        Session::flash("alert_success", "Moderation note has benn added correctly.");
+        $this->notes->add($userId, Request::input('post'));
 
         return $this->redirect("profile.index_by_id", [
             "id" => $userId

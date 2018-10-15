@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Permissions;
+use App\Models\Post;
 use Libs\Model;
 use Libs\User as Auth;
 use Libs\DataBase\DataBase as DB;
@@ -10,6 +11,23 @@ use Libs\DataBase\DataBase as DB;
 final class Section extends Model {
 
     protected $_table = "sections";
+
+    public function deleteCategory ($id) {
+        $post = new Post();
+        $post->deleteThreadsByCategory($id);
+        $this->where("id", "=", $id)->delete();
+    }
+
+    public function deleteSection ($id) {
+        $post = new Post();
+        $categorys = $this->where("parent", "=", $id)->get(["id"])->results();
+
+        foreach ($categorys as $category) {
+            $post->deleteThreadsByCategory($category->id);
+        }
+
+        $this->where("id", "=", $id)->or("parent", "=", $id)->delete();
+    }
 
     public function highestValueAsQueue ($parent = null) {
         $sections = $parent === null ?

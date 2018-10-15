@@ -11,6 +11,11 @@ final class Post extends Model {
 
     protected $_table = "posts";
 
+    public function deleteThreadsByCategory ($categoryId) {
+        return $this->where("category", "=", $categoryId)
+                    ->delete();
+    }
+
     public function getStickyThreads ($categoryId) {
         return $this->where("parent", "null")
                     ->and("sticky", "=", 1)
@@ -53,12 +58,6 @@ final class Post extends Model {
         return $this->where("user_id", "=", $id)
                     ->and("parent", "null")
                     ->numRow();
-    }
-
-    public function changeAnswerStatus ($id, $action) {
-        $this->where("id", "=", $id)->update([
-            "status" => $action
-        ]);
     }
 
     public function allPostsCount () {

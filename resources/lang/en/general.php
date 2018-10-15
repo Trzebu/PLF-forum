@@ -15,5 +15,6 @@ return [
     "normal" => "Normally",
     "sticky" => "Sticky",
     "global" => "Globally",
-    "subject" => "Subject"
+    "subject" => "Subject",
+    "delete_thread" => "Delete this thread",
 ];

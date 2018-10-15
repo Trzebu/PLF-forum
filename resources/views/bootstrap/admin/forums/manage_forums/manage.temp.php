@@ -39,7 +39,9 @@
                             <i class="fas fa-arrow-down i_blue"></i>
                         </a>
                         <i class="fas fa-cogs i_green"></i>
-                        <i class="fas fa-ban i_red"></i>
+                        <a href="{{ route('admin.forums.delete.section', ['id' => $section->id, 'token' => $this->url_token]) }}">
+                            <i class="fas fa-ban i_red"></i>
+                        </a>
                         <i class="far fa-plus-square i_green"></i>
                     </td>
                 </tr>
@@ -57,7 +59,9 @@
                                 <i class="fas fa-arrow-down i_blue"></i>
                             </a>
                             <i class="fas fa-cogs i_green"></i>
-                            <i class="fas fa-ban i_red"></i>
+                            <a href="{{ route('admin.forums.delete.category', ['id' => $category->id, 'token' => $this->url_token]) }}">
+                                <i class="fas fa-ban i_red"></i>
+                            </a>
                         </td>
                     </tr>
                 @endforeach

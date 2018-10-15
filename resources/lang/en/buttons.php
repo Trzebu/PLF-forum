@@ -24,4 +24,7 @@ return [
     "send" => "Send",
     "on" => "On",
     "off" => "Off",
+    "hide" => "Hide",
+    "restore" => "Restore",
+    "options" => "Options",
 ];

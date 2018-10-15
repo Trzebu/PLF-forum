@@ -26,6 +26,54 @@ final class PostController extends Controller {
         $this->user = new User();
     }
 
+    public function deleteAnswer ($section, $category, $postId, $token) {
+        $data = $this->post->postGetter($postId);
+
+        if (!Token::check("delete_answer_token", $token)) {
+            return $this->redirect("home.index");
+        }
+
+        if ($data === null) {
+            return $this->redirect("home.index");
+        }
+
+        if (!$this->section->checkPermissions($this->post->postGetter($postId)->category)) {
+            Session::flash("alert_error", "U have no permissions.");
+            return $this->redirect("home.index");
+        }
+
+        $this->post->deletePost($postId);
+
+        Session::flash("alert_success", "Answer has been deleted!");
+        $this->redirect("post.slug_index", [
+                        "sectionName" => $section,
+                        "categoryId" => $category,
+                        "postId" => $data->parent,
+                        "postSlugUrl" => SlugUrl::generate($this->post->postGetter($data->parent)->subject)
+                    ]);
+    }
+
+    public function deleteThread ($postId, $token) {
+
+        if (!Token::check("delete_thread_token", $token)) {
+            return $this->redirect("home.index");
+        }
+
+        if ($this->post->postGetter($postId) === null) {
+            return $this->redirect("home.index");
+        }
+
+        if (!Auth::permissions("global_moderator")) {
+            Session::flash("alert_error", "U have no permissions.");
+            return $this->redirect("home.index");
+        }
+
+        $this->post->deleteThread($postId);
+
+        Session::flash("alert_success", "Thread deleted!");
+        $this->redirect("home.index");
+    }
+
     public function editSubjectSend ($section, $category, $postId) {
         $postData = $this->post->postGetter($postId);
 
@@ -285,11 +333,23 @@ final class PostController extends Controller {
                                         "category" => $category,
                                         "postId" => $postId
                                     ]);
+            $this->view->hideAnsRoute = route("post.remove_or_restore", [
+                                            "section" => $section,
+                                            "categoryId" => $category,
+                                            "postId" => $postId,
+                                            "token" => token("url_token")
+                                        ]);
+            $this->view->deleteRoute = route("post.delete.answer", [
+                                            "section" => $section,
+                                            "category" => $category,
+                                            "postId" => $postId,
+                                            "token" => token("delete_answer_token")
+                                        ]);
             $this->view->render("post.editAnswer");
         }
     }
 
-    public function actionAnswer ($section, $categoryId, $action, $id, $token) {
+    public function hideRestoreAnswer ($section, $categoryId, $id, $token) {
         $answer = $this->post->postGetter($id);
 
         if ($answer == null) {
@@ -304,9 +364,11 @@ final class PostController extends Controller {
             return $this->redirect("home.index");
         }
 
-        $action = $action == "remove" ? 1 : 0;
+        $action = $answer->status == 0 ? 1 : 0;
 
-        $this->post->changeAnswerStatus($id, $action);
+        $this->post->postUpdate($id, [
+            "status" => $action
+        ]);
 
         return $this->redirect("post.to_post_index", [
             "sectionName" => $section,

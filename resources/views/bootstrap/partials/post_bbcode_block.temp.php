@@ -5,8 +5,8 @@
     <i class="fas fa-italic" title="{{ trans('bbcode.italica') }}" onclick="replace('italic')"></i>
     <i class="fas fa-underline" title="{{ trans('bbcode.underline') }}" onclick="replace('underline')"></i>
     <i class="fas fa-strikethrough" title="{{ trans('bbcode.strikethrough') }}" onclick="replace('strikethrough')"></i>
-    <i class="fas fa-text-width" title="{{ trans('bbcode.size') }}" onclick="replace('size')"></i>
     <i class="fas fa-align-center" title="{{ trans('bbcode.center') }}" onclick="replace('center')"></i>
+    <i class="fas fa-text-width" title="{{ trans('bbcode.size') }}" onclick="replace('size')"></i>
     <i class="fas fa-link" title="{{ trans('bbcode.link') }}" onclick="replace('link')"></i>
     <i class="fas fa-quote-left" title="{{ trans('bbcode.quote') }}" onclick="replace('quote')"></i>
     <i class="fas fa-code" title="{{ trans('bbcode.code') }}" onclick="replace('code')"></i>

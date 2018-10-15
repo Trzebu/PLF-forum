@@ -245,3 +245,15 @@ Route::post("/admin/forums/new_forum/create", [
     "as" => "admin.forums.new_forum.create",
     "middleware" => ["permissions"]
 ]);
+
+Route::get("/admin/forums/delete/section/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@deleteSection",
+    "as" => "admin.forums.delete.section",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/forums/delete/category/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@deleteCategory",
+    "as" => "admin.forums.delete.category",
+    "middleware" => ["permissions"]
+]);
