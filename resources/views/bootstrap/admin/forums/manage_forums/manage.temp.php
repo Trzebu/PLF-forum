@@ -27,40 +27,40 @@
         <tbody>
             @foreach ($this->section->getSections() as $section):
                 <tr class="forums_table">
-                    <td style="width: 90%">
+                    <td style="width: 95%">
                         <p class="big-text">{{ $section->name }}</p>
                         <p class="small-grey-text">{{ $section->description }}</p>
                     </td>
-                    <td  style="width: 10%">
+                    <td  style="width: 5%">
                         <a href="{{ route('admin.forums.manage_forums.queue', ['dir' => 'up', 'id' => $section->id, 'token' => $this->url_token]) }}">
                             <i class="fas fa-arrow-up i_blue"></i>
                         </a>
                         <a href="{{ route('admin.forums.manage_forums.queue', ['dir' => 'down', 'id' => $section->id, 'token' => $this->url_token]) }}">
                             <i class="fas fa-arrow-down i_blue"></i>
                         </a>
-                        <i class="fas fa-cogs i_green"></i>
-                        <a href="{{ route('admin.forums.delete.section', ['id' => $section->id, 'token' => $this->url_token]) }}">
-                            <i class="fas fa-ban i_red"></i>
+                        <a href="{{ route('admin.forums.manage_forums.options', ['id' => $section->id]) }}">
+                            <i class="fas fa-cogs i_green"></i>
                         </a>
-                        <i class="far fa-plus-square i_green"></i>
+                        <a href="{{ route('admin.forums.new_forum.by_section', ['sectionId' => $section->id]) }}">
+                            <i class="far fa-plus-square i_green"></i>
+                        </a>
                     </td>
                 </tr>
                 @foreach ($this->section->getSectionCategories($section->id) as $category):
                     <tr>
-                        <td style="width: 90%;padding-left:30px">
+                        <td style="width: 95%;padding-left:30px">
                             {{ $category->name }}
                             <p class="small-grey-text">{{ $category->description }}</p>
                         </td>
-                        <td  style="width: 10%">
+                        <td  style="width: 5%">
                             <a href="{{ route('admin.forums.manage_forums.queue', ['dir' => 'up', 'id' => $category->id, 'token' => $this->url_token]) }}">
                                 <i class="fas fa-arrow-up i_blue"></i>
                             </a>
                             <a href="{{ route('admin.forums.manage_forums.queue', ['dir' => 'down', 'id' => $category->id, 'token' => $this->url_token]) }}">
                                 <i class="fas fa-arrow-down i_blue"></i>
                             </a>
-                            <i class="fas fa-cogs i_green"></i>
-                            <a href="{{ route('admin.forums.delete.category', ['id' => $category->id, 'token' => $this->url_token]) }}">
-                                <i class="fas fa-ban i_red"></i>
+                            <a href="{{ route('admin.forums.manage_forums.options', ['id' => $category->id]) }}">
+                                <i class="fas fa-cogs i_green"></i>
                             </a>
                         </td>
                     </tr>

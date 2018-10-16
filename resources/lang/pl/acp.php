@@ -19,4 +19,6 @@ return [
     "forum_description" => "Jakikolwiek tag HTML wpisany tutaj, będzie wyświetlony w opisie forum.",
     "forum_password" => "Ustaw hasło dla tego forum. Poniżej możesz ustawić jakie grupy nie potrzebują hasła do tego forum.",
     "forum_password_again" => "Potrzebne tylko jeśli ustawiłeś hasło do forum.",
+    "edit_forum" => "Edytuj forum",
+    "edit_forum_description" => "Tutaj możesz edytować istniejące forum.",
 ];

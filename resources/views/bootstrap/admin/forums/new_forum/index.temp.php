@@ -23,7 +23,11 @@
                     <select id="parent" name="parent">
                         <option value="0">{{ trans("acp.no_parent") }}</option>
                         @foreach ($this->section->getSections() as $section):
-                            <option value="{{ $section->id }}">{{ $section->name }}</option>
+                            @if ($this->sectionId == $section->id):
+                                <option value="{{ $section->id }}" selected>{{ $section->name }}</option>
+                            @else
+                                <option value="{{ $section->id }}">{{ $section->name }}</option>
+                            @endif
                         @endforeach
                     </select>
                 </dd>
@@ -38,7 +42,7 @@
                     @endif
                 </dt>
                 <dd>
-                    <input id="name" type="text" name="name">
+                    <input id="name" type="text" name="name" value="{{ $this->name }}">
                 </dd>
             </dl>
             <dl>

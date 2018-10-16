@@ -19,4 +19,6 @@ return [
     "forum_description" => "Any HTML markup entered here will be displayed as is.",
     "forum_password" => "Defines a password for this forum, use the permission system in preference.",
     "forum_password_again" => "Only needs to be set if a forum password is entered.",
+    "edit_forum" => "Edit forum",
+    "edit_forum_description" => "Here you can edit existing forum.",
 ];

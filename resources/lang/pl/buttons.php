@@ -28,4 +28,5 @@ return [
     "hide" => "Ukryj",
     "restore" => "Przywróć",
     "options" => "Opcje",
+    "reset_password" => "Resetuj hasło",
 ];

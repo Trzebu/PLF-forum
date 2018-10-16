@@ -17,6 +17,22 @@ final class ForumsController extends Controller {
         $this->section = new Section();
     }
 
+    public function forumOptions ($id) {
+        $this->view->data = $this->section->getSection($id) === null ?
+                            $this->section->getCategory($id) :
+                            $this->section->getSection($id);
+        $this->view->section = $this->section;
+        $this->view->permissions = new Permissions();
+
+        if ($this->view->data === null) {
+            Session::flash("alert_error", "This forum dosen't exists!");
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        $this->view->forum_permissions = explode(",", $this->view->data->permissions);
+        $this->view->render("admin.forums.manage_forums.options");
+    }
+
     public function deleteCategory ($id, $token) {
         if ($this->section->getSection($id) === null) {
             Session::flash("alert_error", "This forum dosen't exists!");
@@ -97,8 +113,9 @@ final class ForumsController extends Controller {
         $this->redirect("admin.forums.manage_forums");
     }
 
-    public function newForum () {
+    public function newForum ($sectionId = null) {
         $this->view->name = trans("general.without_name");
+        $this->view->sectionId = $sectionId;
         if (!empty(Request::urlVar("name"))) {
             $this->view->name = Request::urlVar("name");
         }

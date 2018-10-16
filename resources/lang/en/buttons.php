@@ -27,4 +27,5 @@ return [
     "hide" => "Hide",
     "restore" => "Restore",
     "options" => "Options",
+    "reset_password" => "Reset password",
 ];

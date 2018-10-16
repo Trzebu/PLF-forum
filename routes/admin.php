@@ -240,6 +240,12 @@ Route::get("/admin/forums/new_forum", [
     "middleware" => ["permissions"]
 ]);
 
+Route::get("/admin/forums/new_forum/{sectionId}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@newForum",
+    "as" => "admin.forums.new_forum.by_section",
+    "middleware" => ["permissions"]
+]);
+
 Route::post("/admin/forums/new_forum/create", [
     "uses" => "App\Http\Controllers\AdminControllers\ForumsController@newForumPost",
     "as" => "admin.forums.new_forum.create",
@@ -255,5 +261,11 @@ Route::get("/admin/forums/delete/section/{id}/{token}", [
 Route::get("/admin/forums/delete/category/{id}/{token}", [
     "uses" => "App\Http\Controllers\AdminControllers\ForumsController@deleteCategory",
     "as" => "admin.forums.delete.category",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/forums/manage_forums/options/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@forumOptions",
+    "as" => "admin.forums.manage_forums.options",
     "middleware" => ["permissions"]
 ]);
