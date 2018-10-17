@@ -269,3 +269,21 @@ Route::get("/admin/forums/manage_forums/options/{id}", [
     "as" => "admin.forums.manage_forums.options",
     "middleware" => ["permissions"]
 ]);
+
+Route::get("/admin/forums/manage_forums/options/reset_forum_password/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@resetPassword",
+    "as" => "admin.forums.manage_forums.options.reset_password",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/forums/manage_forums/options/save/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@forumOptionsSave",
+    "as" => "admin.forums.manage_forums.options.save",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/forums/manage_forums/options/move/categories/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@moveCategories",
+    "as" => "admin.forums.manage_forums.options.move.categories",
+    "middleware" => ["permissions"]
+]);

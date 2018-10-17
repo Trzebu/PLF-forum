@@ -10,30 +10,33 @@
         <div class="legend">Moving</div>
         
         @if (is_null($this->data->parent)):
-            <dl>
-                <dt>
-                    <label for="parent">Categories to other section:</label>
-                    <br><span>This option will move all categories from this section to other section.</span>
-                    @if ($this->errors->has("parent")):
-                        <br><span class="error">
-                            {{ $this->errors->get("parent")->first() }}
-                        </span>
-                    @endif
-                </dt>
-                <dd>
-                    <select id="parent" name="parent">
-                        @foreach ($this->section->getSections() as $section):
-                            @if ($this->data->id == $section->id):
-                                {? continue ?}
-                            @endif
-                            <option value="{{ $section->id }}">{{ $section->name }}</option>
-                        @endforeach
-                    </select>
-                </dd>
-                <dd>
-                    <input type="submit" class="button" value="{{ trans('buttons.move') }}">
-                </dd>
-            </dl>
+            <form method="post" action="{{ route('admin.forums.manage_forums.options.move.categories', ['id' => $this->data->id]) }}">
+                <dl>
+                    <dt>
+                        <label for="new_category">Categories to other section:</label>
+                        <br><span>This option will move all categories from this section to other section.</span>
+                        @if ($this->errors->has("parent")):
+                            <br><span class="error">
+                                {{ $this->errors->get("parent")->first() }}
+                            </span>
+                        @endif
+                    </dt>
+                    <dd>
+                        <select id="new_category" name="new_category">
+                            @foreach ($this->section->getSections() as $section):
+                                @if ($this->data->id == $section->id):
+                                    {? continue ?}
+                                @endif
+                                <option value="{{ $section->id }}">{{ $section->name }}</option>
+                            @endforeach
+                        </select>
+                    </dd>
+                    <dd>
+                        <input type="hidden" name="move_categories_token" value="{{ token('move_categories_token') }}">
+                        <input type="submit" class="button" value="{{ trans('buttons.move') }}">
+                    </dd>
+                </dl>
+            </form>
         @else
             <dl>
                 <dt>
@@ -92,7 +95,7 @@
         </dl>
     </div>
 
-    <form method="post" action="{{ route('admin.forums.new_forum.create') }}">
+    <form method="post" action="{{ route('admin.forums.manage_forums.options.save', ['id' => $this->data->id]) }}">
 
         <div class="fieldset">
             <div class="legend">{{ trans("general.forum_settings") }}</div>
@@ -162,7 +165,7 @@
                     <input id="password" type="password" name="password">
                 </dd>
                 <dd>
-                    <a href="">{{ trans("buttons.reset_password") }}</a>
+                    <a href="{{ route('admin.forums.manage_forums.options.reset_password', ['id' => $this->data->id, 'token' => token('reset_password_token')]) }}">{{ trans("buttons.reset_password") }}</a>
                 </dd>
             </dl>
             <dl>
@@ -257,7 +260,7 @@
         <div class="fieldset">
             <div class="legend">{{ trans('buttons.create') }}</div>
             <p class="buttons">
-                <input type="hidden" name="create_forum_token" value="{{ $this->token->generate('create_forum_token') }}">
+                <input type="hidden" name="edit_forum_token" value="{{ $this->token->generate('edit_forum_token') }}">
                 <input type="submit" class="button" value="{{ trans('buttons.change') }}">
                 <input type="reset" class="button" value="Reset">
             </p>

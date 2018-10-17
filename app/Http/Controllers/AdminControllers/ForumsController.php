@@ -17,6 +17,103 @@ final class ForumsController extends Controller {
         $this->section = new Section();
     }
 
+    public function moveCategories ($id) {
+        $data = $this->section->getSection($id) === null ?
+                            $this->section->getCategory($id) :
+                            $this->section->getSection($id);
+
+        if ($data === null) {
+            Session::flash("alert_error", "This forum dosen't exists!");
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        if (is_null($data->parent)) {
+            $this->section->moveCategories($id, Request::input("new_category"));
+        }
+
+        Session::flash("alert_success", "Categoires moved.");
+        $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+    }
+
+    public function resetPassword ($id, $token) {
+        $data = $this->section->getSection($id) === null ?
+                            $this->section->getCategory($id) :
+                            $this->section->getSection($id);
+
+        if ($data === null) {
+            Session::flash("alert_error", "This forum dosen't exists!");
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        if (!Token::check("reset_password_token", $token)) {
+            return $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+        }
+
+        $this->section->sectionUpdate($id, [
+            "password" => null
+        ]);
+
+        Session::flash("alert_success", "Password reseted.");
+        return $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+    }
+
+    public function forumOptionsSave ($id) {
+        $data = $this->section->getSection($id) === null ?
+                            $this->section->getCategory($id) :
+                            $this->section->getSection($id);
+
+        if ($data === null) {
+            Session::flash("alert_error", "This forum dosen't exists!");
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        $permissions = [];
+        $password = $data->password;
+        $parent = is_null($data->parent) ||
+                  Request::input("parent") == 0 ? null :
+                  Request::input("parent");
+        $url_name = Request::input("name") == $data->name ?
+                    SlugUrl::generate(Request::input("url_name")) :
+                    SlugUrl::generate(Request::input("name"));
+
+        if (!$this->validation(Request::input(), [
+            "name" => "required",
+            "edit_forum_token" => "token"
+        ])) {
+            return $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+        }
+
+        if (!empty(Request::input("password"))) {
+            if (!$this->validation(Request::input(), [
+                "password" => "required",
+                "password_again" => ["same:password", "Password again"]
+            ])) {
+                return $this->redirect("admin.forums.new_forum");
+            }
+
+            $password = password_hash(Request::input("password"), PASSWORD_DEFAULT);
+        }
+
+        foreach (Request::input("permissions") as $key => $value) {
+            if ($value) {
+                array_push($permissions, $key);
+            }
+        }
+
+        $this->section->sectionUpdate($id, [
+            "parent" => $parent,
+            "status" => Request::input("status"),
+            "permissions" => implode(",", $permissions),
+            "password" => $password,
+            "name" => Request::input("name"),
+            "url_name" => $url_name,
+            "description" => Request::input("forum_description")
+        ]);
+
+        Session::flash("alert_success", "Changes was saved.");
+        $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+    }
+
     public function forumOptions ($id) {
         $this->view->data = $this->section->getSection($id) === null ?
                             $this->section->getCategory($id) :

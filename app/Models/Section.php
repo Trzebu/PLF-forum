@@ -12,6 +12,12 @@ final class Section extends Model {
 
     protected $_table = "sections";
 
+    public function moveCategories ($oldCategory, $newCategory) {        
+        $this->where("parent", "=", $oldCategory)->update([
+            "parent" => $newCategory
+        ]);
+    }
+
     public function deleteCategory ($id) {
         $post = new Post();
         $post->deleteThreadsByCategory($id);
@@ -40,6 +46,11 @@ final class Section extends Model {
         });
 
         return end($sections)->queue;
+    }
+
+    public function sectionUpdate ($id, $fields) {
+        return $this->where("id", "=", $id)
+                    ->update($fields);
     }
 
     public function newRecord ($fields) {
