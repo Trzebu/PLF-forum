@@ -25,7 +25,7 @@
 
     <table class="table-responsive">
         <tbody>
-            @foreach ($this->section->getSections() as $section):
+            @foreach ((array) $this->section->getSections() as $section):
                 <tr class="forums_table">
                     <td style="width: 95%">
                         <p class="big-text">{{ $section->name }}</p>
@@ -46,7 +46,8 @@
                         </a>
                     </td>
                 </tr>
-                @foreach ($this->section->getSectionCategories($section->id) as $category):
+
+                @foreach ((array) $this->section->getSectionCategories($section->id) as $category):
                     <tr>
                         <td style="width: 95%;padding-left:30px">
                             {{ $category->name }}

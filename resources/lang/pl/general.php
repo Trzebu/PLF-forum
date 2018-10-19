@@ -20,4 +20,5 @@ return [
     "type_something" => "Napisz coś...",
     "subject_color" => "Kolor tematu",
     "delete_thread" => "Usuń ten wątek",
+    "in_section" => "w sekcji ",
 ];

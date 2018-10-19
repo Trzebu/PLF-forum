@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AdminControllers;
 use App\Http\Controllers\Controller;
 use App\Models\Section;
 use App\Models\Permissions;
+use App\Models\Post;
 use Libs\Session;
 use Libs\Token;
 use Libs\Http\Request;
@@ -15,30 +16,90 @@ final class ForumsController extends Controller {
     public function __construct () {
         parent::__construct();
         $this->section = new Section();
+        $this->post = new Post();
+    }
+
+    public function deleteCategoriesFromSection ($id, $token) {
+        if (!Token::check("delete_categories_section_token", $token)) {
+            return $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+        }
+
+        if ($this->section->getSection($id) === null) {
+            Session::flash("alert_error", "This forum dosen't exists!");
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        $this->section->deleteCategoriesFromSection($id);
+
+        Session::flash("alert_success", "All categories was deleted from this section.");
+        $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+    }
+
+    public function deletePostsFromCategory ($id, $token) {
+        if (!Token::check("delete_posts_category_token", $token)) {
+            return $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+        }
+
+        if ($this->section->getCategory($id) === null) {
+            Session::flash("alert_error", "This forum dosen't exists!");
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        $this->post->deleteThreadsByCategory($id);
+
+        Session::flash("alert_success", "All posts was deleted from this category.");
+        $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+    }
+
+    public function movePosts ($id) {
+        if (!$this->validation(Request::input(), [
+            "move_posts_token" => "token"
+        ])) {
+            return $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
+        }
+
+        if ($this->section->getCategory($id) === null ||
+            $this->section->getCategory(Request::input("move_posts")) === null) {
+            Session::flash("alert_error", "This forum dosen't exists!");
+            return $this->redirect("admin.forums.manage_forums");
+        }
+
+        $this->post->movePostsTo($id, Request::input("move_posts"));
+
+        Session::flash("alert_success", "Posts moved.");
+        $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
     }
 
     public function moveCategories ($id) {
         $data = $this->section->getSection($id) === null ?
-                            $this->section->getCategory($id) :
-                            $this->section->getSection($id);
+                $this->section->getCategory($id) :
+                $this->section->getSection($id);
 
         if ($data === null) {
             Session::flash("alert_error", "This forum dosen't exists!");
             return $this->redirect("admin.forums.manage_forums");
         }
 
-        if (is_null($data->parent)) {
-            $this->section->moveCategories($id, Request::input("new_category"));
+        if (!$this->validation(Request::input(), [
+            "move_categories_token" => "token"
+        ])) {
+            return $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
         }
 
-        Session::flash("alert_success", "Categoires moved.");
+        if (is_null($data->parent)) {
+            $this->section->moveCategories($id, Request::input("new_category"));
+        } else {
+            $this->section->moveCategory($id, Request::input("new_category"));
+        }
+
+        Session::flash("alert_success", "Categories moved.");
         $this->redirect("admin.forums.manage_forums.options", ["id" => $id]);
     }
 
     public function resetPassword ($id, $token) {
         $data = $this->section->getSection($id) === null ?
-                            $this->section->getCategory($id) :
-                            $this->section->getSection($id);
+                $this->section->getCategory($id) :
+                $this->section->getSection($id);
 
         if ($data === null) {
             Session::flash("alert_error", "This forum dosen't exists!");
@@ -59,8 +120,8 @@ final class ForumsController extends Controller {
 
     public function forumOptionsSave ($id) {
         $data = $this->section->getSection($id) === null ?
-                            $this->section->getCategory($id) :
-                            $this->section->getSection($id);
+                $this->section->getCategory($id) :
+                $this->section->getSection($id);
 
         if ($data === null) {
             Session::flash("alert_error", "This forum dosen't exists!");
@@ -136,7 +197,7 @@ final class ForumsController extends Controller {
             return $this->redirect("admin.forums.manage_forums");
         }
 
-        if (!Token::check("url_token", $token)) {
+        if (!Token::check("delete_category_token", $token)) {
             Session::flash("alert_info", trans("validation.token"));
             return $this->redirect("admin.forums.manage_forums");
         }
@@ -153,7 +214,7 @@ final class ForumsController extends Controller {
             return $this->redirect("admin.forums.manage_forums");
         }
 
-        if (!Token::check("url_token", $token)) {
+        if (!Token::check("delete_section_token", $token)) {
             Session::flash("alert_info", trans("validation.token"));
             return $this->redirect("admin.forums.manage_forums");
         }

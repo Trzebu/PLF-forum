@@ -10,13 +10,13 @@ use Libs\User as Auth;
 final class Post extends Model {
 
     protected $_table = "posts";
-
+    
     public function movePostsTo ($oldCategory, $newCategory) {
         return $this->where("category", "=", $oldCategory)
                     ->update([
                         "category" => $newCategory
                     ]);
-        }
+    }
 
     public function deleteThreadsByCategory ($categoryId) {
         return $this->where("category", "=", $categoryId)

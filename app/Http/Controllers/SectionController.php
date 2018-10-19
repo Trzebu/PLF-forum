@@ -45,6 +45,11 @@ final class SectionController extends Controller {
         $this->view->section = $section;
         $this->view->user = new User();
 
+        if ($this->view->category === null) {
+            Session::flash("alert_info", "Category you are searching does not exists.");
+            return $this->redirect("home.index");
+        }
+
         if (!is_null($this->view->category->password) &&
             !$this->view->user->isLoggedToCategory($this->view->category->id)) {
             Session::flash("alert_info", trans("auth.category_auth"));

@@ -17,4 +17,5 @@ return [
     "global" => "Globally",
     "subject" => "Subject",
     "delete_thread" => "Delete this thread",
+    "in_section" => "in section ",
 ];

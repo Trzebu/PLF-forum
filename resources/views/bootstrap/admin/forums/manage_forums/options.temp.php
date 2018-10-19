@@ -3,45 +3,19 @@
 
 <div class="main">
     
-    <h1>{{ trans("acp.edit_forum") }} :: {{ $this->data->name }}</h1>
+    <h1>
+        {{ trans("acp.edit_forum") }} :: {{ $this->data->name }} {{ !is_null($this->data->parent) ? trans("general.in_section") . $this->section->getSection($this->data->parent)->name : "" }}
+    </h1>
     <p class="grey-text">{{ trans("acp.edit_forum_description") }}.</p>    
 
     <div class="fieldset">
         <div class="legend">Moving</div>
         
-        @if (is_null($this->data->parent)):
-            <form method="post" action="{{ route('admin.forums.manage_forums.options.move.categories', ['id' => $this->data->id]) }}">
-                <dl>
-                    <dt>
-                        <label for="new_category">Categories to other section:</label>
-                        <br><span>This option will move all categories from this section to other section.</span>
-                        @if ($this->errors->has("parent")):
-                            <br><span class="error">
-                                {{ $this->errors->get("parent")->first() }}
-                            </span>
-                        @endif
-                    </dt>
-                    <dd>
-                        <select id="new_category" name="new_category">
-                            @foreach ($this->section->getSections() as $section):
-                                @if ($this->data->id == $section->id):
-                                    {? continue ?}
-                                @endif
-                                <option value="{{ $section->id }}">{{ $section->name }}</option>
-                            @endforeach
-                        </select>
-                    </dd>
-                    <dd>
-                        <input type="hidden" name="move_categories_token" value="{{ token('move_categories_token') }}">
-                        <input type="submit" class="button" value="{{ trans('buttons.move') }}">
-                    </dd>
-                </dl>
-            </form>
-        @else
+        <form method="post" action="{{ route('admin.forums.manage_forums.options.move.categories', ['id' => $this->data->id]) }}">
             <dl>
                 <dt>
-                    <label for="parent">Posts to other category:</label>
-                    <br><span>This option will move all posts from this category to other category.</span>
+                    <label for="new_category">Categories to other section:</label>
+                    <br><span>This option will move all categories from this section to other section.</span>
                     @if ($this->errors->has("parent")):
                         <br><span class="error">
                             {{ $this->errors->get("parent")->first() }}
@@ -49,16 +23,50 @@
                     @endif
                 </dt>
                 <dd>
-                    <select id="parent" name="parent">
-                        @foreach ($this->section->getAllCategories() as $category):
-                            @if ($this->data->id == $category->id):
+                    <select id="new_category" name="new_category">
+                        @foreach ($this->section->getSections() as $section):
+                            @if ($this->data->id == $section->id || $this->data->parent == $section->id):
                                 {? continue ?}
                             @endif
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $section->id }}">{{ $section->name }}</option>
                         @endforeach
                     </select>
                 </dd>
+                <dd>
+                    <input type="hidden" name="move_categories_token" value="{{ token('move_categories_token') }}">
+                    <input type="submit" class="button" value="{{ trans('buttons.move') }}">
+                </dd>
             </dl>
+        </form>
+
+        @if (!is_null($this->data->parent)):
+            <form method="post" action="{{ route('admin.forums.manage_forums.options.move.posts', ['id' => $this->data->id]) }}">
+                <dl>
+                    <dt>
+                        <label for="move_posts">Posts to other category:</label>
+                        <br><span>This option will move all posts from this category to other category.</span>
+                        @if ($this->errors->has("move_posts")):
+                            <br><span class="error">
+                                {{ $this->errors->get("move_posts")->first() }}
+                            </span>
+                        @endif
+                    </dt>
+                    <dd>
+                        <select id="move_posts" name="move_posts">
+                            @foreach ($this->section->getAllCategories() as $category):
+                                @if ($this->data->id == $category->id):
+                                    {? continue ?}
+                                @endif
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </dd>
+                    <dd>
+                        <input type="hidden" name="move_posts_token" value="{{ token('move_posts_token') }}">
+                        <input type="submit" class="button" value="{{ trans('buttons.move') }}">
+                    </dd>
+                </dl>
+            </form>
         @endif
 
     </div>
@@ -76,7 +84,11 @@
                 @endif
             </dt>
             <dd>
-                <a href="">Delete</a>
+                @if (is_null($this->data->parent)):
+                    <a href="{{ route('admin.forums.manage_forums.options.delete.categories', ['id' => $this->data->id, 'token' => token('delete_categories_section_token')]) }}">Delete</a>
+                @else
+                    <a href="{{ route('admin.forums.manage_forums.options.delete.posts', ['id' => $this->data->id, 'token' => token('delete_posts_category_token')]) }}">Delete</a>
+                @endif
             </dd>
         </dl>
 
@@ -90,7 +102,11 @@
                 @endif
             </dt>
             <dd>
-                <a href="">Delete</a>
+                @if (is_null($this->data->parent)):
+                    <a href="{{ route('admin.forums.delete.section', ['id' => $this->data->id, 'token' => token('delete_section_token')]) }}">Delete</a>
+                @else
+                    <a href="{{ route('admin.forums.delete.category', ['id' => $this->data->id, 'token' => token('delete_category_token')]) }}">Delete</a>
+                @endif
             </dd>
         </dl>
     </div>

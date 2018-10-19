@@ -12,9 +12,26 @@ final class Section extends Model {
 
     protected $_table = "sections";
 
-    public function moveCategories ($oldCategory, $newCategory) {        
-        $this->where("parent", "=", $oldCategory)->update([
-            "parent" => $newCategory
+    public function deleteCategoriesFromSection ($sectionId) {
+        $post = new Post();
+        $categorys = $this->where("parent", "=", $sectionId)->get(["id"])->results();
+
+        foreach ($categorys as $category) {
+            $post->deleteThreadsByCategory($category->id);
+        }
+
+        $this->where("parent", "=", $sectionId)->delete();
+    }
+
+    public function moveCategory ($id, $newSection) {
+        $this->where("id", "=", $id)->update([
+            "parent" => $newSection
+        ]);
+    }
+
+    public function moveCategories ($oldSection, $newSection) {        
+        $this->where("parent", "=", $oldSection)->update([
+            "parent" => $newSection
         ]);
     }
 

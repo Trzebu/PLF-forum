@@ -287,3 +287,21 @@ Route::post("/admin/forums/manage_forums/options/move/categories/{id}", [
     "as" => "admin.forums.manage_forums.options.move.categories",
     "middleware" => ["permissions"]
 ]);
+
+Route::post("/admin/forums/manage_forums/options/move/posts/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@movePosts",
+    "as" => "admin.forums.manage_forums.options.move.posts",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/forums/manage_forums/options/delete/posts/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@deletePostsFromCategory",
+    "as" => "admin.forums.manage_forums.options.delete.posts",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/forums/manage_forums/options/delete/categories/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@deleteCategoriesFromSection",
+    "as" => "admin.forums.manage_forums.options.delete.categories",
+    "middleware" => ["permissions"]
+]);
