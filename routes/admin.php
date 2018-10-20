@@ -305,3 +305,78 @@ Route::get("/admin/forums/manage_forums/options/delete/categories/{id}/{token}",
     "as" => "admin.forums.manage_forums.options.delete.categories",
     "middleware" => ["permissions"]
 ]);
+
+Route::get("/admin/forums/settings", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@settingsView",
+    "as" => "admin.forums.settings.view",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/forums/settings", [
+    "uses" => "App\Http\Controllers\AdminControllers\ForumsController@settingsSet",
+    "as" => "admin.forums.settings.set",
+    "middleware" => ["permissions"]
+]);
+
+/*
+|--------------------------------------------------------------------------
+| Contents settings
+|--------------------------------------------------------------------------
+|
+| Here is where are located all routes to contents settings.
+|
+*/
+
+Route::get("/admin/contents", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@view",
+    "as" => "admin.contents.view",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/contents/posting", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@posting",
+    "as" => "admin.contents.posting",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/contents/posting", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@postingSet",
+    "as" => "admin.contents.posting",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/contents/threads", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@threads",
+    "as" => "admin.contents.threads",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/contents/threads", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@threadsSet",
+    "as" => "admin.contents.threads",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/contents/private_messages", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@privateMessages",
+    "as" => "admin.contents.private_messages",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/contents/private_messages", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@privateMessagesSent",
+    "as" => "admin.contents.private_messages",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/contents/moderation", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@moderation",
+    "as" => "admin.contents.moderation",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/contents/moderation", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@moderationSet",
+    "as" => "admin.contents.moderation",
+    "middleware" => ["permissions"]
+]);

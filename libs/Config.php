@@ -2,9 +2,33 @@
 
 namespace Libs;
 
+use App\Models\AdminModels\SystemRegistry;
 use Libs\DataBase\DataBase;
 
 class Config {
+
+    public static function edit ($register, $value) {
+        $db = DataBase::instance()->table("system_registry");
+        $reg = new SystemRegistry();
+        $reg_data = $db->where("registry_name", "=", $register)->get()->results();
+
+        if (count($reg_data) < 1) {
+            dd("Register {$register} dose not exists.");
+        }
+
+        if (!$reg->permissions($reg_data[0]->mode, "edit_value")) {
+            dd("Register {$register} can't by edited. Mod {$reg_data[0]->mode}");
+        }
+
+        if (!$reg->valueType($reg_data[0]->type, $value)) {
+            dd("Register {$register} must be a type of {$reg_data[0]->type}.");
+        }
+
+        $db->where("registry_name", "=", $register)->update([
+            "value" => $value
+        ]);
+
+    }
 
     public static function loadRegistry () {
         $configs = DataBase::instance()->table("system_registry")->get(["registry_name", "value", "type"])->results();

@@ -8,6 +8,19 @@ final class SystemRegistry extends Model {
 
     protected $_table = "system_registry";
 
+    public function valueType ($type, $value) {
+        switch ($type) {
+            case 'int': return (bool) is_numeric($value); break;
+            case 'str': return (bool) is_string($value); break;
+            case 'bool': return $value == "true" || $value == "false" ? true : false; break;
+            case 'json':
+                json_decode($value);
+                return (bool) json_last_error() === JSON_ERROR_NONE;
+            break;
+            case 'uns': return (bool) $value === null; break;
+        }
+    }
+
     public function registerRemove ($id) {
         $this->where("id", "=", $id)
             ->delete();

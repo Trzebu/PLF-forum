@@ -74,6 +74,7 @@ final class ReportController extends Controller {
     public function viewMyReport ($id) {
         $this->view->conversation = $this->report->getReport($id);
         $this->view->data = $this->view->conversation[0];
+        $this->view->bb = new \Bbcode();
 
         if ($this->view->data === null) {
             Session::flash("alert_error", "This report dosen't exists.");
@@ -247,7 +248,7 @@ final class ReportController extends Controller {
     public function viewReportByID ($id) {
         $this->view->conversation = $this->report->getReport($id);
         $this->view->data = $this->view->conversation[0];
-        $this->view->bbcode = new \BbCode();
+        $this->view->bb = new \BbCode();
 
         if ($this->view->data === null) {
             Session::flash("alert_error", "This report dosen't exists.");
@@ -263,9 +264,8 @@ final class ReportController extends Controller {
         if ($this->view->data->content_type == "post") {
             $post = new Post();
             $section = new Section();
-            $bb = new \BbCode();
             $content = $post->getAnswer($this->view->data->content_id);
-            $bb->parse($content->contents, false);
+            $this->view->bb->parse($content->contents, false);
             $this->view->author = $content->user_id;
             $this->view->contentCreatedAt = $content->created_at;
 
@@ -275,7 +275,7 @@ final class ReportController extends Controller {
                     "categoryId" => $content->category,
                     "postId" => $content->id
                 ]);
-                $this->view->contents = "<center><h5>Thread - {$content->subject}</h5></center><br>{$bb->getHtml()}";
+                $this->view->contents = "<center><h5>Thread - {$content->subject}</h5></center><br>{$this->view->bb->getHtml()}";
             } else {
                 $this->view->link = route("post.to_post_index", [
                     "sectionName" => $section->getSectionByCategory($content->category)->id,

@@ -29,4 +29,5 @@ return [
     "restore" => "Przywróć",
     "options" => "Opcje",
     "reset_password" => "Resetuj hasło",
+    "set" => "Ustaw",
 ];

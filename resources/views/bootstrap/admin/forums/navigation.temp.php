@@ -7,11 +7,9 @@
         </ul>
     </div>
     <div class="navigation-block">
-        <div class="header">Forum Based Permissions</div>
+        <div class="header">Forums settings</div>
         <ul>
-            <li><a href="">Forum Permissions</a></li>
-            <li><a href="">Copy Forum Permissions</a></li>
-            <li><a href="">Forum Moderators</a></li>
+            <li class="{{ !Libs\Http\Request::inUrl('settings') ?: 'left-navigation-active' }}"><a href="{{ route('admin.forums.settings.view') }}">{{ trans("general.general_settings") }}</a></li>
         </ul>
     </div>
 </div>

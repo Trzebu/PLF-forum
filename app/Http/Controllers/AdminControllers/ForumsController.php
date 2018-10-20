@@ -8,6 +8,7 @@ use App\Models\Permissions;
 use App\Models\Post;
 use Libs\Session;
 use Libs\Token;
+use Libs\Config;
 use Libs\Http\Request;
 use Libs\tools\SlugUrl;
 
@@ -17,6 +18,27 @@ final class ForumsController extends Controller {
         parent::__construct();
         $this->section = new Section();
         $this->post = new Post();
+    }
+
+    public function settingsSet () {
+        if (!$this->validation(Request::input(), [
+            "forums_settings_token" => "token"
+        ])) {
+            Session::flash("alert_info", trans("validation.token"));
+            return $this->redirect("admin.forums.settings.set");
+        }
+
+        Config::edit("category/view/post/per_page", Request::input("threads_per_page"));
+        Config::edit("post/answers/per_page", Request::input("posts_per_page"));
+        Config::edit("posting/voting/max_votes_per_post", Request::input("max_votes_per_page"));
+        Config::edit("posting/voting/min_votes_per_post", Request::input("min_votes_per_page"));
+
+        Session::flash("alert_info", "Changes has been sets.");
+        $this->redirect("admin.forums.settings.set");
+    }
+
+    public function settingsView () {
+        $this->view->render("admin.forums.general_settings");
     }
 
     public function deleteCategoriesFromSection ($id, $token) {

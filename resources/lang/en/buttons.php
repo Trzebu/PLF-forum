@@ -28,4 +28,5 @@ return [
     "restore" => "Restore",
     "options" => "Options",
     "reset_password" => "Reset password",
+    "set" => "Set",
 ];

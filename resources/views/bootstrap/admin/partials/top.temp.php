@@ -19,7 +19,7 @@
                 <ul>
                     <li class="tab {{ !Libs\Http\Request::inUrl('general_settings') ?: 'tab-active' }}"><a href="{{ route('admin.general_settings') }}">General</a></li>
                     <li class="tab {{ !Libs\Http\Request::inUrl('forums') ?: 'tab-active' }}"><a href="{{ route('admin.forums') }}">Forums</a></li>
-                    <li class="tab"><a href="">Posting</a></li>
+                    <li class="tab {{ !Libs\Http\Request::inUrl('contents') ?: 'tab-active' }}"><a href="{{ route('admin.contents.view') }}">Contents</a></li>
                     <li class="tab"><a href="">Usera and Groups</a></li>
                     <li class="tab"><a href="">Permissions</a></li>
                 </ul>
