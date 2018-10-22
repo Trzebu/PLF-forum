@@ -380,3 +380,39 @@ Route::post("/admin/contents/moderation", [
     "as" => "admin.contents.moderation",
     "middleware" => ["permissions"]
 ]);
+
+Route::get("/admin/contents/downloads/settings", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@downloads",
+    "as" => "admin.contents.downloads.settings",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/contents/downloads/user_avatar", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@avatar",
+    "as" => "admin.contents.downloads.avatar",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/contents/downloads/user_avatar", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@avatarSet",
+    "as" => "admin.contents.downloads.avatar",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/contents/downloads/settings", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@downloadsSet",
+    "as" => "admin.contents.downloads.settings",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/contents/authentication", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@authentication",
+    "as" => "admin.contents.authentication",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/contents/authentication", [
+    "uses" => "App\Http\Controllers\AdminControllers\ContentsController@authenticationSet",
+    "as" => "admin.contents.authentication",
+    "middleware" => ["permissions"]
+]);

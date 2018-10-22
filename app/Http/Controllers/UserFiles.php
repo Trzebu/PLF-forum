@@ -133,7 +133,9 @@ final class UserFiles extends Controller {
         }
 
         if ($this->validation(Request::input(), [
-            "file" => "required|file",
+            "file" => "required|file>min_size:" .
+                      config("uploading/size/min") . ">max_size:" .
+                      config("uploading/size/max"),
             "upload_file_token" => "token"
         ])) {
             $this->file->upload(Request::input("file"));

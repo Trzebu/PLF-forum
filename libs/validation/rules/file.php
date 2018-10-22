@@ -52,6 +52,15 @@ class File extends Rule {
         }
     }
 
+    protected function min_size ($value) {
+        if ($this->_file->size < $value) {
+            $this->error(Str::replace(trans("validation.file.size.min"), [
+                ":attribute" => $this->__attribute,
+                ":max" => HumanFileSize::get($value)
+            ]));
+        }
+    }
+
     protected function max_resolution ($value) {
         $value = explode(",", $value);
         $size = getimagesize ($this->_file->tmp_name);
