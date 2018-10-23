@@ -16,6 +16,13 @@ use Libs\Http\Request;
 final class User extends Model {
     protected $_table = "users";
 
+    public function changeUsersGroup ($oldGroup, $newGroup) {
+        return $this->where("permissions", "=", $oldGroup)
+                    ->update([
+                        "permissions" => $newGroup
+                    ])->count();
+    }
+
     public function loginToCategory ($category) {
         Session::set("category_access_{$category}", true);
     }

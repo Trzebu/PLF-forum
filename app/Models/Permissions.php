@@ -9,6 +9,20 @@ final class Permissions extends Model {
 
     protected $_table = "permissions";
 
+    public function deleteGroup ($id) {
+        return $this->where("id", "=", $id)
+                    ->delete();
+    }
+
+    public function addNewPermission ($fields) {
+        return $this->insert($fields);
+    }
+
+    public function editPermission ($id, $fields) {
+        return $this->where("id", "=", $id)
+                    ->update($fields);
+    }
+
     public function translated ($userId = null, $search = null) {
         $user = new User();
         $perms = $userId !== null ?
@@ -50,7 +64,7 @@ final class Permissions extends Model {
 
     public function getRank ($name = null) {
         if ($name !== null) {
-            $this->where("name", "=", $name);
+            $this->where("id", "=", $name)->or("name", "=", $name);
         }
 
         return $this->get()->results();

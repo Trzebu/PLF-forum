@@ -416,3 +416,66 @@ Route::post("/admin/contents/authentication", [
     "as" => "admin.contents.authentication",
     "middleware" => ["permissions"]
 ]);
+
+/*
+|--------------------------------------------------------------------------
+| Permissions
+|--------------------------------------------------------------------------
+|
+| Here is where are located all routes to permissions.
+|
+*/
+
+Route::get("/admin/permissions/groups", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@groups",
+    "as" => "admin.permissions.groups",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/permissions/group/new", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@groupNew",
+    "as" => "admin.permissions.groups.new",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/permissions/group/new", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@groupNewSend",
+    "as" => "admin.permissions.groups.new",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/permissions/groups/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@groupView",
+    "as" => "admin.permissions.groups.view",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/permissions/groups/delete/{id}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@delete",
+    "as" => "admin.permissions.groups.delete",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/permissions/new", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@newPermission",
+    "as" => "admin.permissions.new",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/permissions/new", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@newPermissionSend",
+    "as" => "admin.permissions.new",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/permissions/groups/edit/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@groupViewEdit",
+    "as" => "admin.permissions.groups.view.edit",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/permissions/groups/change_users_group/by_other_group/{id}", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@changeByOtherGroup",
+    "as" => "admin.permissions.groups.change_users_group.by_other_group",
+    "middleware" => ["permissions"]
+]);

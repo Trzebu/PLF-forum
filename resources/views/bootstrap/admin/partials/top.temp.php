@@ -11,7 +11,7 @@
 
     <body>
         <div class="text-center">
-            <h2>Administration Controll Panel</h2>
+            <a href="{{ route('admin.index') }}"><h2>Administration Controll Panel</h2></a>
         </div>
         <div class="page-container">
             @include admin/partials/alerts
@@ -20,8 +20,7 @@
                     <li class="tab {{ !Libs\Http\Request::inUrl('general_settings') ?: 'tab-active' }}"><a href="{{ route('admin.general_settings') }}">General</a></li>
                     <li class="tab {{ !Libs\Http\Request::inUrl('forums') ?: 'tab-active' }}"><a href="{{ route('admin.forums') }}">Forums</a></li>
                     <li class="tab {{ !Libs\Http\Request::inUrl('contents') ?: 'tab-active' }}"><a href="{{ route('admin.contents.view') }}">Contents</a></li>
-                    <li class="tab"><a href="">Usera and Groups</a></li>
-                    <li class="tab"><a href="">Permissions</a></li>
+                    <li class="tab {{ !Libs\Http\Request::inUrl('permissions') ?: 'tab-active' }}"><a href="{{ route('admin.permissions.groups') }}">Permissions</a></li>
                 </ul>
             </div>
             <div class="inside-container">
