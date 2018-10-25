@@ -20,7 +20,7 @@ class Translate {
 
     public static function getUserLanguage () {
         if (Cookie::exists("language")) {
-            return Cookie::get("language");
+            return in_array(Cookie::get("language"), scandir(__ROOT__ . "/resources/lang")) ? Cookie::get("language") : Config::get("page/language/default");
         } else {
             return Config::get("page/language/default");
         }

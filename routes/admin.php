@@ -12,6 +12,39 @@ use Libs\Route;
 |
 */
 
+/*
+|--------------------------------------------------------------------------
+| Board settings
+|--------------------------------------------------------------------------
+|
+| Here is where are located all routes to board settings.
+|
+*/
+
+Route::get("/admin/general_settings/default_theme", [
+    "uses" => "App\Http\Controllers\AdminControllers\GeneralController@defaultTheme",
+    "as" => "admin.general_settings.theme",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/default_theme", [
+    "uses" => "App\Http\Controllers\AdminControllers\GeneralController@defaultThemeChange",
+    "as" => "admin.general_settings.theme",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/general_settings/board_settings", [
+    "uses" => "App\Http\Controllers\AdminControllers\GeneralController@boardSettings",
+    "as" => "admin.general_settings.board_settings",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/general_settings/board_settings", [
+    "uses" => "App\Http\Controllers\AdminControllers\GeneralController@boardSettingsChange",
+    "as" => "admin.general_settings.board_settings",
+    "middleware" => ["permissions"]
+]);
+
 Route::get("/admin", [
     "uses" => "App\Http\Controllers\AdminControllers\GeneralController@generalView",
     "as" => "admin.index",
