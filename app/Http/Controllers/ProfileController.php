@@ -13,7 +13,7 @@ use Libs\Session;
 use Libs\Config;
 use Libs\Smilies;
 use Libs\User as Auth;
-include __ROOT__ . "/libs/Bbcode/BbCode.php";
+include __ROOT__ . "/Libs/Bbcode/BbCode.php";
 
 final class ProfileController extends Controller {
 

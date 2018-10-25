@@ -17,24 +17,84 @@ final class PermissionsController extends Controller {
         $this->permissions = new Permissions();
     }
 
+    public function deletePermission ($name, $token) {
+        if (!Token::check("delete_permission_token", $token)) {
+            Session::flash("alert_error", trans("validation.token"));
+            return $this->redirect("admin.permissions.edit_permission", ["name" => $name]);
+        }
+
+        $permissions = $this->permissions->getRank();
+        $this->view->permission_name = $name;
+
+        if (!array_key_exists($name, json_decode($permissions[0]->permissions))) {
+            Session::flash("alert_error", "Permission you are searching does not exists.");
+            return $this->redirect("admin.permissions.view");
+        }
+
+        foreach ($permissions as $permission) {
+            $new_permissions = json_decode($permission->permissions, true);
+            unset($new_permissions[$name]);
+            $this->permissions->editPermission($permission->id, [
+                "permissions" => json_encode($new_permissions)
+            ]);
+        }
+
+        Session::flash("alert_info", "Permission {$name} has been deleted.");
+        $this->redirect('admin.permissions.view');
+    }
+
+    public function editPermissionSend ($name) {
+        $permissions = $this->permissions->getRank();
+        $this->view->permission_name = $name;
+
+        if (!array_key_exists($name, json_decode($permissions[0]->permissions))) {
+            Session::flash("alert_error", "Permission you are searching does not exists.");
+            return $this->redirect("admin.permissions.view");
+        }
+
+        foreach ($permissions as $permission) {
+            $new_permissions = json_decode($permission->permissions, true);
+            $value = $new_permissions[$name];
+            unset($new_permissions[$name]);
+            $new_permissions = array_merge($new_permissions, [Request::input("name") => $value]);
+            $this->permissions->editPermission($permission->id, [
+                "permissions" => json_encode($new_permissions)
+            ]);
+        }
+
+        Session::flash("alert_success", "Permission has been changed.");
+        $this->redirect("admin.permissions.edit_permission", ["name" => Request::input("name")]);
+    }
+
     public function newPermissionSend () {
         if (!$this->validation(Request::input(), [
             "name" => "required",
+            "setted" => "num>min:0>max:1",
             "add_permission_token" => "token"
         ])) {
             return $this->redirect("admin.permissions.new");
         }
 
-        $permisison = json_decode($this->permissions->getRank()[0]->permissions, true);
+        $permissions = $this->permissions->getRank();
 
-        if (array_key_exists(Request::input("name"), $permisison)) {
+        if (array_key_exists(Request::input("name"), json_decode($permissions[0]->permissions, true))) {
             Session::flash("alert_error", "This name is already used.");
             return $this->redirect("admin.permissions.new");
         }
+
+        foreach ($permissions as $permission) {
+            $new_permissions = array_merge(json_decode($permission->permissions, true), [Request::input("name") => intval(Request::input("setted"))]);
+            $this->permissions->editPermission($permission->id, [
+                "permissions" => json_encode($new_permissions)
+            ]);
+        }
+
+        Session::flash("alert_success", "New permission has been created.");
+        $this->redirect("admin.permissions.new");
     }
 
     public function delete ($id, $token) {
-        if (count($this->permissions->getRank($id)) < 1 ) {
+        if (!$this->permissions->getRank($id)) {
             Session::flash("alert_info", "Group you are searching does not exists.");
             return $this->redirect("admin.permissions.groups");
         }
@@ -93,7 +153,7 @@ final class PermissionsController extends Controller {
     public function groupViewEdit ($id) {
         $data = $this->permissions->getRank($id)[0];
 
-        if (count($data) < 1) {
+        if (!$data) {
             Session::flash("alert_info", "Group you are searching does not exists.");
             return $this->redirect("admin.permissions.groups");
         }
@@ -119,7 +179,7 @@ final class PermissionsController extends Controller {
     public function groupView ($id) {
         $this->view->data = $this->permissions->getRank($id)[0];
 
-        if (count($this->view->data) < 1) {
+        if (!$this->view->data) {
             Session::flash("alert_info", "Group you are searching does not exists.");
             return $this->redirect("admin.permissions.groups");
         }
@@ -127,6 +187,23 @@ final class PermissionsController extends Controller {
         $this->view->groups = $this->permissions->getRank();
         $this->view->permissions = json_decode($this->view->data->permissions);
         $this->view->render("admin.permissions.general.editGroup");
+    }
+
+    public function editPermission ($name) {
+        $permissions = json_decode($this->permissions->getRank()[0]->permissions);
+        $this->view->permission_name = $name;
+
+        if (!array_key_exists($name, $permissions)) {
+            Session::flash("alert_error", "Permission you are searching does not exists.");
+            return $this->redirect("admin.permissions.view");
+        }
+
+        $this->view->render("admin.permissions.edit_permission");
+    }
+
+    public function viewPermissions () {
+        $this->view->permissions = json_decode($this->permissions->getRank()[0]->permissions);
+        $this->view->render("admin.permissions.view_permissions");
     }
 
     public function newPermission () {

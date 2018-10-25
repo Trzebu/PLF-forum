@@ -9,7 +9,7 @@ use App\Models\Friends;
 use Libs\Session;
 use Libs\Config;
 use Libs\Http\Request;
-include __ROOT__ . "/libs/Bbcode/BbCode.php";
+include __ROOT__ . "/Libs/Bbcode/BbCode.php";
 
 final class PrivateMessageController extends Controller {
 

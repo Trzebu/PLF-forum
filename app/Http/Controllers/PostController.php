@@ -14,7 +14,7 @@ use Libs\Config;
 use Libs\Http\Request;
 use Libs\User as Auth;
 use Libs\Tools\SlugUrl;
-include __ROOT__ . "/libs/Bbcode/BbCode.php";
+include __ROOT__ . "/Libs/Bbcode/BbCode.php";
 
 final class PostController extends Controller {
 

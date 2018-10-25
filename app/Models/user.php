@@ -230,7 +230,7 @@ final class User extends Model {
     public function permissions ($id) {
         $permissions = $this->where("id", "=", $id)->get(["permissions"])->first()->permissions;
 
-        if (count($permissions) > 0) {
+        if ($permissions > 0) {
             return DB::instance()->table("permissions")->where("id", "=", $permissions)->get(["name", "color"])->first();
         }
 

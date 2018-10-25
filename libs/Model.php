@@ -24,7 +24,7 @@ class Model extends DataBase {
     }
 
     public function paginateRender () {
-        require_once(__ROOT__ . "/libs/templates/paginate.php");
+        require_once(__ROOT__ . "/Libs/templates/paginate.php");
     }
 
 }

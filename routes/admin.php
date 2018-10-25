@@ -456,13 +456,13 @@ Route::get("/admin/permissions/groups/delete/{id}/{token}", [
     "middleware" => ["permissions"]
 ]);
 
-Route::get("/admin/permissions/new", [
+Route::get("/admin/permissions/new_permission", [
     "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@newPermission",
     "as" => "admin.permissions.new",
     "middleware" => ["permissions"]
 ]);
 
-Route::post("/admin/permissions/new", [
+Route::post("/admin/permissions/new_permission", [
     "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@newPermissionSend",
     "as" => "admin.permissions.new",
     "middleware" => ["permissions"]
@@ -477,5 +477,29 @@ Route::post("/admin/permissions/groups/edit/{id}", [
 Route::post("/admin/permissions/groups/change_users_group/by_other_group/{id}", [
     "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@changeByOtherGroup",
     "as" => "admin.permissions.groups.change_users_group.by_other_group",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/permissions/view_permissions", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@viewPermissions",
+    "as" => "admin.permissions.view",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/permissions/edit_permission/{name}", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@editPermission",
+    "as" => "admin.permissions.edit_permission",
+    "middleware" => ["permissions"]
+]);
+
+Route::post("/admin/permissions/edit_permission/{name}", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@editPermissionSend",
+    "as" => "admin.permissions.edit_permission",
+    "middleware" => ["permissions"]
+]);
+
+Route::get("/admin/permissions/delete/{name}/{token}", [
+    "uses" => "App\Http\Controllers\AdminControllers\PermissionsController@deletePermission",
+    "as" => "admin.permissions.delete_permission",
     "middleware" => ["permissions"]
 ]);

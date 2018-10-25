@@ -167,9 +167,9 @@ class TemplateCompiler {
     }
 
     private function includes ($params) {
-        if (count($this->_line) > 1) {
-            die("Error in compilation. Wrong parametr for include.");
-        }
+        // if ($this->_line > 1) {
+        //     die("Error in compilation. Wrong parametr for include.");
+        // }
 
         $params = trim(Str::replace($params[0], ["/" => "."]));
         $theme = Config::get("forum/theme/default_theme");
