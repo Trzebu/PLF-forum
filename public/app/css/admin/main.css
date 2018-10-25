@@ -1,0 +1,390 @@
+body {
+    width: 100%;
+    height: 100%;
+    background-color: #dbd7d1;
+    color: #536482;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 1em;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.page-container {
+    padding: 0 0 15px 0;
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.inside-container {
+    position: relative;
+    margin: 0 0 2px;
+    padding: 3px 1px;
+    min-width: 550px;
+    background: #f3f3f3;
+    border: 1px #999999 solid;
+    border-radius: 5px;
+    box-shadow: #fff 0 0 0 1px inset;
+    display: flex;
+    flex-direction: row;
+}
+
+.tabs {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: normal;
+    margin: 0 7px;
+    position: relative;
+    z-index: 2;
+    margin: 0 auto;
+}
+
+.tabs > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tabs .tab {
+    display: inline-block;
+    float: left;
+    font-size: 0.85em;
+    font-weight: bold;
+    line-height: 14px;
+}
+
+.tabs .tab > a {
+    background: #d4d6da;
+    border: 1px solid #bbb;
+    border-radius: 5px 5px 0 0;
+    color: #767676;
+    display: block;
+    font-weight: bold;
+    margin: 1px 1px 2px 0;
+    padding: 6px 9px 4px;
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.tabs .tab > a:hover {
+    background: #f1f1ee;
+    border-color: #c0bfbb;
+    color: #bc2a4d;
+}
+
+.tab-active > a {
+    background: #f1f1ee!important;
+    border-color: #c0bfbb!important;
+    color: #bc2a4d!important;
+}
+
+.navigation {
+    float: left;
+    width: 15%;
+    font-size: 1.00em;
+    padding: 0;
+    border-right: 1px solid #cccfd3;
+    position: relative;
+    z-index: 1;
+}
+
+.main {
+    width: 85%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.navigation-block > .header {
+    font-family: Tahoma, Helvetica, sans-serif;
+    display: block;
+    font-weight: bold;
+    color: #115098;
+    border-bottom: 1px solid #327AA5;
+    padding: 4px 0 2px;
+    margin-top: 15px;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    text-decoration: none;
+    cursor: inherit;
+    outline-style: none;
+}
+
+.navigation-block > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    word-wrap: normal;
+}
+
+.navigation-block > ul > li {
+    padding: 0;
+    margin: 0;
+    font-size: 0.85em;
+    font-weight: bold;
+    display: block;
+}
+
+.navigation-block > ul > li > a {
+    display: block;
+    padding: 3px 3px 3px 8px;
+    margin: 1px 0;
+    text-decoration: none;
+    font-weight: normal;
+    color: #138ECB;
+}
+
+.left-navigation-active > a:before {
+    content: "> ";
+}
+
+.left-navigation-active > a {
+    color: darkblue!important;
+    text-decoration: underline!important;
+}
+
+h1 {
+    color: #115098;
+    line-height: 1.2em;
+    font-size: 1.70em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+.grey-text {
+    margin-bottom: 0.7em;
+    line-height: 1.40em;
+    font-size: 0.90em;
+    color: grey;
+    margin: 0;
+    padding: 0;
+}
+
+.table-responsive {
+    border-collapse: separate;
+    border-spacing: 1px;
+    clear: both;
+    width: 100%;
+    border: 1px solid #CCCFD3;
+    background-color: #FFFFFF;
+    padding: 1px;
+}
+
+th {
+    padding: 3px 4px;
+    color: #FFFFFF;
+    background: #70aed3;
+    border-top: 1px solid #6DACD2;
+    border-bottom: 1px solid #327AA5;
+    text-align: left;
+    font-size: 0.75em;
+    text-transform: uppercase;
+}
+
+td {
+    text-align: left;
+    font-size: 0.85em;
+    padding: 4px;
+    line-height: 1.20em;
+    background-color: #dcebfe;
+}
+
+tr:nth-child(odd) > td {
+    background-color: #cee2fd;
+}
+
+.fieldset {
+    margin: 15px 0;
+    padding: 10px;
+    border-top: 1px solid #D7D7D7;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    border-left: 1px solid #D7D7D7;
+    background-color: #FFFFFF;
+    position: relative;
+    border-radius: 3px;
+}
+
+.legend {
+    padding: 1px 0;
+    font-family: Tahoma,arial,Verdana,Sans-serif;
+    font-size: .9em;
+    font-weight: bold;
+    color: #115098;
+    margin-top: -20px;
+    position: relative;
+    text-transform: none;
+    line-height: 1.2em;
+    top: -.2em;
+    vertical-align: middle;
+}
+
+.fieldset dl {
+    overflow: hidden;
+    margin-bottom: 10px;
+    font-size: 0.85em;
+}
+
+.fieldset dt {
+    width: 45%;
+    text-align: left;
+    border: none;
+    border-right: 1px solid #CCCCCC;
+    padding-top: 3px;
+    float: left;
+}
+
+dt label {    
+    font-size: 1.00em;
+    text-align: left;
+    font-weight: bold;
+    color: #4A5A73;
+    padding: 0 5px 0 0;
+}
+
+dt span {
+    padding: 0 5px 0 0;
+}
+
+.fieldset dd {
+    margin: 0 0 0 45%;
+    padding: 0 0 0 5px;
+    border: none;
+    border-left: 1px solid #CCCCCC;
+    vertical-align: top;
+    font-size: 1.00em;
+}
+
+dd input {
+    font-size: 1.00em;
+    max-width: 100%;
+    margin: 2px 0;
+}
+
+dd select {
+    font-size: 100%;
+    font-size: 1em;
+    width: auto;
+    max-width: 100%;
+    margin: 2px 0;
+}
+
+input, textarea {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 0.90em;
+    font-weight: normal;
+    vertical-align: middle;
+    padding: 2px;
+    color: #111111;
+    border-left: 1px solid #AFAEAA;
+    border-top: 1px solid #AFAEAA;
+    border-right: 1px solid #D5D5C8;
+    border-bottom: 1px solid #D5D5C8;
+    background-color: #E3DFD8;
+}
+
+select {
+    background-color: #FAFAFA;
+    border: 1px solid #666666;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 0.85em;
+    font-weight: normal;
+    font-style: normal;
+    cursor: pointer;
+    padding: 1px;
+    vertical-align: middle;
+    width: auto;
+    color: #000;
+}
+
+input.radio, input.checkbox, input.permissions-checkbox {
+    width: auto !important;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.buttons {
+    text-align: center;
+    margin: 0;
+    padding: 4px;
+    margin-top: 10px;
+}
+
+.button {
+    width: auto !important;
+    padding: 1px 3px 0 3px;
+    font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
+    color: #000;
+    font-size: 0.85em;
+    background: #EFEFEF;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: #d9d9d9;
+}
+
+.alert {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 2px dotted black;
+}
+
+.success {
+    border-color: green;
+    background: lightgreen;
+    color: green;
+}
+
+.info {
+    border-color: blue;
+    background: lightblue;
+    color: blue;
+}
+
+.error {
+    border-color: #cc0000;
+    background: #ffb3b3;
+    color: #cc0000;
+}
+
+.small-grey-text {
+    font-size: 12px;
+    color: #4C5D77;
+    font-style: italic;
+    margin: 0;
+    padding: 0;
+}
+
+.big-text {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.i_blue {
+    color: blue;
+}
+
+.i_red {
+    color: red;
+}
+
+.i_green {
+    color: green;
+}
+
+.forums_table {
+    width: 100%;
+}
+
+.forums_table > td {
+    background: lightgreen!important;
+}
