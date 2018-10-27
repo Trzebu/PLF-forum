@@ -61,11 +61,11 @@
                 </dt>
                 <dd>
                     <label>
-                        <input type="radio" name="user_lang" class="radio" value="1" {{ config("page/language/user_change") ? 'checked="checked"' : "" }}>
+                        <input type="radio" name="user_lang" class="radio" value="0" {{ !config("page/general_options/hidden") ? 'checked="checked"' : "" }}>
                         {{ trans('buttons.yes') }}
                     </label>
                     <label>
-                        <input type="radio" name="user_lang" class="radio" value="0" {{ !config("page/language/user_change") ? 'checked="checked"' : "" }}>
+                        <input type="radio" name="user_lang" class="radio" value="1" {{ config("page/general_options/hidden") ? 'checked="checked"' : "" }}>
                         {{ trans('buttons.no') }}
                     </label>
                 </dd>

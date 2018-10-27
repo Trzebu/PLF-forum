@@ -25,7 +25,7 @@ final class GeneralController extends Controller {
 
         Config::edit("page/contents/title", Request::input("name"));
         Config::edit("page/language/default", Request::input("lang"));
-        Config::edit("page/language/user_change", Request::input("user_lang") == 1 ? "true" : "false");
+        Config::edit("page/general_options/hidden", Request::input("user_lang") == 1 ? "true" : "false");
 
         Session::flash("alert_success", "Changes has been saved.");
         $this->redirect("admin.general_settings.board_settings");
